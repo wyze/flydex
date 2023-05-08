@@ -281,6 +281,48 @@ export async function getLeaderboard(params: getLeaderboardQueryVariables) {
   }
 }
 
+export async function getLeaderboardOverview(day: string) {
+  const sdk = getMeshSDK()
+  const leagues = (
+    [
+      ['Apex', 5],
+      ['Predator', 5],
+      ['Monarch', 10],
+      ['Pupa', 10],
+    ] as const
+  ).flatMap(([league, percent]) =>
+    [1, 2, 3].map((tier) => [`${league} ${tier}`, percent] as const)
+  )
+  const totals = await Promise.all(
+    leagues.map(async ([league, percent]) => {
+      const data = await sdk.getLeaderboardOverview({
+        where: { day: { _eq: day }, league: { _eq: league } },
+      })
+      const amount = z
+        .number()
+        .parse(data.battlefly_leaderboard_aggregate.aggregate?.count)
+
+      return Math.floor(amount * (percent / 100))
+    })
+  )
+
+  const data = await Promise.all(
+    leagues.map(([league], index) =>
+      sdk.getLeaderboard({
+        limit: totals[index],
+        offset: 0,
+        where: { day: { _eq: day }, league: { _eq: league } },
+      })
+    )
+  )
+
+  return {
+    leaderboards: data.map((item) =>
+      leaderboard.parse(item.battlefly_leaderboard)
+    ),
+  }
+}
+
 export async function getTreasureTag(name: string) {
   const sdk = getMeshSDK()
   const data = await sdk.getTreasureTag({ name })

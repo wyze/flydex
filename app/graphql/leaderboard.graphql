@@ -45,3 +45,11 @@ query getLeaderboard(
     }
   }
 }
+
+query getLeaderboardOverview($where: battlefly_leaderboard_bool_exp) {
+  battlefly_leaderboard_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+}
