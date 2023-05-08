@@ -1,0 +1,48 @@
+query getLeaderboard(
+  $limit: Int!
+  $offset: Int!
+  $where: battlefly_leaderboard_bool_exp
+) {
+  battlefly_leaderboard(
+    limit: $limit
+    offset: $offset
+    order_by: {
+      created_at: asc
+      flydex: { contest_points: asc }
+      league: asc
+      wins: desc
+    }
+    where: $where
+  ) {
+    day
+    flydex {
+      body_color
+      image
+      mods(order_by: { slot: asc }, where: { slot: { _is_null: false } }) {
+        mod {
+          category
+          image
+          name
+          rarity
+          type
+        }
+        slot
+      }
+      name
+      token {
+        owner
+        treasure_tag {
+          display_name
+        }
+      }
+    }
+    league
+    token_id
+    wins
+  }
+  battlefly_leaderboard_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+}

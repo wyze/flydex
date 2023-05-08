@@ -1,0 +1,11 @@
+sources:
+  - name: hasura
+    handler:
+      graphql:
+        endpoint: ${HASURA_ENDPOINT}
+        operationHeaders:
+          x-hasura-admin-secret: ${HASURA_API_KEY}
+        schemaHeaders:
+          x-hasura-admin-secret: ${HASURA_API_KEY}
+documents:
+  - ./app/graphql/*.graphql

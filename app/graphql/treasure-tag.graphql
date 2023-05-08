@@ -1,0 +1,5 @@
+query getTreasureTag($name: String!) {
+  treasure_tag(where: { display_name: { _eq: $name } }) {
+    owner
+  }
+}

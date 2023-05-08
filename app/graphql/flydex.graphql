@@ -1,0 +1,143 @@
+fragment Mod on battlefly_mod {
+  category
+  image
+  name
+  rarity
+  type
+}
+
+fragment Battlefly on battlefly_flydex {
+  body_color
+  contest_points
+  edition
+  image
+  league
+  league_tier
+  location
+  mods(order_by: { slot: asc }) {
+    mod {
+      category
+      image
+      name
+      rarity
+      type
+    }
+    slot
+  }
+  name
+  token_id
+  rank
+  rarity
+}
+
+query getBattlefly($id: Int!) {
+  battlefly_flydex(where: { token_id: { _eq: $id } }) {
+    ...Battlefly
+    stat_armor_base
+    stat_armor_current
+    stat_battery_base
+    stat_battery_current
+    stat_critical_base
+    stat_critical_current
+    stat_critical_damage_base
+    stat_critical_damage_current
+    stat_critical_resists_base
+    stat_critical_resists_current
+    stat_evasion_base
+    stat_evasion_current
+    stat_hit_points_base
+    stat_hit_points_current
+    stat_hit_points_regen_base
+    stat_hit_points_regen_current
+    stat_loot_base
+    stat_loot_current
+    stat_scavenge_base
+    stat_scavenge_current
+    stat_shield_base
+    stat_shield_current
+    stat_shield_regen_base
+    stat_shield_regen_current
+    token {
+      owner
+      price
+      treasure_tag {
+        display_name
+      }
+    }
+    traits {
+      trait {
+        name
+        value
+        unit_type
+      }
+    }
+    updated_at
+    win_loss {
+      battles_24h
+      battles_3d
+      battles_7d
+      loadouts(order_by: { changed_at: desc }) {
+        battles
+        changed_at
+        losses
+        slot_0 {
+          ...Mod
+        }
+        slot_1 {
+          ...Mod
+        }
+        slot_2 {
+          ...Mod
+        }
+        slot_3 {
+          ...Mod
+        }
+        wins
+        wl_ratio
+      }
+      losses_24h
+      losses_3d
+      losses_7d
+      wins_24h
+      wins_3d
+      wins_7d
+      wl_ratio_24h
+      wl_ratio_3d
+      wl_ratio_7d
+    }
+  }
+  battlefly_flydex_aggregate {
+    aggregate {
+      max {
+        rank
+      }
+    }
+  }
+}
+
+query getFlydex(
+  $limit: Int!
+  $offset: Int!
+  $order_by: [battlefly_flydex_order_by!]
+  $where: battlefly_flydex_bool_exp
+) {
+  battlefly_flydex(
+    limit: $limit
+    offset: $offset
+    order_by: $order_by
+    where: $where
+  ) {
+    ...Battlefly
+    win_loss {
+      wl_ratio_24h
+    }
+  }
+  battlefly_flydex_aggregate(where: $where) {
+    aggregate {
+      count
+      min {
+        updated_at
+      }
+    }
+  }
+}

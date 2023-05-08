@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+img.filter-outline {
+  filter: drop-shadow(1px 1px 0 var(--tw-shadow-color))
+    drop-shadow(-1px 1px 0 var(--tw-shadow-color))
+    drop-shadow(1px -1px 0 var(--tw-shadow-color))
+    drop-shadow(-1px -1px 0 var(--tw-shadow-color));
+}
