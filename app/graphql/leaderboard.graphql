@@ -6,12 +6,11 @@ query getLeaderboard(
   battlefly_leaderboard(
     limit: $limit
     offset: $offset
-    order_by: {
-      created_at: asc
-      flydex: { contest_points: asc }
-      league: asc
-      wins: desc
-    }
+    order_by: [
+      { wins: desc }
+      { created_at: asc }
+      { flydex: { contest_points: desc } }
+    ]
     where: $where
   ) {
     day
