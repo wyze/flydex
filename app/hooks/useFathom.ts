@@ -7,7 +7,6 @@ export default function useFathom() {
 
   useEffect(() => {
     load('DSXEEGPL', {
-      url: 'https://tea-fantastic.honeycomb.fyi/script.js',
       spa: 'history',
       excludedDomains: ['localhost'],
     })
