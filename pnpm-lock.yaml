@@ -71,8 +71,8 @@ dependencies:
     specifier: 1.16.0
     version: 1.16.0
   '@tabler/icons-react':
-    specifier: 2.17.0
-    version: 2.17.0(react@18.2.0)
+    specifier: 2.18.0
+    version: 2.18.0(react@18.2.0)
   '@whatwg-node/fetch':
     specifier: 0.8.8
     version: 0.8.8
@@ -92,8 +92,8 @@ dependencies:
     specifier: 3.5.0
     version: 3.5.0
   framer-motion:
-    specifier: 10.12.8
-    version: 10.12.8(react-dom@18.2.0)(react@18.2.0)
+    specifier: 10.12.10
+    version: 10.12.10(react-dom@18.2.0)(react@18.2.0)
   graphql:
     specifier: 16.6.0
     version: 16.6.0
@@ -5367,18 +5367,18 @@ packages:
       defer-to-connect: 2.0.1
     dev: true
 
-  /@tabler/icons-react@2.17.0(react@18.2.0):
-    resolution: {integrity: sha512-kuEW+qNwRqcK5iMl7qTapzX2NiMOwPg4Az01d+IZ1DIMwaZ7iKPJaIor2ihKFLPYrT9D5BZHXB8R5mSkw0FETg==}
+  /@tabler/icons-react@2.18.0(react@18.2.0):
+    resolution: {integrity: sha512-F4HyBIoC3DvIPmjP9ienurvSWhQOajDuTc3C5F7UfjhBkom3cAuJfDWH2tqGAfNrhjvG4X3ERR2dxOWLpegsiA==}
     peerDependencies:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0
     dependencies:
-      '@tabler/icons': 2.17.0
+      '@tabler/icons': 2.18.0
       prop-types: 15.8.1
       react: 18.2.0
     dev: false
 
-  /@tabler/icons@2.17.0:
-    resolution: {integrity: sha512-UeJaylOGNRhQKyDlgZfrQ3UPSGlfVQuXcmCsTYeXioKKepibW6VZ3H36Lo1jvBTBkQD2e9m+k2NxwkztOTXwrA==}
+  /@tabler/icons@2.18.0:
+    resolution: {integrity: sha512-N7a20mwbhrFXNqvd8Rxa0Btwu1Li5rQbqdIi3mzt5HRjP25PbyYuTU2BXbu8yMEnUk018Gi13gpS/jlMgXFuOw==}
     dev: false
 
   /@testing-library/dom@8.20.0:
@@ -8308,8 +8308,8 @@ packages:
     dependencies:
       map-cache: 0.2.2
 
-  /framer-motion@10.12.8(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-ylobYq3tGFjjAmRdBs5pL/R1+4AmOm69g/JbF5DcNETfRe8L9CjaX4acG83MjYdIsbsTGJmtR5qKx4glNmXO4A==}
+  /framer-motion@10.12.10(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-f/VkrpxfG4xSmBi105/NCfcTt219IgglQEUR0BsuFZAg+be6N3QAcujFyBEvBvbDOSP9Ccv6OMiaY0HFMnBoMA==}
     peerDependencies:
       react: ^18.0.0
       react-dom: ^18.0.0
