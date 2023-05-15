@@ -212,7 +212,7 @@ export default function BattleflyDetail() {
                 .map(([key, value]) => (
                   <div
                     key={key}
-                    className="-mt-px flex justify-between border-y border-gray-200 px-4 py-3 text-sm font-medium dark:border-gray-700 sm:px-6 md:[&:nth-last-ch_ild(-n+3)]:border-b-0"
+                    className="-mt-px flex justify-between border-y border-gray-200 px-4 py-3 text-sm font-medium dark:border-gray-700 sm:px-6"
                   >
                     <dt className="text-gray-500 dark:text-gray-400">{key}</dt>
                     {value.current !== value.base ? (
