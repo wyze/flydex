@@ -8,7 +8,7 @@ export function loader() {
     headers: {
       'Cache-Control': cacheHeader({
         public: true,
-        maxAge: '30minutes',
+        sMaxage: '30minutes',
         staleWhileRevalidate: '20minutes',
       }),
     },
