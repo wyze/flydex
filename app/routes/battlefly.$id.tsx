@@ -444,7 +444,7 @@ export default function BattleflyDetail() {
                     </div>
                   </div>
                 </div>
-                {pagination.pages.length > 0 ? (
+                {pagination.count > 1 ? (
                   <div className="px-2">
                     <Pagination button={ParamsLink} {...pagination} />
                   </div>
