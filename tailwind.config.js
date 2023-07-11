@@ -35,7 +35,7 @@ module.exports = {
       },
     },
     fontFamily: {
-      sans: ['InterVariable', ...defaults.fontFamily.sans],
+      sans: ['Inter Variable', ...defaults.fontFamily.sans],
     },
   },
   plugins: [

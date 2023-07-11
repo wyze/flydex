@@ -1,4 +1,4 @@
-import fontStyles from '@fontsource/inter/variable.css'
+import fontStyles from '@fontsource-variable/inter/index.css'
 import type {
   LinksFunction,
   LoaderArgs,

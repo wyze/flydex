@@ -3,12 +3,10 @@ module.exports = {
   bracketSpacing: true,
   semi: false,
   singleQuote: true,
-  trailingComma: 'es5',
 
-  pluginSearchDirs: ['.'],
   plugins: [
-    require('@trivago/prettier-plugin-sort-imports'),
-    require('prettier-plugin-tailwindcss'),
+    '@trivago/prettier-plugin-sort-imports',
+    'prettier-plugin-tailwindcss',
   ],
 
   // Import plugin
