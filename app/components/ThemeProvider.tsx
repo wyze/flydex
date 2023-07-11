@@ -13,7 +13,7 @@ export type Theme = (typeof themes)[number]
 type ThemeContextType = [
   Exclude<Theme, 'system'> | null,
   Theme,
-  (theme: Theme) => void
+  (theme: Theme) => void,
 ]
 
 const themes = ['dark', 'light', 'system'] as const
@@ -58,7 +58,7 @@ export function ThemeProvider({
     if (theme !== specifiedTheme) {
       persistThemeRef.current.submit(
         { pathname, theme },
-        { action: 'action/set-theme', method: 'post' }
+        { action: 'action/set-theme', method: 'post' },
       )
     }
   }, [pathname, specifiedTheme, theme])

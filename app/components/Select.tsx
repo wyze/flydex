@@ -11,7 +11,7 @@ export default function Select(
   props: ChildrenProps & {
     onValueChange: (value: string) => void
     value: string
-  }
+  },
 ) {
   return <RadixSelect.Root {...props} />
 }

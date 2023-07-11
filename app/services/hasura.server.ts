@@ -24,7 +24,7 @@ function formatPercent(value: number) {
 const date = z
   .string()
   .transform((value) =>
-    formatDistanceToNow(new Date(value), { addSuffix: true })
+    formatDistanceToNow(new Date(value), { addSuffix: true }),
   )
 
 const mod = z.object({
@@ -81,7 +81,7 @@ const battlefly = z.object({
       value
         .split('_')
         .map(([first, ...rest]) => first.toUpperCase().concat(...rest))
-        .join(' ')
+        .join(' '),
     ),
   mods: z
     .object({
@@ -191,13 +191,13 @@ const detail = battlefly.merge(
                 ['24h', '3d', '7d'].map((time) => [
                   `${stat}_${time}`,
                   stat === 'wl_ratio' ? '0%' : 0,
-                ])
-              )
+                ]),
+              ),
             ),
             loadouts: [],
-          } as NonNullable<typeof value>)
+          } as NonNullable<typeof value>),
       ),
-  })
+  }),
 )
 
 const flydex = battlefly.array()
@@ -262,7 +262,7 @@ export async function getFlydex(params: getFlydexQueryVariables) {
     flies: flydex.parse(data.battlefly_flydex),
     total: z.number().parse(data.battlefly_flydex_aggregate.aggregate?.count),
     updatedAt: date.parse(
-      data.battlefly_flydex_aggregate.aggregate?.min?.updated_at
+      data.battlefly_flydex_aggregate.aggregate?.min?.updated_at,
     ),
   }
 }
@@ -291,7 +291,7 @@ export async function getLeaderboardOverview(day: string) {
       ['Pupa', 10],
     ] as const
   ).flatMap(([league, percent]) =>
-    [1, 2, 3].map((tier) => [`${league} ${tier}`, percent] as const)
+    [1, 2, 3].map((tier) => [`${league} ${tier}`, percent] as const),
   )
   const totals = await Promise.all(
     leagues.map(async ([league, percent]) => {
@@ -303,7 +303,7 @@ export async function getLeaderboardOverview(day: string) {
         .parse(data.battlefly_leaderboard_aggregate.aggregate?.count)
 
       return Math.floor(amount * (percent / 100))
-    })
+    }),
   )
 
   const data = await Promise.all(
@@ -312,13 +312,13 @@ export async function getLeaderboardOverview(day: string) {
         limit: totals[index],
         offset: 0,
         where: { day: { _eq: day }, league: { _eq: league } },
-      })
-    )
+      }),
+    ),
   )
 
   return {
     leaderboards: data.map((item) =>
-      leaderboard.parse(item.battlefly_leaderboard)
+      leaderboard.parse(item.battlefly_leaderboard),
     ),
   }
 }

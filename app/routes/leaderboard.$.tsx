@@ -24,7 +24,7 @@ export async function loader({ params }: LoaderArgs) {
         .replace('-', ' ')
         .split('')
         .map((character, index) =>
-          index > 0 ? character : character.toUpperCase()
+          index > 0 ? character : character.toUpperCase(),
         )
         .join('')
 
@@ -102,7 +102,7 @@ export default function Leaderboard() {
               <Select.Separator className="m-1 h-px bg-gray-200 dark:bg-gray-600" />
               {['Apex', 'Predator', 'Monarch', 'Pupa']
                 .flatMap((league) =>
-                  [1, 2, 3].map((tier) => `${league} ${tier}`)
+                  [1, 2, 3].map((tier) => `${league} ${tier}`),
                 )
                 .map((league) => (
                   <Select.Item
@@ -213,7 +213,7 @@ export default function Leaderboard() {
                           </td>
                         </tr>
                       )
-                    }
+                    },
                   )}
                 </tbody>
               </table>

@@ -8,11 +8,11 @@ export default function useNProgress() {
   const state = useMemo(
     () =>
       [navigation.state, ...fetchers.map((fetcher) => fetcher.state)].every(
-        (state) => state === 'idle'
+        (state) => state === 'idle',
       )
         ? 'idle'
         : 'loading',
-    [fetchers, navigation.state]
+    [fetchers, navigation.state],
   )
 
   useEffect(() => {

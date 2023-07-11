@@ -35,7 +35,7 @@ function PageButton({
           current === page
             ? 'z-10 border-pink-500 bg-pink-50 text-pink-600 dark:bg-pink-600 dark:text-pink-50'
             : 'border-slate-300 bg-white text-slate-500 transition duration-200 hover:bg-slate-50  dark:border-gray-700 dark:bg-slate-600 dark:text-gray-200 dark:hover:bg-slate-800',
-          'relative inline-flex h-full items-center border px-4 py-2 text-sm font-medium focus:z-20'
+          'relative inline-flex h-full items-center border px-4 py-2 text-sm font-medium focus:z-20',
         )}
       >
         {current}

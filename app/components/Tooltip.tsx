@@ -13,7 +13,7 @@ export default function Tooltip({ children }: ChildrenProps) {
 }
 
 Tooltip.Trigger = function TooltipTrigger(
-  props: ChildrenProps & { className?: string }
+  props: ChildrenProps & { className?: string },
 ) {
   return <RadixTooltip.Trigger asChild {...props} />
 }

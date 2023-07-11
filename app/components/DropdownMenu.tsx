@@ -9,7 +9,7 @@ type ChildrenProps = {
 }
 
 export default function DropdownMenu(
-  props: ChildrenProps & { defaultOpen?: true }
+  props: ChildrenProps & { defaultOpen?: true },
 ) {
   return <RadixDropdownMenu.Root {...props} />
 }

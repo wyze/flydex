@@ -16,8 +16,8 @@ export async function loader({ params }: LoaderArgs) {
     '/?'.concat(
       queryString.stringify({
         where: JSON.stringify(wallet),
-      })
-    )
+      }),
+    ),
   )
 }
 

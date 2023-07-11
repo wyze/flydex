@@ -12,7 +12,7 @@ export default function Popover({ children }: ChildrenProps) {
 }
 
 Popover.Trigger = function PopoverTrigger(
-  props: ChildrenProps & { className?: string }
+  props: ChildrenProps & { className?: string },
 ) {
   return <RadixPopover.Trigger asChild {...props} />
 }

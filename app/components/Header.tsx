@@ -153,12 +153,12 @@ function FilterAndSort() {
   const navigate = useNavigate()
   const parsed = queryString.parse(location.search)
   const where = JSON.parse(
-    typeof parsed?.where === 'string' ? parsed.where : '{}'
+    typeof parsed?.where === 'string' ? parsed.where : '{}',
   ) as { location?: { _in: string[] }; rarity: { _in: string[] } }
   const locations = where?.location?._in ?? []
   const sort =
     Object.entries(
-      JSON.parse(typeof parsed?.order_by === 'string' ? parsed.order_by : '{}')
+      JSON.parse(typeof parsed?.order_by === 'string' ? parsed.order_by : '{}'),
     )
       .map(([key, value]) => `${key}:${value}`)
       .at(0) ?? ''
@@ -193,7 +193,7 @@ function FilterAndSort() {
                     label={value
                       .split('_')
                       .map(([first, ...rest]) =>
-                        first.toUpperCase().concat(...rest)
+                        first.toUpperCase().concat(...rest),
                       )
                       .join(' ')}
                     onCheckedChange={() => {
@@ -210,14 +210,14 @@ function FilterAndSort() {
                               : { location: undefined }),
                           }).replace('{}', ''),
                         },
-                        { skipEmptyString: true }
+                        { skipEmptyString: true },
                       )
 
                       navigate({ pathname: '/', search })
                     }}
                   />
                 )
-              }
+              },
             )}
           </FilterSection>
           <FilterSection label="Rarity">
@@ -231,7 +231,7 @@ function FilterAndSort() {
             ].map((value) => {
               const parsed = queryString.parse(location.search)
               const where = JSON.parse(
-                typeof parsed?.where === 'string' ? parsed.where : '{}'
+                typeof parsed?.where === 'string' ? parsed.where : '{}',
               ) as { rarity?: { _in: string[] } }
               const _in = where?.rarity?._in ?? []
               const checked = _in.includes(value)
@@ -254,7 +254,7 @@ function FilterAndSort() {
                             : { rarity: undefined }),
                         }).replace('{}', ''),
                       },
-                      { skipEmptyString: true }
+                      { skipEmptyString: true },
                     )
 
                     navigate({ pathname: '/', search })
@@ -268,7 +268,7 @@ function FilterAndSort() {
               (leagueName) => {
                 const parsed = queryString.parse(location.search)
                 const where = JSON.parse(
-                  typeof parsed?.where === 'string' ? parsed.where : '{}'
+                  typeof parsed?.where === 'string' ? parsed.where : '{}',
                 ) as Partial<{
                   league_full: { _in: string[] }
                 }>
@@ -282,7 +282,7 @@ function FilterAndSort() {
 
                     return acc
                   },
-                  [[], []] as [string[], string[]]
+                  [[], []] as [string[], string[]],
                 )
                 const checked = leagueFull.length > 0
 
@@ -297,10 +297,10 @@ function FilterAndSort() {
                       onCheckedChange={() => {
                         const updates = checked
                           ? leagueFull.filter(
-                              (item) => !item.startsWith(leagueName)
+                              (item) => !item.startsWith(leagueName),
                             )
                           : rest.concat(
-                              [1, 2, 3].map((item) => `${leagueName} ${item}`)
+                              [1, 2, 3].map((item) => `${leagueName} ${item}`),
                             )
                         const search = queryString.stringify(
                           {
@@ -311,7 +311,7 @@ function FilterAndSort() {
                                 : { league_full: undefined }),
                             }).replace('{}', ''),
                           },
-                          { skipEmptyString: true }
+                          { skipEmptyString: true },
                         )
 
                         navigate({ pathname: '/', search })
@@ -336,7 +336,7 @@ function FilterAndSort() {
                                     : { league_full: undefined }),
                                 }).replace('{}', ''),
                               },
-                              { skipEmptyString: true }
+                              { skipEmptyString: true },
                             )
 
                             navigate({ pathname: '/', search })
@@ -357,7 +357,7 @@ function FilterAndSort() {
                     </AnimatePresence>
                   </div>
                 )
-              }
+              },
             )}
           </FilterSection>
         </Popover.Content>
@@ -379,8 +379,8 @@ function FilterAndSort() {
               const parsed = queryString.parse(location.search)
               const orderBy = Object.entries(
                 JSON.parse(
-                  typeof parsed?.order_by === 'string' ? parsed.order_by : '{}'
-                ) as Partial<Record<string, 'asc' | 'desc'>>
+                  typeof parsed?.order_by === 'string' ? parsed.order_by : '{}',
+                ) as Partial<Record<string, 'asc' | 'desc'>>,
               )
                 .at(0)
                 ?.join(':')
@@ -392,7 +392,7 @@ function FilterAndSort() {
                       : JSON.stringify(Object.fromEntries([value.split(':')])),
                   where: JSON.stringify(where).replace('{}', ''),
                 },
-                { skipEmptyString: true }
+                { skipEmptyString: true },
               )
 
               navigate({ pathname: '/', search })
@@ -420,7 +420,7 @@ function FilterAndSort() {
                         first
                           .toUpperCase()
                           .concat(...rest)
-                          .replace('Wl', 'W/L')
+                          .replace('Wl', 'W/L'),
                       )
                       .join(' ')}{' '}
                   </>
@@ -437,7 +437,7 @@ function FilterAndSort() {
 function UpdatedAt() {
   const { pathname } = useLocation()
   const { updatedAt } = (useRouteLoaderData(
-    pathname === '/' ? 'routes/_index' : 'routes/battlefly.$id'
+    pathname === '/' ? 'routes/_index' : 'routes/battlefly.$id',
   ) ?? {}) as { updatedAt: string }
 
   if (pathname.includes('leaderboard')) {

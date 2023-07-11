@@ -151,7 +151,7 @@ export default function Leaderboard() {
                                 </td>
                               </tr>
                             )
-                          }
+                          },
                         )}
                       </Fragment>
                     )

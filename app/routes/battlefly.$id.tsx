@@ -43,20 +43,23 @@ export default function BattleflyDetail() {
 
   const stats = Object.entries(fly)
     .filter((item): item is [string, number | null] =>
-      item[0].startsWith('stat_')
+      item[0].startsWith('stat_'),
     )
-    .reduce((acc, [key, value]) => {
-      const [stat, ...rest] = key.replace('stat_', '').split('_').reverse()
-      const name = rest
-        .reverse()
-        .map(([letter, ...rest]) => letter.toUpperCase().concat(...rest))
-        .join(' ')
+    .reduce(
+      (acc, [key, value]) => {
+        const [stat, ...rest] = key.replace('stat_', '').split('_').reverse()
+        const name = rest
+          .reverse()
+          .map(([letter, ...rest]) => letter.toUpperCase().concat(...rest))
+          .join(' ')
 
-      acc[name] ??= {}
-      acc[name][stat] = value
+        acc[name] ??= {}
+        acc[name][stat] = value
 
-      return acc
-    }, {} as Record<string, Record<string, number | null>>)
+        return acc
+      },
+      {} as Record<string, Record<string, number | null>>,
+    )
 
   const pagination = usePagination(fly.win_loss.loadouts.length, {
     page,
@@ -160,7 +163,7 @@ export default function BattleflyDetail() {
                     loadoutPage
                       ? { loadout_page: loadoutPage, performance }
                       : { performance },
-                    { preventScrollReset: true }
+                    { preventScrollReset: true },
                   )
                 }}
                 type="single"
@@ -349,14 +352,14 @@ export default function BattleflyDetail() {
                                   wl_ratio,
                                   ...slots
                                 },
-                                index
+                                index,
                               ) => {
                                 const { equipped } = normalize.mods({
                                   mods: Object.entries(slots).map(
                                     ([slot, mod]) => ({
                                       slot: Number(slot.replace('slot_', '')),
                                       mod,
-                                    })
+                                    }),
                                   ),
                                 })
 
@@ -409,7 +412,7 @@ export default function BattleflyDetail() {
                                                   </Popover.Content>
                                                 </Popover>
                                               </Fragment>
-                                            )
+                                            ),
                                           )}
                                         </div>
                                       </ScrollArea>
@@ -437,7 +440,7 @@ export default function BattleflyDetail() {
                                     </td>
                                   </tr>
                                 )
-                              }
+                              },
                             )}
                         </tbody>
                       </table>
@@ -545,7 +548,7 @@ function ParamsLink({
   const performance = params.get('performance') ?? ''
   const search = queryString.stringify(
     { loadout_page: `${offset / PAGE_SIZE + 1}`, performance },
-    { skipEmptyString: true }
+    { skipEmptyString: true },
   )
 
   return (

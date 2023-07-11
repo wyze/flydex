@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 
 export default function usePagination(
   length: number,
-  { page, size }: { page: number; size: number }
+  { page, size }: { page: number; size: number },
 ) {
   const count = Math.ceil(length / size)
   const between = useMemo(
@@ -12,7 +12,7 @@ export default function usePagination(
             .fill(0)
             .map((_, index) => index + 2)
         : [],
-    [count]
+    [count],
   )
 
   const state = useMemo(() => {

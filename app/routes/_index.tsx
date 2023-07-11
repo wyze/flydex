@@ -1,5 +1,4 @@
-import type { ActionArgs, LoaderArgs } from '@remix-run/node'
-import { redirect } from '@remix-run/node'
+import { type ActionArgs, type LoaderArgs, redirect } from '@remix-run/node'
 import {
   Form,
   Link,
@@ -62,8 +61,8 @@ export async function action({ request }: ActionArgs) {
       '/?'.concat(
         queryString.stringify({
           where: JSON.stringify({ token: { owner: { _eq: owner } } }),
-        })
-      )
+        }),
+      ),
     )
   }
 
@@ -75,8 +74,8 @@ export async function action({ request }: ActionArgs) {
     '/?'.concat(
       queryString.stringify({
         where: JSON.stringify(parsed.data.query.value),
-      })
-    )
+      }),
+    ),
   )
 }
 
@@ -116,7 +115,7 @@ export async function loader({ request }: LoaderArgs) {
       }
 
       return data
-    })
+    }),
   )
 }
 

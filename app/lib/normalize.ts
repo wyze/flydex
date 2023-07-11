@@ -17,6 +17,6 @@ export function mods<T extends { mods: Fly['mods'] }>(fly: T) {
     { equipped: [], inventory: [] } as unknown as Record<
       'equipped' | 'inventory',
       Mod[]
-    >
+    >,
   )
 }

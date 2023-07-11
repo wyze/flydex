@@ -7,17 +7,17 @@ import * as cache from './cache.server'
 export async function json<Data, Uncached extends Record<string, unknown>>(
   cacheKey: string,
   getData: () => Promise<Data>,
-  uncached: Uncached
+  uncached: Uncached,
 ): Promise<TypedResponse<Data & Uncached>>
 export async function json<Data>(
   cacheKey: string,
   getData: () => Promise<Data>,
-  uncached?: never
+  uncached?: never,
 ): Promise<TypedResponse<Data>>
 export async function json<Data, Uncached extends Record<string, unknown>>(
   cacheKey: string,
   getData: () => Promise<Data>,
-  uncached?: Uncached
+  uncached?: Uncached,
 ) {
   const data = await cache.cacheable(getData, cacheKey)
 
