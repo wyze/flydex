@@ -1,0 +1,14 @@
+overwrite: true
+schema:
+  ${HASURA_ENDPOINT}:
+    headers:
+      x-hasura-admin-secret: ${HASURA_API_KEY}
+documents: '**/*.graphql'
+generates:
+  app/graphql/generated.ts:
+    config:
+      useTypeImports: true
+    plugins:
+      - 'typescript'
+      - 'typescript-graphql-request'
+      - 'typescript-operations'

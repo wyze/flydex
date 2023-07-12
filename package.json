@@ -6,10 +6,10 @@
     "build:codegen": "pnpm codegen",
     "build:remix": "remix build",
     "check": "prettier --check .",
-    "codegen": "mesh build",
+    "codegen": "gql-gen --config codegen.yml -r dotenv/config",
     "deploy": "fly deploy --remote-only",
     "dev": "run-p -l dev:*",
-    "dev:codegen": "watchlist app/graphql -- pnpm codegen",
+    "dev:codegen": "watchlist app/graphql/*.graphql -- pnpm codegen",
     "dev:remix": "remix dev",
     "format": "prettier --write .",
     "lint": "eslint --cache --cache-location ./node_modules/.cache/eslint .",
@@ -38,6 +38,7 @@
     "fathom-client": "3.5.0",
     "framer-motion": "10.12.18",
     "graphql": "16.7.1",
+    "graphql-request": "6.1.0",
     "isbot": "3.6.12",
     "nprogress": "0.2.0",
     "pretty-cache-header": "1.0.0",
@@ -48,7 +49,10 @@
     "zodix": "0.4.1"
   },
   "devDependencies": {
-    "@graphql-mesh/cli": "0.85.1",
+    "@graphql-codegen/cli": "4.0.1",
+    "@graphql-codegen/typescript": "4.0.1",
+    "@graphql-codegen/typescript-graphql-request": "5.0.0",
+    "@graphql-codegen/typescript-operations": "4.0.1",
     "@remix-run/dev": "1.18.1",
     "@remix-run/eslint-config": "1.18.1",
     "@thoughtbot/tailwindcss-aria-attributes": "0.2.0",
@@ -64,20 +68,6 @@
     "tailwindcss-radix": "2.8.0",
     "typescript": "5.1.6",
     "watchlist": "0.3.1"
-  },
-  "peerDependencies": {
-    "@graphql-mesh/cache-localforage": "0.94.3",
-    "@graphql-mesh/cross-helpers": "0.4.0",
-    "@graphql-mesh/graphql": "0.94.4",
-    "@graphql-mesh/http": "0.95.1",
-    "@graphql-mesh/merger-bare": "0.94.3",
-    "@graphql-mesh/runtime": "0.95.1",
-    "@graphql-mesh/store": "0.94.3",
-    "@graphql-mesh/types": "0.94.3",
-    "@graphql-mesh/utils": "0.94.3",
-    "@graphql-typed-document-node/core": "3.2.0",
-    "@whatwg-node/fetch": "0.9.8",
-    "esbuild": "0.18.11"
   },
   "engines": {
     "node": ">=16"

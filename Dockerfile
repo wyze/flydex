@@ -29,7 +29,6 @@ ARG PORT=3000
 ENV PORT $PORT
 EXPOSE $PORT 9229 9230
 
-COPY --from=build /app/.mesh .mesh
 COPY --from=build /app/public public
 COPY --from=build /app/build build
 COPY --from=build /app/node_modules node_modules

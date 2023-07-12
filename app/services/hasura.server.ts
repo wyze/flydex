@@ -4,13 +4,20 @@ import {
   startOfToday,
   startOfYesterday,
 } from 'date-fns'
+import { GraphQLClient } from 'graphql-request'
 import { z } from 'zod'
 
 import {
-  type getFlydexQueryVariables,
-  type getLeaderboardQueryVariables,
-  getMeshSDK,
-} from '~/.mesh'
+  type GetFlydexQueryVariables,
+  type GetLeaderboardQueryVariables,
+  getSdk,
+} from '~/graphql/generated'
+import { HASURA_API_KEY, HASURA_ENDPOINT } from '~/lib/env.server'
+
+const client = new GraphQLClient(HASURA_ENDPOINT, {
+  headers: { 'x-hasura-admin-secret': HASURA_API_KEY },
+})
+const sdk = getSdk(client)
 
 function formatPercent(value: number) {
   return Number.isNaN(value)
@@ -241,7 +248,6 @@ const leaderboard = z
   .array()
 
 export async function getBattlefly(id: number) {
-  const sdk = getMeshSDK()
   const data = await sdk.getBattlefly({ id })
   const fly = detail.parse(data.battlefly_flydex.at(0))
 
@@ -254,9 +260,8 @@ export async function getBattlefly(id: number) {
   }
 }
 
-export async function getFlydex(params: getFlydexQueryVariables) {
-  const sdk = getMeshSDK()
-  const data = await sdk.getFlydex(params)
+export async function getFlydex(variables: GetFlydexQueryVariables) {
+  const data = await sdk.getFlydex(variables)
 
   return {
     flies: flydex.parse(data.battlefly_flydex),
@@ -267,8 +272,7 @@ export async function getFlydex(params: getFlydexQueryVariables) {
   }
 }
 
-export async function getLeaderboard(params: getLeaderboardQueryVariables) {
-  const sdk = getMeshSDK()
+export async function getLeaderboard(params: GetLeaderboardQueryVariables) {
   const data = await sdk.getLeaderboard(params)
 
   return {
@@ -282,7 +286,6 @@ export async function getLeaderboard(params: getLeaderboardQueryVariables) {
 }
 
 export async function getLeaderboardOverview(day: string) {
-  const sdk = getMeshSDK()
   const leagues = (
     [
       ['Apex', 5],
@@ -324,7 +327,6 @@ export async function getLeaderboardOverview(day: string) {
 }
 
 export async function getTreasureTag(name: string) {
-  const sdk = getMeshSDK()
   const data = await sdk.getTreasureTag({ name })
 
   return data.treasure_tag.at(0)?.owner ?? null
