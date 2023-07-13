@@ -372,7 +372,7 @@ export default function BattleflyDetail() {
                                         : 'bg-gray-50 dark:bg-gray-800'
                                     }
                                   >
-                                    <td>
+                                    <td className="pl-2 sm:pl-4">
                                       <ScrollArea
                                         className="w-24 pb-1 md:w-40 md:pb-0"
                                         orientation="horizontal"

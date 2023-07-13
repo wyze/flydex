@@ -1,5 +1,6 @@
 import * as RadixPopover from '@radix-ui/react-popover'
 import { IconX } from '@tabler/icons-react'
+import { forwardRef } from 'react'
 
 import Icon from './Icon'
 
@@ -17,17 +18,23 @@ Popover.Trigger = function PopoverTrigger(
   return <RadixPopover.Trigger asChild {...props} />
 }
 
-Popover.Content = function PopoverContent({
-  children,
-  className,
-}: ChildrenProps & { className?: string }) {
+Popover.Content = forwardRef<
+  React.ElementRef<typeof RadixPopover.Content>,
+  React.ComponentPropsWithoutRef<typeof RadixPopover.Content>
+>(function PopoverContent(
+  { children, className, align = 'center', sideOffset = 4, ...props },
+  ref,
+) {
   return (
     <RadixPopover.Portal>
       <RadixPopover.Content
+        ref={ref}
+        align={align}
+        sideOffset={sideOffset}
         className={`${
           className ?? 'w-[260px]'
         } rounded bg-white p-5 shadow-[0_10px_38px_-10px_hsla(206,22%,7%,.35),0_10px_20px_-15px_hsla(206,22%,7%,.2)] will-change-[transform,opacity] data-[state=open]:data-[side=bottom]:animate-slideUpAndFade data-[state=open]:data-[side=left]:animate-slideRightAndFade data-[state=open]:data-[side=right]:animate-slideLeftAndFade data-[state=open]:data-[side=top]:animate-slideDownAndFade dark:bg-gray-700 dark:text-gray-200`}
-        sideOffset={5}
+        {...props}
       >
         {children}
         <RadixPopover.Close
@@ -40,4 +47,4 @@ Popover.Content = function PopoverContent({
       </RadixPopover.Content>
     </RadixPopover.Portal>
   )
-}
+})

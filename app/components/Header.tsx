@@ -18,6 +18,8 @@ import { trackGoal } from 'fathom-client'
 import { AnimatePresence, motion } from 'framer-motion'
 import queryString from 'query-string'
 
+import type { getModFilters } from '~/services/hasura.server'
+
 import Checkbox from './Checkbox'
 import DropdownMenu from './DropdownMenu'
 import Icon from './Icon'
@@ -63,6 +65,20 @@ export default function Header() {
               </motion.div>
             )}
           </NavLink>
+
+          <NavLink to="/mods">
+            {({ isActive }) => (
+              <motion.div
+                className={`text-sm text-pink-500 ${
+                  isActive ? 'underline' : ''
+                }`}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                Mods
+              </motion.div>
+            )}
+          </NavLink>
         </div>
 
         <Form action="/?index" method="post" className="flex basis-1/2 gap-2">
@@ -81,7 +97,7 @@ export default function Header() {
 
         <div className="flex items-center gap-2">
           <AnimatePresence mode="wait" initial={false}>
-            {pathname === '/' ? (
+            {['/', '/mods'].includes(pathname) ? (
               <FilterAndSort />
             ) : (
               <motion.div key="placeholder" className="w-[5.5rem]" />
@@ -149,9 +165,9 @@ function FilterSection({
 }
 
 function FilterAndSort() {
-  const location = useLocation()
+  const { pathname, search } = useLocation()
   const navigate = useNavigate()
-  const parsed = queryString.parse(location.search)
+  const parsed = queryString.parse(search)
   const where = JSON.parse(
     typeof parsed?.where === 'string' ? parsed.where : '{}',
   ) as { location?: { _in: string[] }; rarity: { _in: string[] } }
@@ -162,6 +178,15 @@ function FilterAndSort() {
     )
       .map(([key, value]) => `${key}:${value}`)
       .at(0) ?? ''
+
+  const {
+    filters: { mods },
+  } = useRouteLoaderData('root') as {
+    filters: { mods: Awaited<ReturnType<typeof getModFilters>> }
+  }
+
+  const isHome = pathname === '/'
+  const isMods = pathname === '/mods'
 
   return (
     <motion.div
@@ -175,140 +200,40 @@ function FilterAndSort() {
         <Popover.Trigger>
           <button
             className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-white text-pink-500 shadow-[0_2px_10px] shadow-gray-400 outline-none transition duration-200 hover:bg-pink-200 focus:shadow-[0_0_0_2px] focus:shadow-slate-600 dark:bg-gray-700 dark:shadow-gray-600"
-            aria-label="Filter battleflies"
+            aria-label={`Filter ${isHome ? 'battleflies' : 'mods'}`}
           >
             <Icon className="h-4 w-4" icon={IconFilter} />
           </button>
         </Popover.Trigger>
         <Popover.Content className="grid grid-cols-3 gap-6">
-          <FilterSection label="Location">
-            {['hyperdome', 'mission_control', 'proving_grounds'].map(
-              (value) => {
-                const checked = locations.includes(value)
+          {isHome ? (
+            <FilterSection label="Location">
+              {['hyperdome', 'mission_control', 'proving_grounds'].map(
+                (value) => {
+                  const checked = locations.includes(value)
 
-                return (
-                  <Checkbox
-                    key={value}
-                    checked={checked}
-                    label={value
-                      .split('_')
-                      .map(([first, ...rest]) =>
-                        first.toUpperCase().concat(...rest),
-                      )
-                      .join(' ')}
-                    onCheckedChange={() => {
-                      const updates = checked
-                        ? locations.filter((item) => item !== value)
-                        : locations.concat(value)
-
-                      const search = queryString.stringify(
-                        {
-                          where: JSON.stringify({
-                            ...where,
-                            ...(updates.length > 0
-                              ? { location: { _in: updates } }
-                              : { location: undefined }),
-                          }).replace('{}', ''),
-                        },
-                        { skipEmptyString: true },
-                      )
-
-                      navigate({ pathname: '/', search })
-                    }}
-                  />
-                )
-              },
-            )}
-          </FilterSection>
-          <FilterSection label="Rarity">
-            {[
-              'Artefact',
-              'Legendary',
-              'Epic',
-              'Rare',
-              'Uncommon',
-              'Common',
-            ].map((value) => {
-              const parsed = queryString.parse(location.search)
-              const where = JSON.parse(
-                typeof parsed?.where === 'string' ? parsed.where : '{}',
-              ) as { rarity?: { _in: string[] } }
-              const _in = where?.rarity?._in ?? []
-              const checked = _in.includes(value)
-
-              return (
-                <Checkbox
-                  key={value}
-                  checked={checked}
-                  label={value}
-                  onCheckedChange={() => {
-                    const updates = checked
-                      ? _in.filter((item) => item !== value)
-                      : _in.concat(value)
-                    const search = queryString.stringify(
-                      {
-                        where: JSON.stringify({
-                          ...where,
-                          ...(updates.length > 0
-                            ? { rarity: { _in: updates } }
-                            : { rarity: undefined }),
-                        }).replace('{}', ''),
-                      },
-                      { skipEmptyString: true },
-                    )
-
-                    navigate({ pathname: '/', search })
-                  }}
-                />
-              )
-            })}
-          </FilterSection>
-          <FilterSection label="League">
-            {['Larvae', 'Pupa', 'Monarch', 'Predator', 'Apex'].flatMap(
-              (leagueName) => {
-                const parsed = queryString.parse(location.search)
-                const where = JSON.parse(
-                  typeof parsed?.where === 'string' ? parsed.where : '{}',
-                ) as Partial<{
-                  league_full: { _in: string[] }
-                }>
-                const [rest, leagueFull] = (
-                  where?.league_full?._in ?? []
-                ).reduce(
-                  (acc, item) => {
-                    const count = item.startsWith(leagueName)
-
-                    acc[Number(count)].push(item)
-
-                    return acc
-                  },
-                  [[], []] as [string[], string[]],
-                )
-                const checked = leagueFull.length > 0
-
-                return (
-                  <div
-                    key={leagueName}
-                    className="flex w-48 items-center justify-between"
-                  >
+                  return (
                     <Checkbox
+                      key={value}
                       checked={checked}
-                      label={leagueName}
+                      label={value
+                        .split('_')
+                        .map(([first, ...rest]) =>
+                          first.toUpperCase().concat(...rest),
+                        )
+                        .join(' ')}
                       onCheckedChange={() => {
                         const updates = checked
-                          ? leagueFull.filter(
-                              (item) => !item.startsWith(leagueName),
-                            )
-                          : rest.concat(
-                              [1, 2, 3].map((item) => `${leagueName} ${item}`),
-                            )
+                          ? locations.filter((item) => item !== value)
+                          : locations.concat(value)
+
                         const search = queryString.stringify(
                           {
                             where: JSON.stringify({
                               ...where,
                               ...(updates.length > 0
-                                ? { league_full: { _in: updates } }
-                                : { league_full: undefined }),
+                                ? { location: { _in: updates } }
+                                : { location: undefined }),
                             }).replace('{}', ''),
                           },
                           { skipEmptyString: true },
@@ -317,119 +242,314 @@ function FilterAndSort() {
                         navigate({ pathname: '/', search })
                       }}
                     />
-                    <AnimatePresence>
-                      {checked ? (
-                        <ToggleGroup
-                          className="ml-8"
-                          label={leagueName}
-                          type="multiple"
-                          onValueChange={(value) => {
-                            const updates = value
-                              .map((tier) => `${leagueName} ${tier}`)
-                              .concat(rest)
-                            const search = queryString.stringify(
-                              {
-                                where: JSON.stringify({
-                                  ...where,
-                                  ...(updates.length > 0
-                                    ? { league_full: { _in: updates } }
-                                    : { league_full: undefined }),
-                                }).replace('{}', ''),
-                              },
-                              { skipEmptyString: true },
-                            )
+                  )
+                },
+              )}
+            </FilterSection>
+          ) : null}
+          {isMods ? (
+            <FilterSection label="Category">
+              {mods.categories
+                .map((mod) => mod.category)
+                .map((value) => {
+                  const parsed = queryString.parse(search)
+                  const where = JSON.parse(
+                    typeof parsed?.where === 'string' ? parsed.where : '{}',
+                  ) as { category?: { _in: string[] } }
+                  const _in = where?.category?._in ?? []
+                  const checked = _in.includes(value)
 
-                            navigate({ pathname: '/', search })
-                          }}
-                          value={leagueFull.map((item) => item.slice(-1))}
-                        >
-                          {[1, 2, 3].map((tier) => (
-                            <ToggleGroup.Item
-                              key={tier}
-                              label={`${leagueName} ${tier}`}
-                              value={`${tier}`}
-                            >
-                              {Array(tier).fill('I').join('')}
-                            </ToggleGroup.Item>
-                          ))}
-                        </ToggleGroup>
-                      ) : null}
-                    </AnimatePresence>
-                  </div>
+                  return (
+                    <Checkbox
+                      key={value}
+                      checked={checked}
+                      label={value}
+                      onCheckedChange={() => {
+                        const updates = checked
+                          ? _in.filter((item) => item !== value)
+                          : _in.concat(value)
+                        const search = queryString.stringify(
+                          {
+                            where: JSON.stringify({
+                              ...where,
+                              ...(updates.length > 0
+                                ? { category: { _in: updates } }
+                                : { category: undefined }),
+                            }).replace('{}', ''),
+                          },
+                          { skipEmptyString: true },
+                        )
+
+                        navigate({ pathname, search })
+                      }}
+                    />
+                  )
+                })}
+            </FilterSection>
+          ) : null}
+          <FilterSection label="Rarity">
+            {[
+              isHome ? 'Artefact' : '',
+              'Legendary',
+              'Epic',
+              'Rare',
+              'Uncommon',
+              'Common',
+              isMods ? 'Core' : '',
+            ]
+              .filter(Boolean)
+              .map((value) => {
+                const parsed = queryString.parse(search)
+                const where = JSON.parse(
+                  typeof parsed?.where === 'string' ? parsed.where : '{}',
+                ) as { rarity?: { _in: string[] } }
+                const _in = where?.rarity?._in ?? []
+                const checked = _in.includes(value)
+
+                return (
+                  <Checkbox
+                    key={value}
+                    checked={checked}
+                    label={value}
+                    onCheckedChange={() => {
+                      const updates = checked
+                        ? _in.filter((item) => item !== value)
+                        : _in.concat(value)
+                      const search = queryString.stringify(
+                        {
+                          where: JSON.stringify({
+                            ...where,
+                            ...(updates.length > 0
+                              ? { rarity: { _in: updates } }
+                              : { rarity: undefined }),
+                          }).replace('{}', ''),
+                        },
+                        { skipEmptyString: true },
+                      )
+
+                      navigate({ pathname, search })
+                    }}
+                  />
                 )
-              },
-            )}
+              })}
           </FilterSection>
+          {isMods ? (
+            <FilterSection label="Type">
+              {mods.types
+                .map((mod) => mod.type)
+                .map((value) => {
+                  const parsed = queryString.parse(search)
+                  const where = JSON.parse(
+                    typeof parsed?.where === 'string' ? parsed.where : '{}',
+                  ) as { type?: { _in: string[] } }
+                  const _in = where?.type?._in ?? []
+                  const checked = _in.includes(value)
+
+                  return (
+                    <Checkbox
+                      key={value}
+                      checked={checked}
+                      label={value}
+                      onCheckedChange={() => {
+                        const updates = checked
+                          ? _in.filter((item) => item !== value)
+                          : _in.concat(value)
+                        const search = queryString.stringify(
+                          {
+                            where: JSON.stringify({
+                              ...where,
+                              ...(updates.length > 0
+                                ? { type: { _in: updates } }
+                                : { type: undefined }),
+                            }).replace('{}', ''),
+                          },
+                          { skipEmptyString: true },
+                        )
+
+                        navigate({ pathname, search })
+                      }}
+                    />
+                  )
+                })}
+            </FilterSection>
+          ) : null}
+          {isHome ? (
+            <FilterSection label="League">
+              {['Larvae', 'Pupa', 'Monarch', 'Predator', 'Apex'].flatMap(
+                (leagueName) => {
+                  const parsed = queryString.parse(search)
+                  const where = JSON.parse(
+                    typeof parsed?.where === 'string' ? parsed.where : '{}',
+                  ) as Partial<{
+                    league_full: { _in: string[] }
+                  }>
+                  const [rest, leagueFull] = (
+                    where?.league_full?._in ?? []
+                  ).reduce(
+                    (acc, item) => {
+                      const count = item.startsWith(leagueName)
+
+                      acc[Number(count)].push(item)
+
+                      return acc
+                    },
+                    [[], []] as [string[], string[]],
+                  )
+                  const checked = leagueFull.length > 0
+
+                  return (
+                    <div
+                      key={leagueName}
+                      className="flex w-48 items-center justify-between"
+                    >
+                      <Checkbox
+                        checked={checked}
+                        label={leagueName}
+                        onCheckedChange={() => {
+                          const updates = checked
+                            ? leagueFull.filter(
+                                (item) => !item.startsWith(leagueName),
+                              )
+                            : rest.concat(
+                                [1, 2, 3].map(
+                                  (item) => `${leagueName} ${item}`,
+                                ),
+                              )
+                          const search = queryString.stringify(
+                            {
+                              where: JSON.stringify({
+                                ...where,
+                                ...(updates.length > 0
+                                  ? { league_full: { _in: updates } }
+                                  : { league_full: undefined }),
+                              }).replace('{}', ''),
+                            },
+                            { skipEmptyString: true },
+                          )
+
+                          navigate({ pathname: '/', search })
+                        }}
+                      />
+                      <AnimatePresence>
+                        {checked ? (
+                          <ToggleGroup
+                            className="ml-8"
+                            label={leagueName}
+                            type="multiple"
+                            onValueChange={(value) => {
+                              const updates = value
+                                .map((tier) => `${leagueName} ${tier}`)
+                                .concat(rest)
+                              const search = queryString.stringify(
+                                {
+                                  where: JSON.stringify({
+                                    ...where,
+                                    ...(updates.length > 0
+                                      ? { league_full: { _in: updates } }
+                                      : { league_full: undefined }),
+                                  }).replace('{}', ''),
+                                },
+                                { skipEmptyString: true },
+                              )
+
+                              navigate({ pathname: '/', search })
+                            }}
+                            value={leagueFull.map((item) => item.slice(-1))}
+                          >
+                            {[1, 2, 3].map((tier) => (
+                              <ToggleGroup.Item
+                                key={tier}
+                                label={`${leagueName} ${tier}`}
+                                value={`${tier}`}
+                              >
+                                {Array(tier).fill('I').join('')}
+                              </ToggleGroup.Item>
+                            ))}
+                          </ToggleGroup>
+                        ) : null}
+                      </AnimatePresence>
+                    </div>
+                  )
+                },
+              )}
+            </FilterSection>
+          ) : null}
         </Popover.Content>
       </Popover>
 
-      <DropdownMenu>
-        <DropdownMenu.Trigger>
-          <button
-            className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-white text-pink-500 shadow-[0_2px_10px] shadow-slate-400 outline-none transition duration-200 hover:bg-pink-200 focus:shadow-[0_0_0_2px] focus:shadow-slate-600 dark:bg-gray-700 dark:shadow-gray-600"
-            aria-label="Sort battleflies"
-          >
-            <Icon className="h-4 w-4" icon={IconArrowsSort} />
-          </button>
-        </DropdownMenu.Trigger>
-        <DropdownMenu.Content className="min-w-[120px]">
-          <DropdownMenu.RadioGroup
-            value={sort}
-            onValueChange={(value) => {
-              const parsed = queryString.parse(location.search)
-              const orderBy = Object.entries(
-                JSON.parse(
-                  typeof parsed?.order_by === 'string' ? parsed.order_by : '{}',
-                ) as Partial<Record<string, 'asc' | 'desc'>>,
-              )
-                .at(0)
-                ?.join(':')
-              const search = queryString.stringify(
-                {
-                  order_by:
-                    orderBy === value
-                      ? ''
-                      : JSON.stringify(Object.fromEntries([value.split(':')])),
-                  where: JSON.stringify(where).replace('{}', ''),
-                },
-                { skipEmptyString: true },
-              )
+      {isHome ? (
+        <DropdownMenu>
+          <DropdownMenu.Trigger>
+            <button
+              className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-white text-pink-500 shadow-[0_2px_10px] shadow-slate-400 outline-none transition duration-200 hover:bg-pink-200 focus:shadow-[0_0_0_2px] focus:shadow-slate-600 dark:bg-gray-700 dark:shadow-gray-600"
+              aria-label="Sort battleflies"
+            >
+              <Icon className="h-4 w-4" icon={IconArrowsSort} />
+            </button>
+          </DropdownMenu.Trigger>
+          <DropdownMenu.Content className="min-w-[120px]">
+            <DropdownMenu.RadioGroup
+              value={sort}
+              onValueChange={(value) => {
+                const parsed = queryString.parse(location.search)
+                const orderBy = Object.entries(
+                  JSON.parse(
+                    typeof parsed?.order_by === 'string'
+                      ? parsed.order_by
+                      : '{}',
+                  ) as Partial<Record<string, 'asc' | 'desc'>>,
+                )
+                  .at(0)
+                  ?.join(':')
+                const search = queryString.stringify(
+                  {
+                    order_by:
+                      orderBy === value
+                        ? ''
+                        : JSON.stringify(
+                            Object.fromEntries([value.split(':')]),
+                          ),
+                    where: JSON.stringify(where).replace('{}', ''),
+                  },
+                  { skipEmptyString: true },
+                )
 
-              navigate({ pathname: '/', search })
-            }}
-          >
-            {[
-              'contest_points:asc',
-              'contest_points:desc',
-              'rank:asc_nulls_last',
-              'rank:desc_nulls_last',
-              'wl_ratio_24h:asc_nulls_last',
-              'wl_ratio_24h:desc_nulls_last',
-            ].map((value) => {
-              const [label, direction] = value.split(':')
+                navigate({ pathname: '/', search })
+              }}
+            >
+              {[
+                'contest_points:asc',
+                'contest_points:desc',
+                'rank:asc_nulls_last',
+                'rank:desc_nulls_last',
+                'wl_ratio_24h:asc_nulls_last',
+                'wl_ratio_24h:desc_nulls_last',
+              ].map((value) => {
+                const [label, direction] = value.split(':')
 
-              return (
-                <DropdownMenu.RadioItem key={value} value={value}>
-                  <>
-                    {direction.includes('asc')
-                      ? 'Lowest to Highest '
-                      : 'Highest to Lowest '}
-                    {label
-                      .split('_')
-                      .map(([first, ...rest]) =>
-                        first
-                          .toUpperCase()
-                          .concat(...rest)
-                          .replace('Wl', 'W/L'),
-                      )
-                      .join(' ')}{' '}
-                  </>
-                </DropdownMenu.RadioItem>
-              )
-            })}
-          </DropdownMenu.RadioGroup>
-        </DropdownMenu.Content>
-      </DropdownMenu>
+                return (
+                  <DropdownMenu.RadioItem key={value} value={value}>
+                    <>
+                      {direction.includes('asc')
+                        ? 'Lowest to Highest '
+                        : 'Highest to Lowest '}
+                      {label
+                        .split('_')
+                        .map(([first, ...rest]) =>
+                          first
+                            .toUpperCase()
+                            .concat(...rest)
+                            .replace('Wl', 'W/L'),
+                        )
+                        .join(' ')}{' '}
+                    </>
+                  </DropdownMenu.RadioItem>
+                )
+              })}
+            </DropdownMenu.RadioGroup>
+          </DropdownMenu.Content>
+        </DropdownMenu>
+      ) : null}
     </motion.div>
   )
 }

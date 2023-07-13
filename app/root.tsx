@@ -29,6 +29,8 @@ import { getSession } from '~/lib/session.server'
 import nProgressStyles from '~/styles/nprogress.css'
 import styles from '~/styles/tailwind.css'
 
+import { getModFilters } from './services/hasura.server'
+
 export const links: LinksFunction = () =>
   [styles, nProgressStyles, fontStyles]
     .map((href) => ({ rel: 'stylesheet', href }))
@@ -41,9 +43,12 @@ export const meta: V2_MetaFunction = () => [
 ]
 
 export async function loader({ request }: LoaderArgs) {
-  const { theme } = await getSession(request)
+  const [{ theme }, mods] = await Promise.all([
+    getSession(request),
+    getModFilters(),
+  ])
 
-  return remix.json({ theme })
+  return remix.json({ filters: { mods }, theme })
 }
 
 function App() {

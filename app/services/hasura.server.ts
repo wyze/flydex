@@ -10,6 +10,7 @@ import { z } from 'zod'
 import {
   type GetFlydexQueryVariables,
   type GetLeaderboardQueryVariables,
+  type GetModListQueryVariables,
   getSdk,
 } from '~/graphql/generated'
 import { HASURA_API_KEY, HASURA_ENDPOINT } from '~/lib/env.server'
@@ -323,6 +324,68 @@ export async function getLeaderboardOverview(day: string) {
     leaderboards: data.map((item) =>
       leaderboard.parse(item.battlefly_leaderboard),
     ),
+  }
+}
+
+export async function getModFilters() {
+  const data = await sdk.getModFilters()
+  const schema = z.object({
+    categories: z
+      .object({
+        category: z.string(),
+      })
+      .array(),
+    types: z
+      .object({
+        type: z.string(),
+      })
+      .array(),
+  })
+
+  return schema.parse(data)
+}
+
+export async function getModList(params: GetModListQueryVariables) {
+  const data = await sdk.getModList(params)
+  const aggregate = z.object({
+    aggregate: z.object({
+      count: z.number(),
+    }),
+  })
+  const loadout = z
+    .object({
+      slot_0: mod,
+      slot_1: mod,
+      slot_2: mod,
+      slot_3: mod,
+      wl_ratio: z.number().transform(formatPercent),
+    })
+    .array()
+    .max(1)
+  const schema = mod.merge(
+    z.object({
+      description: z.string(),
+      defense_armor: z.number().nullable(),
+      defense_evasion: z.number().nullable(),
+      defense_shield: z.number().nullable(),
+      equipped: aggregate,
+      group: z.string(),
+      id: z.string(),
+      inventory: aggregate,
+      slot_0_loadouts: loadout,
+      slot_1_loadouts: loadout,
+      slot_2_loadouts: loadout,
+      slot_3_loadouts: loadout,
+      weapon_burst: z.number().nullable(),
+      weapon_damage_per_fire: z.number().nullable(),
+      weapon_damage_per_second: z.number().nullable(),
+      weapon_reload: z.number().nullable(),
+    }),
+  )
+
+  return {
+    mods: schema.array().parse(data.battlefly_mod),
+    total: z.number().parse(data.battlefly_mod_aggregate.aggregate?.count),
   }
 }
 

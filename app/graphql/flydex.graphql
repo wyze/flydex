@@ -30,6 +30,22 @@ fragment Battlefly on battlefly_flydex {
   rarity
 }
 
+fragment Loadout on battlefly_win_loss_loadout {
+  wl_ratio
+  slot_0 {
+    ...Mod
+  }
+  slot_1 {
+    ...Mod
+  }
+  slot_2 {
+    ...Mod
+  }
+  slot_3 {
+    ...Mod
+  }
+}
+
 query getBattlefly($id: Int!) {
   battlefly_flydex(where: { token_id: { _eq: $id } }) {
     ...Battlefly
@@ -138,6 +154,82 @@ query getFlydex(
       min {
         updated_at
       }
+    }
+  }
+}
+
+query getModFilters {
+  categories: battlefly_mod(
+    distinct_on: category
+    order_by: { category: asc }
+  ) {
+    category
+  }
+  types: battlefly_mod(distinct_on: type, order_by: { type: asc }) {
+    type
+  }
+}
+
+query getModList($limit: Int!, $offset: Int!, $where: battlefly_mod_bool_exp) {
+  battlefly_mod(
+    limit: $limit
+    offset: $offset
+    order_by: [{ group: asc }, { name: asc }]
+    where: $where
+  ) {
+    ...Mod
+    description
+    defense_armor
+    defense_evasion
+    defense_shield
+    equipped: mods_aggregate(where: { slot: { _is_null: false } }) {
+      aggregate {
+        count
+      }
+    }
+    group
+    id
+    inventory: mods_aggregate(where: { slot: { _is_null: true } }) {
+      aggregate {
+        count
+      }
+    }
+    slot_0_loadouts(
+      limit: 1
+      where: { battles: { _gte: 10 } }
+      order_by: { wl_ratio: desc }
+    ) {
+      ...Loadout
+    }
+    slot_1_loadouts(
+      limit: 1
+      where: { battles: { _gte: 10 } }
+      order_by: { wl_ratio: desc }
+    ) {
+      ...Loadout
+    }
+    slot_2_loadouts(
+      limit: 1
+      where: { battles: { _gte: 10 } }
+      order_by: { wl_ratio: desc }
+    ) {
+      ...Loadout
+    }
+    slot_3_loadouts(
+      limit: 1
+      where: { battles: { _gte: 10 } }
+      order_by: { wl_ratio: desc }
+    ) {
+      ...Loadout
+    }
+    weapon_burst
+    weapon_damage_per_fire
+    weapon_damage_per_second
+    weapon_reload
+  }
+  battlefly_mod_aggregate(where: $where) {
+    aggregate {
+      count
     }
   }
 }
