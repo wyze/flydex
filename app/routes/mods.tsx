@@ -148,7 +148,7 @@ export default function ModsPage() {
                           index % 2 ? undefined : 'bg-gray-50 dark:bg-gray-800'
                         }
                       >
-                        <td className="whitespace-nowrap text-sm">
+                        <td className="whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
                           <div className="py-4 pl-4 pr-3 sm:pl-6">
                             <div className="flex items-center">
                               <div className="mr-4 h-10 w-10 flex-shrink-0 select-none">
@@ -167,13 +167,19 @@ export default function ModsPage() {
                             </div>
                           </div>
                         </td>
-                        <td className="text-sm">{rarity}</td>
-                        <td className="text-sm">{category}</td>
-                        <td className="text-sm">{type}</td>
-                        <td className="text-sm">
+                        <td className="text-sm text-gray-900 dark:text-gray-200">
+                          {rarity}
+                        </td>
+                        <td className="text-sm text-gray-900 dark:text-gray-200">
+                          {category}
+                        </td>
+                        <td className="text-sm text-gray-900 dark:text-gray-200">
+                          {type}
+                        </td>
+                        <td className="text-sm text-gray-500 dark:text-gray-400">
                           {equipped.aggregate.count.toLocaleString()}
                         </td>
-                        <td className="text-sm">
+                        <td className="text-sm text-gray-500 dark:text-gray-400">
                           {inventory.aggregate.count.toLocaleString()}
                         </td>
                         <td className="text-sm">
