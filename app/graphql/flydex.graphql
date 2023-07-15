@@ -46,6 +46,37 @@ fragment Loadout on battlefly_win_loss_loadout {
   }
 }
 
+fragment ModLoadout on battlefly_mod {
+  slot_0_loadouts(
+    limit: 1
+    where: { battles: { _gte: 10 } }
+    order_by: { wl_ratio: desc }
+  ) {
+    ...Loadout
+  }
+  slot_1_loadouts(
+    limit: 1
+    where: { battles: { _gte: 10 } }
+    order_by: { wl_ratio: desc }
+  ) {
+    ...Loadout
+  }
+  slot_2_loadouts(
+    limit: 1
+    where: { battles: { _gte: 10 } }
+    order_by: { wl_ratio: desc }
+  ) {
+    ...Loadout
+  }
+  slot_3_loadouts(
+    limit: 1
+    where: { battles: { _gte: 10 } }
+    order_by: { wl_ratio: desc }
+  ) {
+    ...Loadout
+  }
+}
+
 query getBattlefly($id: Int!) {
   battlefly_flydex(where: { token_id: { _eq: $id } }) {
     ...Battlefly
@@ -170,6 +201,23 @@ query getModFilters {
   }
 }
 
+query getModGroup($group: String!) {
+  battlefly_mod(where: { group: { _ilike: $group } }) {
+    ...Mod
+    ...ModLoadout
+    description
+    defense_armor
+    defense_evasion
+    defense_shield
+    group
+    id
+    weapon_burst
+    weapon_damage_per_fire
+    weapon_damage_per_second
+    weapon_reload
+  }
+}
+
 query getModList($limit: Int!, $offset: Int!, $where: battlefly_mod_bool_exp) {
   battlefly_mod(
     limit: $limit
@@ -178,10 +226,7 @@ query getModList($limit: Int!, $offset: Int!, $where: battlefly_mod_bool_exp) {
     where: $where
   ) {
     ...Mod
-    description
-    defense_armor
-    defense_evasion
-    defense_shield
+    ...ModLoadout
     equipped: mods_aggregate(where: { slot: { _is_null: false } }) {
       aggregate {
         count
@@ -194,38 +239,6 @@ query getModList($limit: Int!, $offset: Int!, $where: battlefly_mod_bool_exp) {
         count
       }
     }
-    slot_0_loadouts(
-      limit: 1
-      where: { battles: { _gte: 10 } }
-      order_by: { wl_ratio: desc }
-    ) {
-      ...Loadout
-    }
-    slot_1_loadouts(
-      limit: 1
-      where: { battles: { _gte: 10 } }
-      order_by: { wl_ratio: desc }
-    ) {
-      ...Loadout
-    }
-    slot_2_loadouts(
-      limit: 1
-      where: { battles: { _gte: 10 } }
-      order_by: { wl_ratio: desc }
-    ) {
-      ...Loadout
-    }
-    slot_3_loadouts(
-      limit: 1
-      where: { battles: { _gte: 10 } }
-      order_by: { wl_ratio: desc }
-    ) {
-      ...Loadout
-    }
-    weapon_burst
-    weapon_damage_per_fire
-    weapon_damage_per_second
-    weapon_reload
   }
   battlefly_mod_aggregate(where: $where) {
     aggregate {
