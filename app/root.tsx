@@ -17,6 +17,7 @@ import {
 
 import Footer from '~/components/Footer'
 import Header from '~/components/Header'
+import TailwindIndicator from '~/components/TailwindIndicator'
 import {
   ThemeBody,
   ThemeHead,
@@ -26,10 +27,9 @@ import {
 import useFathom from '~/hooks/useFathom'
 import useNProgress from '~/hooks/useNProgress'
 import { getSession } from '~/lib/session.server'
+import { getModFilters } from '~/services/hasura.server'
 import nProgressStyles from '~/styles/nprogress.css'
 import styles from '~/styles/tailwind.css'
-
-import { getModFilters } from './services/hasura.server'
 
 export const links: LinksFunction = () =>
   [styles, nProgressStyles, fontStyles]
@@ -72,6 +72,7 @@ function App() {
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
+        <TailwindIndicator />
         <Footer />
       </body>
     </html>
