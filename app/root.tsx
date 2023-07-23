@@ -26,6 +26,7 @@ import {
 } from '~/components/ThemeProvider'
 import useFathom from '~/hooks/useFathom'
 import useNProgress from '~/hooks/useNProgress'
+import { NODE_ENV } from '~/lib/env.server'
 import { getSession } from '~/lib/session.server'
 import nProgressStyles from '~/styles/nprogress.css'
 import styles from '~/styles/tailwind.css'
@@ -44,7 +45,7 @@ export const meta: V2_MetaFunction = () => [
 export async function loader({ request }: LoaderArgs) {
   const { theme } = await getSession(request)
 
-  return remix.json({ theme })
+  return remix.json({ env: { NODE_ENV }, theme })
 }
 
 function App() {
@@ -68,7 +69,7 @@ function App() {
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
-        <TailwindIndicator />
+        {data.env.NODE_ENV === 'development' ? <TailwindIndicator /> : null}
         <Footer />
       </body>
     </html>
