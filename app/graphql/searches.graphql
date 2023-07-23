@@ -1,0 +1,34 @@
+query getFlydexOwners($where: battlefly_token_bool_exp) {
+  battlefly_token(distinct_on: owner, limit: 5, where: $where) {
+    owner
+  }
+  battlefly_token_aggregate(where: $where) {
+    aggregate {
+      count(distinct: true, columns: owner)
+    }
+  }
+}
+
+query getFlydexTokens($where: battlefly_flydex_bool_exp) {
+  battlefly_flydex(limit: 5, where: $where) {
+    name
+    token_id
+  }
+  battlefly_flydex_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+}
+
+query getTreasureTagOwners($name: String!) {
+  treasure_tag(limit: 5, where: { display_name: { _iregex: $name } }) {
+    display_name
+    owner
+  }
+  treasure_tag_aggregate(where: { display_name: { _iregex: $name } }) {
+    aggregate {
+      count
+    }
+  }
+}

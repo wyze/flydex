@@ -99,7 +99,7 @@ export default function BattleflyDetail() {
           ))}
         </ul>
       ) : null}
-      <div className="mx-6 grid flex-1 grid-cols-1 gap-12 pb-12 md:mx-auto md:grid-cols-2">
+      <div className="mx-6 grid flex-1 grid-cols-1 gap-12 pb-12 md:grid-cols-2 lg:mx-auto">
         <DescriptionListCard
           data={{
             'Token ID': `#${fly.token_id}`,
@@ -449,7 +449,7 @@ export default function BattleflyDetail() {
                   </div>
                 </div>
                 {pagination.count > 1 ? (
-                  <div className="px-2">
+                  <div className="p-2">
                     <Pagination button={ParamsLink} {...pagination} />
                   </div>
                 ) : null}

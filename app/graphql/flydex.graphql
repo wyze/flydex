@@ -189,12 +189,33 @@ query getFlydex(
   }
 }
 
+query getFlydexFilters {
+  leagues: battlefly_flydex(
+    distinct_on: league_full
+    order_by: { league_full: asc }
+  ) {
+    league_full
+  }
+  locations: battlefly_flydex(
+    distinct_on: location
+    order_by: { location: asc }
+  ) {
+    location
+  }
+  rarities: battlefly_flydex(distinct_on: rarity, order_by: { rarity: asc }) {
+    rarity
+  }
+}
+
 query getModFilters {
   categories: battlefly_mod(
     distinct_on: category
     order_by: { category: asc }
   ) {
     category
+  }
+  rarities: battlefly_mod(distinct_on: rarity, order_by: { rarity: asc }) {
+    rarity
   }
   types: battlefly_mod(distinct_on: type, order_by: { type: asc }) {
     type

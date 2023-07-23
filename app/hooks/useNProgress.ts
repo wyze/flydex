@@ -1,19 +1,10 @@
-import { useFetchers, useNavigation } from '@remix-run/react'
 import NProgress from 'nprogress'
-import { useEffect, useMemo } from 'react'
+import { useEffect } from 'react'
+
+import useNavigationState from '~/hooks/useNavigationState'
 
 export default function useNProgress() {
-  const navigation = useNavigation()
-  const fetchers = useFetchers()
-  const state = useMemo(
-    () =>
-      [navigation.state, ...fetchers.map((fetcher) => fetcher.state)].every(
-        (state) => state === 'idle',
-      )
-        ? 'idle'
-        : 'loading',
-    [fetchers, navigation.state],
-  )
+  const state = useNavigationState()
 
   useEffect(() => {
     if (state === 'loading') {

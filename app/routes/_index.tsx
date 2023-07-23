@@ -4,18 +4,24 @@ import {
   Link,
   isRouteErrorResponse,
   useLoaderData,
+  useLocation,
+  useNavigate,
   useRouteError,
   useSearchParams,
 } from '@remix-run/react'
 import { motion } from 'framer-motion'
+import { X } from 'lucide-react'
 import queryString from 'query-string'
+import { useState } from 'react'
 import { z } from 'zod'
 import { zx } from 'zodix'
 
+import { DataTableFacetedFilter, MobileFilters } from '~/components/DataTable'
 import Mods from '~/components/Mods'
 import Pagination from '~/components/Pagination'
 import Pill from '~/components/Pill'
 import Tooltip from '~/components/Tooltip'
+import { Button } from '~/components/ui/button'
 import usePagination from '~/hooks/usePagination'
 import { FLY_RARITY_COLORS } from '~/lib/consts'
 import * as normalize from '~/lib/normalize'
@@ -120,14 +126,134 @@ export async function loader({ request }: LoaderArgs) {
 }
 
 export default function Index() {
-  const { flies, total } = useLoaderData<typeof loader>()
+  const { filters, flies, total } = useLoaderData<typeof loader>()
   const [params] = useSearchParams()
+  const { search } = useLocation()
+  const navigate = useNavigate()
   const page = Number(params.get('offset') ?? '0') / 30 + 1
   const pagination = usePagination(total, { page, size: 30 })
 
+  const [columnFilters, setColumnFilters] = useState(() => {
+    const parsed = queryString.parse(search)
+    const where = JSON.parse(
+      typeof parsed?.where === 'string' ? parsed.where : '{}',
+    ) as Record<string, Partial<{ _in: string[] }>>
+
+    return Object.entries(where).map(([id, { _in }]) => ({
+      id,
+      value: _in,
+    }))
+  })
+
+  const filterableColumns = [
+    {
+      id: 'league_full',
+      options: filters.leagues.map(({ league_full }) => ({
+        label: league_full,
+        value: league_full,
+      })),
+      title: 'League',
+    },
+    {
+      id: 'location',
+      options: filters.locations.map(({ location }) => ({
+        label: location
+          .replace('_', ' ')
+          .split(' ')
+          .map(([first, ...rest]) => first.toUpperCase().concat(...rest))
+          .join(' '),
+        value: location,
+      })),
+      title: 'Location',
+    },
+    {
+      id: 'rarity',
+      options: filters.rarities.map(({ rarity }) => ({
+        label: rarity,
+        value: rarity,
+      })),
+      title: 'Rarity',
+    },
+  ]
+
   return (
-    <div className="flex-1 p-12">
-      <Pagination {...pagination} showing={false} />
+    <div className="flex-1 space-y-4 p-12">
+      <div className="flex items-center justify-between">
+        <div className="flex flex-1 items-center space-x-2">
+          <div className="hidden space-x-2 md:block">
+            {filterableColumns.map(({ id, ...props }) => (
+              <DataTableFacetedFilter
+                key={id}
+                // @ts-ignore
+                column={{
+                  id,
+                  getFilterValue() {
+                    return (
+                      columnFilters.find((filter) => filter.id === id)?.value ??
+                      []
+                    )
+                  },
+                  setFilterValue(value) {
+                    setColumnFilters((state) =>
+                      state.some((filter) => filter.id === id)
+                        ? state.map((filter) =>
+                            filter.id === id ? { id, value } : filter,
+                          )
+                        : state.concat({ id, value }),
+                    )
+                  },
+                }}
+                {...props}
+              />
+            ))}
+          </div>
+          <MobileFilters
+            filterableColumns={filterableColumns}
+            table={{
+              // @ts-ignore
+              getColumn(id) {
+                return {
+                  id,
+                  getFilterValue() {
+                    return (
+                      columnFilters.find((filter) => filter.id === id)?.value ??
+                      []
+                    )
+                  },
+                  setFilterValue(value) {
+                    setColumnFilters((state) =>
+                      state.some((filter) => filter.id === id)
+                        ? state.map((filter) =>
+                            filter.id === id ? { id, value } : filter,
+                          )
+                        : state.concat({ id, value }),
+                    )
+                  },
+                }
+              },
+              // @ts-ignore
+              getState() {
+                return { columnFilters }
+              },
+            }}
+          />
+          {Object.keys(columnFilters).length > 0 ? (
+            <Button
+              variant="ghost"
+              onClick={() => {
+                navigate({ pathname: '/', search: '' })
+              }}
+              className="h-8 px-2 lg:px-3"
+            >
+              Reset
+              <X className="ml-2" size={16} strokeWidth={1.5} />
+            </Button>
+          ) : null}
+        </div>
+        <div className="hidden lg:flex">
+          <Pagination button={ParamsLink} showing={false} {...pagination} />
+        </div>
+      </div>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {flies.map((fly) => {
           const bodyColor = fly.body_color
@@ -283,5 +409,27 @@ export function ErrorBoundary() {
         ))}
       </ul>
     </div>
+  )
+}
+
+function ParamsLink({
+  children,
+  offset = 0,
+  ...props
+}: React.AnchorHTMLAttributes<HTMLAnchorElement> & {
+  children: React.ReactNode
+  offset?: number
+}) {
+  const [params] = useSearchParams()
+  const where = params.get('where') ?? ''
+  const search = queryString.stringify(
+    { offset: offset ? offset : undefined, where },
+    { skipEmptyString: true },
+  )
+
+  return (
+    <Link preventScrollReset to={{ search }} {...props}>
+      {children}
+    </Link>
   )
 }

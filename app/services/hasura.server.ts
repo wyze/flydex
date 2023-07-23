@@ -8,7 +8,9 @@ import { GraphQLClient } from 'graphql-request'
 import { z } from 'zod'
 
 import {
+  type GetFlydexOwnersQueryVariables,
   type GetFlydexQueryVariables,
+  type GetFlydexTokensQueryVariables,
   type GetLeaderboardQueryVariables,
   type GetModListQueryVariables,
   getSdk,
@@ -311,14 +313,74 @@ export async function getBattlefly(id: number) {
 }
 
 export async function getFlydex(variables: GetFlydexQueryVariables) {
-  const data = await sdk.getFlydex(variables)
+  const [data, filters] = await Promise.all([
+    sdk.getFlydex(variables),
+    getFlydexFilters(),
+  ])
 
   return {
+    filters,
     flies: flydex.parse(data.battlefly_flydex),
     total: z.number().parse(data.battlefly_flydex_aggregate.aggregate?.count),
     updatedAt: date.parse(
       data.battlefly_flydex_aggregate.aggregate?.min?.updated_at,
     ),
+  }
+}
+
+async function getFlydexFilters() {
+  const data = await sdk.getFlydexFilters()
+  const schema = z.object({
+    leagues: z
+      .object({
+        league_full: z.string(),
+      })
+      .array(),
+    locations: z
+      .object({
+        location: z.string(),
+      })
+      .array(),
+    rarities: z
+      .object({
+        rarity: z.string(),
+      })
+      .array(),
+  })
+
+  return schema.parse(data)
+}
+
+export async function getFlydexOwners(
+  variables: GetFlydexOwnersQueryVariables,
+) {
+  const data = await sdk.getFlydexOwners(variables)
+  const schema = z
+    .object({
+      owner: z.string(),
+    })
+    .array()
+
+  return {
+    total: z.number().parse(data.battlefly_token_aggregate.aggregate?.count),
+    wallets: schema.parse(data.battlefly_token),
+  }
+}
+
+export async function getFlydexTokens(
+  variables: GetFlydexTokensQueryVariables,
+) {
+  const data = await sdk.getFlydexTokens(variables)
+  const schema = z
+    .object({
+      name: z.string(),
+      token_id: z.number().transform(String),
+    })
+    .array()
+
+  return {
+    tokens: schema.parse(data.battlefly_flydex),
+    total: z.number().parse(data.battlefly_flydex_aggregate.aggregate?.count),
   }
 }
 
@@ -384,6 +446,11 @@ export async function getModFilters() {
         category: z.string(),
       })
       .array(),
+    rarities: z
+      .object({
+        rarity: z.string(),
+      })
+      .array(),
     types: z
       .object({
         type: z.string(),
@@ -428,7 +495,10 @@ export async function getModGroup(group: string) {
 }
 
 export async function getModList(params: GetModListQueryVariables) {
-  const data = await sdk.getModList(params)
+  const [data, filters] = await Promise.all([
+    sdk.getModList(params),
+    getModFilters(),
+  ])
   const aggregate = z.object({
     aggregate: z.object({
       count: z.number(),
@@ -444,6 +514,7 @@ export async function getModList(params: GetModListQueryVariables) {
   )
 
   return {
+    filters,
     mods: schema.array().parse(data.battlefly_mod).map(getTopLoadout),
     total: z.number().parse(data.battlefly_mod_aggregate.aggregate?.count),
   }
@@ -453,4 +524,19 @@ export async function getTreasureTag(name: string) {
   const data = await sdk.getTreasureTag({ name })
 
   return data.treasure_tag.at(0)?.owner ?? null
+}
+
+export async function getTreasureTagOwners(name: string) {
+  const data = await sdk.getTreasureTagOwners({ name })
+  const schema = z
+    .object({
+      display_name: z.string(),
+      owner: z.string(),
+    })
+    .array()
+
+  return {
+    tags: schema.parse(data.treasure_tag),
+    total: z.number().parse(data.treasure_tag_aggregate.aggregate?.count),
+  }
 }

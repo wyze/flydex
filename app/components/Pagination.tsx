@@ -35,7 +35,7 @@ function PageButton({
           current === page
             ? 'z-10 border-pink-500 bg-pink-50 text-pink-600 dark:bg-pink-600 dark:text-pink-50'
             : 'border-slate-300 bg-white text-slate-500 transition duration-200 hover:bg-slate-50  dark:border-gray-700 dark:bg-slate-600 dark:text-gray-200 dark:hover:bg-slate-800',
-          'relative inline-flex h-full items-center border px-4 py-2 text-sm font-medium focus:z-20',
+          'relative inline-flex h-full items-center border px-3 py-1 text-sm font-medium focus:z-20',
         )}
       >
         {current}
@@ -59,7 +59,7 @@ export default function Pagination({
   size,
 }: PaginationProps) {
   return (
-    <div className="my-4 flex flex-col justify-between space-y-4 md:flex-row md:items-center md:space-y-0">
+    <div className="flex flex-col justify-between space-y-4 md:flex-row md:items-center md:space-y-0">
       {showing !== false ? (
         <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
           Showing{' '}
@@ -76,7 +76,7 @@ export default function Pagination({
       )}
       {count > 1 ? (
         <nav
-          className="isolate inline-flex -space-x-px rounded-md shadow-sm"
+          className="isolate inline-flex h-8 -space-x-px rounded-md shadow-sm"
           aria-label="Pagination"
         >
           {createElement(button, {
@@ -89,12 +89,12 @@ export default function Pagination({
               </>
             ),
             className:
-              'relative inline-flex items-center rounded-l-md border border-slate-300 bg-white px-2 py-2 text-sm font-medium text-slate-500 transition duration-200 hover:bg-slate-50 focus:z-20 aria-disabled:pointer-events-none aria-disabled:opacity-40 dark:border-gray-700 dark:bg-slate-600 dark:text-gray-200 dark:hover:bg-slate-800',
+              'relative inline-flex items-center rounded-l-md border border-slate-300 bg-white px-2 py-1 text-sm font-medium text-slate-500 transition duration-200 hover:bg-slate-50 focus:z-20 aria-disabled:pointer-events-none aria-disabled:opacity-40 dark:border-gray-700 dark:bg-slate-600 dark:text-gray-200 dark:hover:bg-slate-800',
             offset: (page - 2) * size,
           })}
           <PageButton current={1} {...{ button, page, size }} />
           {gap?.before ? (
-            <span className="relative inline-flex items-center border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700  dark:border-gray-700 dark:bg-slate-500 dark:text-gray-200">
+            <span className="relative inline-flex items-center border border-slate-300 bg-white px-3 py-1 text-sm font-medium text-slate-700  dark:border-gray-700 dark:bg-slate-500 dark:text-gray-200">
               ...
             </span>
           ) : null}
@@ -102,7 +102,7 @@ export default function Pagination({
             <PageButton current={item} key={item} {...{ button, page, size }} />
           ))}
           {gap?.after ? (
-            <span className="relative inline-flex items-center border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700  dark:border-gray-700 dark:bg-slate-500 dark:text-gray-200">
+            <span className="relative inline-flex items-center border border-slate-300 bg-white px-3 py-1 text-sm font-medium text-slate-700  dark:border-gray-700 dark:bg-slate-500 dark:text-gray-200">
               ...
             </span>
           ) : null}
@@ -116,7 +116,7 @@ export default function Pagination({
               </>
             ),
             className:
-              'relative inline-flex items-center rounded-r-md border border-slate-300 bg-white px-2 py-2 text-sm font-medium text-slate-500 transition duration-200 hover:bg-slate-50 focus:z-20 aria-disabled:pointer-events-none aria-disabled:opacity-40 dark:border-gray-700 dark:bg-slate-600 dark:text-gray-200 dark:hover:bg-slate-800',
+              'relative inline-flex items-center rounded-r-md border border-slate-300 bg-white px-2 py-1 text-sm font-medium text-slate-500 transition duration-200 hover:bg-slate-50 focus:z-20 aria-disabled:pointer-events-none aria-disabled:opacity-40 dark:border-gray-700 dark:bg-slate-600 dark:text-gray-200 dark:hover:bg-slate-800',
             offset: page * size,
           })}
         </nav>

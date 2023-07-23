@@ -16,7 +16,7 @@ import {
 } from '@remix-run/react'
 
 import Footer from '~/components/Footer'
-import Header from '~/components/Header'
+import SiteHeader from '~/components/SiteHeader'
 import TailwindIndicator from '~/components/TailwindIndicator'
 import {
   ThemeBody,
@@ -27,7 +27,6 @@ import {
 import useFathom from '~/hooks/useFathom'
 import useNProgress from '~/hooks/useNProgress'
 import { getSession } from '~/lib/session.server'
-import { getModFilters } from '~/services/hasura.server'
 import nProgressStyles from '~/styles/nprogress.css'
 import styles from '~/styles/tailwind.css'
 
@@ -43,12 +42,9 @@ export const meta: V2_MetaFunction = () => [
 ]
 
 export async function loader({ request }: LoaderArgs) {
-  const [{ theme }, mods] = await Promise.all([
-    getSession(request),
-    getModFilters(),
-  ])
+  const { theme } = await getSession(request)
 
-  return remix.json({ filters: { mods }, theme })
+  return remix.json({ theme })
 }
 
 function App() {
@@ -67,7 +63,7 @@ function App() {
       </head>
       <body className="flex h-full flex-col bg-white dark:bg-gray-900">
         <ThemeBody ssrTheme={data.theme !== 'system'} />
-        <Header />
+        <SiteHeader />
         <Outlet />
         <ScrollRestoration />
         <Scripts />
