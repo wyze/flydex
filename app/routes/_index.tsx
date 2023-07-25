@@ -107,7 +107,7 @@ export async function loader({ request }: LoaderArgs) {
         const data = JSON.parse(value)
 
         if ('location' in data) {
-          data.token = { staked: { _eq: true } }
+          data.token = { ...data.token, staked: { _eq: true } }
         }
 
         return data
