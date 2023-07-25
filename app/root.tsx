@@ -56,7 +56,7 @@ function App() {
   useNProgress()
 
   return (
-    <html className={`h-screen scroll-smooth ${theme ?? ''}`} lang="en">
+    <html className={`min-h-screen scroll-smooth ${theme ?? ''}`} lang="en">
       <head>
         <Meta />
         <Links />
