@@ -15,17 +15,17 @@ import {
   useLoaderData,
 } from '@remix-run/react'
 
-import Footer from '~/components/Footer'
-import SiteHeader from '~/components/SiteHeader'
-import TailwindIndicator from '~/components/TailwindIndicator'
+import { Footer } from '~/components/footer'
+import { SiteHeader } from '~/components/site-header'
+import { TailwindIndicator } from '~/components/tailwind-indicator'
 import {
   ThemeBody,
   ThemeHead,
   ThemeProvider,
   useTheme,
-} from '~/components/ThemeProvider'
-import useFathom from '~/hooks/useFathom'
-import useNProgress from '~/hooks/useNProgress'
+} from '~/components/theme-provider'
+import { useFathom } from '~/hooks/use-fathom'
+import { useNProgress } from '~/hooks/use-n-progress'
 import { NODE_ENV } from '~/lib/env.server'
 import { getSession } from '~/lib/session.server'
 import nProgressStyles from '~/styles/nprogress.css'

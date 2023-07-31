@@ -2,15 +2,13 @@ import * as RadixDropdownMenu from '@radix-ui/react-dropdown-menu'
 import { IconCheck, IconPointFilled } from '@tabler/icons-react'
 import React from 'react'
 
-import Icon from './Icon'
+import { Icon } from './icon'
 
 type ChildrenProps = {
   children: React.ReactNode
 }
 
-export default function DropdownMenu(
-  props: ChildrenProps & { defaultOpen?: true },
-) {
+export function DropdownMenu(props: ChildrenProps & { defaultOpen?: true }) {
   return <RadixDropdownMenu.Root {...props} />
 }
 

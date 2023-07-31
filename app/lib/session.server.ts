@@ -5,7 +5,7 @@ import {
 } from '@remix-run/node'
 import { z } from 'zod'
 
-import type { Theme } from '~/components/ThemeProvider'
+import type { Theme } from '~/components/theme-provider'
 import { COOKIE_SECRET } from '~/lib/env.server'
 
 const isProduction = process.env.NODE_ENV === 'production'

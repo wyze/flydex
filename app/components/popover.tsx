@@ -2,13 +2,13 @@ import * as RadixPopover from '@radix-ui/react-popover'
 import { IconX } from '@tabler/icons-react'
 import { forwardRef } from 'react'
 
-import Icon from './Icon'
+import { Icon } from './icon'
 
 type ChildrenProps = {
   children: React.ReactNode
 }
 
-export default function Popover({ children }: ChildrenProps) {
+export function Popover({ children }: ChildrenProps) {
   return <RadixPopover.Root>{children}</RadixPopover.Root>
 }
 

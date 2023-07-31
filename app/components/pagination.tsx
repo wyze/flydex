@@ -2,20 +2,17 @@ import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react'
 import clsx from 'clsx'
 import { createElement } from 'react'
 
-import type usePagination from '~/hooks/usePagination'
+import type { usePagination } from '~/hooks/use-pagination'
 
-import Icon from './Icon'
-import QueryLink from './QueryLink'
+import { Icon } from './icon'
+import { QueryLink } from './query-link'
 
-type PaginationProps = ReturnType<typeof usePagination> & {
-  button?: React.FunctionComponent<
-    Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'href'> & {
-      children: React.ReactNode
-      offset?: number
-    }
-  >
-  showing?: false
-}
+type Button = React.FunctionComponent<
+  Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'href'> & {
+    children: React.ReactNode
+    offset?: number
+  }
+>
 
 function PageButton({
   button,
@@ -23,7 +20,7 @@ function PageButton({
   page,
   size,
 }: {
-  button: NonNullable<PaginationProps['button']>
+  button: Button
   current: number
   page: number
   size: number
@@ -45,7 +42,7 @@ function PageButton({
   })
 }
 
-export default function Pagination({
+export function Pagination({
   button = QueryLink,
   count,
   gap,
@@ -57,7 +54,10 @@ export default function Pagination({
   range: [start, end],
   showing,
   size,
-}: PaginationProps) {
+}: ReturnType<typeof usePagination> & {
+  button?: Button
+  showing?: false
+}) {
   return (
     <div className="flex flex-col justify-between space-y-4 md:flex-row md:items-center md:space-y-0">
       {showing !== false ? (

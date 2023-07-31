@@ -4,7 +4,7 @@ type ChildrenProps = {
   children: React.ReactNode
 }
 
-export default function Tooltip({ children }: ChildrenProps) {
+export function Tooltip({ children }: ChildrenProps) {
   return (
     <RadixTooltip.Provider>
       <RadixTooltip.Root>{children}</RadixTooltip.Root>

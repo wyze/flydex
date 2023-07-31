@@ -2,7 +2,7 @@ import { useNavigation } from '@remix-run/react'
 import { load, trackPageview } from 'fathom-client'
 import { useEffect } from 'react'
 
-export default function useFathom() {
+export function useFathom() {
   const navigation = useNavigation()
 
   useEffect(() => {

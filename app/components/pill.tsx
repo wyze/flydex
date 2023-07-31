@@ -1,4 +1,4 @@
-export default function Pill({
+export function Pill({
   as: Component = 'span',
   children,
 }: {

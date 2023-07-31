@@ -4,7 +4,7 @@ type ChildrenProps = {
   children: React.ReactNode
 }
 
-export default function Tabs(props: ChildrenProps & { defaultValue: string }) {
+export function Tabs(props: ChildrenProps & { defaultValue: string }) {
   return <RadixTabs.Root className="flex w-full flex-col" {...props} />
 }
 

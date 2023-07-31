@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 
-export default function useDebouncedValue<T>(
+export function useDebouncedValue<T>(
   value: T,
   wait = 500,
   options = { leading: false },

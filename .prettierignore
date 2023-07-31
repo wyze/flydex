@@ -1,7 +1,7 @@
 node_modules
 pnpm-lock.yaml
 
-/.mesh
+/app/components/ui
 /build
 /coverage
 /public/build

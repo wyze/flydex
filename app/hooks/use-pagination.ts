@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-export default function usePagination(
+export function usePagination(
   length: number,
   { page, size }: { page: number; size: number },
 ) {

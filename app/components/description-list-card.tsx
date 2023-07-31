@@ -1,4 +1,4 @@
-export default function DescriptionListCard({
+export function DescriptionListCard({
   data,
   description,
   label,

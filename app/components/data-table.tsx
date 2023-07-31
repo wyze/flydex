@@ -20,7 +20,7 @@ import { CheckIcon, PlusCircle, X } from 'lucide-react'
 import queryString from 'query-string'
 import { useRef, useState } from 'react'
 
-import Pagination from '~/components/Pagination'
+import { Pagination } from '~/components/pagination'
 import { Badge } from '~/components/ui/badge'
 import { Button } from '~/components/ui/button'
 import {
@@ -47,7 +47,7 @@ import {
   TableHeader,
   TableRow,
 } from '~/components/ui/table'
-import usePagination from '~/hooks/usePagination'
+import { usePagination } from '~/hooks/use-pagination'
 import { cn } from '~/lib/helpers'
 
 type FilterOption = {
@@ -93,7 +93,7 @@ interface FilterCommandGroupProps<TData, TValue> {
 
 const PAGE_SIZE = 30
 
-export default function DataTable<TData, TValue>({
+export function DataTable<TData, TValue>({
   columns,
   data,
   filterableColumns,

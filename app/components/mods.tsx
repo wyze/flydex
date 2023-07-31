@@ -2,17 +2,11 @@ import { motion } from 'framer-motion'
 
 import type { Mod } from '~/lib/types'
 
-import Popover from './Popover'
-import ScrollArea from './ScrollArea'
-import Tooltip from './Tooltip'
+import { Popover } from './popover'
+import { ScrollArea } from './scroll-area'
+import { Tooltip } from './tooltip'
 
-export default function Mods({
-  items,
-  title,
-}: {
-  items: Mod[]
-  title: string
-}) {
+export function Mods({ items, title }: { items: Mod[]; title: string }) {
   if (items.length === 0) {
     return null
   }

@@ -1,9 +1,9 @@
 import NProgress from 'nprogress'
 import { useEffect } from 'react'
 
-import useNavigationState from '~/hooks/useNavigationState'
+import { useNavigationState } from '~/hooks/use-navigation-state'
 
-export default function useNProgress() {
+export function useNProgress() {
   const state = useNavigationState()
 
   useEffect(() => {

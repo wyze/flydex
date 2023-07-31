@@ -1,21 +1,16 @@
 import { Link, useSearchParams } from '@remix-run/react'
 import queryString from 'query-string'
 
-type FilterLinkProps = Omit<
-  React.AnchorHTMLAttributes<HTMLAnchorElement>,
-  'href'
-> & {
-  children: React.ReactNode
-  offset?: number
-  where?: { rank: { _gt: 0 } | { _eq: 0 } } | { location: { _eq: 'hyperdome' } }
-}
-
-export default function QueryLink({
+export function QueryLink({
   children,
   offset,
   where,
   ...props
-}: FilterLinkProps) {
+}: Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'href'> & {
+  children: React.ReactNode
+  offset?: number
+  where?: { rank: { _gt: 0 } | { _eq: 0 } } | { location: { _eq: 'hyperdome' } }
+}) {
   const [params] = useSearchParams()
   const existing = JSON.parse(params.get('where') ?? '{}')
   const search = queryString.stringify({

@@ -1,6 +1,6 @@
 import * as RadixScrollArea from '@radix-ui/react-scroll-area'
 
-export default function ScrollArea({
+export function ScrollArea({
   children,
   className,
   orientation = 'vertical',

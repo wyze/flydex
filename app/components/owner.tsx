@@ -1,7 +1,7 @@
-import Tooltip from './Tooltip'
-import UnderlineLink from './UnderlineLink'
+import { Tooltip } from './tooltip'
+import { UnderlineLink } from './underline-link'
 
-export default function Owner({
+export function Owner({
   owner,
   treasure_tag,
 }: {

@@ -1,7 +1,7 @@
 import { useFetchers, useNavigation } from '@remix-run/react'
 import { useMemo } from 'react'
 
-export default function useNavigationState() {
+export function useNavigationState() {
   const navigation = useNavigation()
   const fetchers = useFetchers()
 

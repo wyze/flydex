@@ -1,13 +1,13 @@
 import * as RadixSelect from '@radix-ui/react-select'
 import { IconCheck, IconChevronDown, IconChevronUp } from '@tabler/icons-react'
 
-import Icon from './Icon'
+import { Icon } from './icon'
 
 type ChildrenProps = {
   children: React.ReactNode
 }
 
-export default function Select(
+export function Select(
   props: ChildrenProps & {
     onValueChange: (value: string) => void
     value: string

@@ -2,7 +2,7 @@ import { type ActionArgs, json, redirect } from '@remix-run/node'
 import { z } from 'zod'
 import { zx } from 'zodix'
 
-import { isTheme } from '~/components/ThemeProvider'
+import { isTheme } from '~/components/theme-provider'
 import { commitTheme, destroySession } from '~/lib/session.server'
 
 export const action = async ({ request }: ActionArgs) => {

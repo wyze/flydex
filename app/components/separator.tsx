@@ -1,6 +1,6 @@
 import * as RadixSeparator from '@radix-ui/react-separator'
 
-export default function Separator({
+export function Separator({
   orientation,
 }: {
   orientation: 'horizontal' | 'vertical'

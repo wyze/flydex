@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 
 const MotionLink = motion(Link)
 
-export default function UnderlineLink({
+export function UnderlineLink({
   children,
   href,
   prefix,

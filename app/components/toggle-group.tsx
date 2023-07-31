@@ -15,7 +15,7 @@ type ValueProps<T> = {
   value: T
 }
 
-export default function ToggleGroup({
+export function ToggleGroup({
   children,
   className = '',
   label,

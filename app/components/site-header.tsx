@@ -7,9 +7,9 @@ import { File, Laptop, Moon, Sun } from 'lucide-react'
 import { forwardRef, useCallback, useEffect, useState } from 'react'
 import { useSpinDelay } from 'spin-delay'
 
-import DropdownMenu from '~/components/DropdownMenu'
-import Icon from '~/components/Icon'
-import { useTheme } from '~/components/ThemeProvider'
+import { DropdownMenu } from '~/components/dropdown-menu'
+import { Icon } from '~/components/icon'
+import { useTheme } from '~/components/theme-provider'
 import { Button } from '~/components/ui/button'
 import {
   CommandDialog,
@@ -19,8 +19,8 @@ import {
   CommandList,
   CommandSeparator,
 } from '~/components/ui/command'
-import useDebouncedValue from '~/hooks/useDebouncedValue'
-import useNavigationState from '~/hooks/useNavigationState'
+import { useDebouncedValue } from '~/hooks/use-debounced-value'
+import { useNavigationState } from '~/hooks/use-navigation-state'
 import { cn } from '~/lib/helpers'
 import { CommandGetBattleflies } from '~/routes/resources.battleflies'
 import { CommandGetTreasureTags } from '~/routes/resources.treasure-tags'
@@ -39,7 +39,7 @@ const THEME_TO_GOAL: Record<string, string> = {
   system: '1KGL5KHI',
 }
 
-export default function SiteHeader() {
+export function SiteHeader() {
   return (
     <header className="supports-backdrop-blur:bg-background/60 sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur">
       <div className="container flex h-14 items-center">
