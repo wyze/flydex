@@ -13,6 +13,7 @@ fragment Battlefly on battlefly_flydex {
   image
   league
   league_tier
+  level
   location
   mods(order_by: { slot: asc }) {
     mod {
@@ -25,9 +26,11 @@ fragment Battlefly on battlefly_flydex {
     slot
   }
   name
-  token_id
   rank
   rarity
+  soulbound
+  token_id
+  xp
 }
 
 fragment Loadout on battlefly_win_loss_loadout {

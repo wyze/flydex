@@ -10,23 +10,22 @@ import {
   useSearchParams,
 } from '@remix-run/react'
 import { motion } from 'framer-motion'
-import { X } from 'lucide-react'
+import { TrophyIcon, X } from 'lucide-react'
 import queryString from 'query-string'
 import { useState } from 'react'
 import { z } from 'zod'
 import { zx } from 'zodix'
 
 import { DataTableFacetedFilter, MobileFilters } from '~/components/DataTable'
-import Mods from '~/components/Mods'
 import Pagination from '~/components/Pagination'
-import Pill from '~/components/Pill'
-import Tooltip from '~/components/Tooltip'
+import { Badge } from '~/components/ui/badge'
 import { Button } from '~/components/ui/button'
 import usePagination from '~/hooks/usePagination'
 import { FLY_RARITY_COLORS } from '~/lib/consts'
-import * as normalize from '~/lib/normalize'
 import { json } from '~/lib/responses.server'
 import { getFlydex, getTreasureTag } from '~/services/hasura.server'
+
+const PAGE_SIZE = 30
 
 export async function action({ request }: ActionArgs) {
   const parsed = await zx.parseFormSafe(request, {
@@ -89,13 +88,13 @@ export async function loader({ request }: LoaderArgs) {
   const params = zx.parseQuery(request, {
     limit: z
       .number()
-      .refine((value) => value <= 30)
-      .default(30),
+      .refine((value) => value <= PAGE_SIZE)
+      .default(PAGE_SIZE),
     offset: z
       .string()
       .default('0')
       .transform(Number)
-      .refine((value) => value <= 30100),
+      .refine((value) => value <= 40000),
     order_by: z
       .string()
       .default(JSON.stringify({ token_id: 'asc' }))
@@ -128,13 +127,13 @@ export async function loader({ request }: LoaderArgs) {
 export default function Index() {
   const { filters, flies, total } = useLoaderData<typeof loader>()
   const [params] = useSearchParams()
-  const { search } = useLocation()
+  const location = useLocation()
   const navigate = useNavigate()
-  const page = Number(params.get('offset') ?? '0') / 30 + 1
-  const pagination = usePagination(total, { page, size: 30 })
+  const page = Number(params.get('offset') ?? '0') / PAGE_SIZE + 1
+  const pagination = usePagination(total, { page, size: PAGE_SIZE })
 
   const [columnFilters, setColumnFilters] = useState(() => {
-    const parsed = queryString.parse(search)
+    const parsed = queryString.parse(location.search)
     const where = JSON.parse(
       typeof parsed?.where === 'string' ? parsed.where : '{}',
     ) as Record<string, Partial<{ _in: string[] }>>
@@ -177,9 +176,9 @@ export default function Index() {
   ]
 
   return (
-    <div className="flex-1 space-y-4 p-12">
+    <div className="flex-1 space-y-5 p-4 md:p-12">
       <div className="flex items-center justify-between">
-        <div className="flex flex-1 items-center space-x-2">
+        <div className="flex flex-1 items-center">
           <div className="hidden space-x-2 md:block">
             {filterableColumns.map(({ id, ...props }) => (
               <DataTableFacetedFilter
@@ -241,9 +240,11 @@ export default function Index() {
             <Button
               variant="ghost"
               onClick={() => {
+                setColumnFilters([])
+
                 navigate({ pathname: '/', search: '' })
               }}
-              className="h-8 px-2 lg:px-3"
+              className="ml-2 h-8 px-2 lg:px-3"
             >
               Reset
               <X className="ml-2" size={16} strokeWidth={1.5} />
@@ -256,114 +257,169 @@ export default function Index() {
       </div>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {flies.map((fly) => {
-          const bodyColor = fly.body_color
-          const startColor = bodyColor.at(1) === '1' ? '#a2a2a2' : '#2a2a2a'
-          const { equipped, inventory } = normalize.mods(fly)
-
           return (
             <div
-              className="flex items-center justify-between rounded-lg border border-gray-200 bg-white p-4 shadow-md shadow-gray-400 dark:border-gray-700 dark:bg-gray-800 dark:shadow-gray-700"
+              className="relative flex rounded-lg p-2 shadow-md shadow-gray-400 dark:shadow-gray-700"
               key={fly.token_id}
+              style={{
+                background: `linear-gradient(to right, rgb(${
+                  FLY_RARITY_COLORS[fly.rarity]
+                }), transparent)`,
+              }}
             >
-              <Link prefetch="intent" to={`battlefly/${fly.token_id}`}>
-                <motion.div
-                  className="rounded-full p-3 shadow shadow-gray-300 dark:shadow-gray-500"
-                  style={{
-                    background: `linear-gradient(to bottom right, ${startColor}, ${bodyColor})`,
-                  }}
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
+              <div className="absolute -ml-2 w-44 flex-1 overflow-x-clip">
+                <Link
+                  className="flex-1"
+                  prefetch="intent"
+                  to={`battlefly/${fly.token_id}`}
                 >
-                  <img
-                    alt={fly.name}
-                    className="pointer-events-none h-12 w-12 select-none lg:h-24 lg:w-24"
-                    src={fly.image}
+                  <motion.div
+                    className="bg-red-3_00 -mt-6 h-28 w-44 select-none bg-no-repeat"
+                    style={{
+                      backgroundImage: `url(${fly.image})`,
+                      backgroundSize: '200px 200px',
+                      backgroundPosition: '-40px -40px',
+                    }}
+                    whileHover={{ scale: 1.1 }}
                   />
-                </motion.div>
-              </Link>
-              <div className="relative flex h-full flex-1 flex-col pl-4">
-                <div className="flex items-center justify-between">
-                  <Link prefetch="intent" to={`battlefly/${fly.token_id}`}>
-                    <motion.div
-                      className="text-lg font-medium dark:text-gray-100"
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
-                    >
-                      {fly.name}
-                    </motion.div>
-                  </Link>
-                  <div className="text-sm font-light text-gray-500 dark:text-gray-400">
-                    #{fly.token_id}
-                  </div>
+                </Link>
+              </div>
+              <div className="flex flex-1 flex-col items-end">
+                <div className="mt-1 flex items-center gap-1 text-sm">
+                  <TrophyIcon size={16} />
+                  {String(fly.rank).replace(/^0$/, '-')}
                 </div>
-                <div className="flex justify-between">
-                  <Tooltip>
-                    <Tooltip.Trigger>
-                      <div className="relative w-10">
-                        {Array(fly.league_tier)
-                          .fill('')
-                          .map((_, index) => (
-                            <img
-                              alt={fly.league}
-                              key={index}
-                              className="filter-outline pointer-events-none absolute inset-0 h-6 w-6 select-none shadow-white dark:shadow-gray-700"
-                              src={`/images/${fly.league.toLowerCase()}.svg`}
-                              style={{ left: index * 16 }}
-                            />
-                          ))}
-                      </div>
-                    </Tooltip.Trigger>
-                    <Tooltip.Content>
-                      {fly.league} {Array(fly.league_tier).fill('I').join('')}
-                    </Tooltip.Content>
-                  </Tooltip>
-                  <div className="text-sm">
-                    <div
-                      className={
-                        fly.rank > 0
-                          ? 'text-pink-400'
-                          : 'text-gray-400 dark:text-gray-500'
-                      }
-                    >
-                      {fly.rank > 0 ? `Rank: ${fly.rank}` : 'Unranked'}
-                    </div>
-                    <div className="text-right text-gray-400 dark:text-gray-500">
-                      {fly.contest_points.toLocaleString()} CP
-                    </div>
-                  </div>
-                </div>
-                <div className="mt-2 flex justify-between">
-                  <div className="flex flex-col gap-1 lg:flex-row">
-                    <div className="rounded-md border border-gray-400 px-1 text-xs text-gray-400">
-                      {fly.edition}
-                    </div>
-                    <div
-                      className={`${
-                        ['Artefact', 'Epic'].includes(fly.rarity)
-                          ? 'text-gray-100'
-                          : 'text-gray-800'
-                      } rounded-md border px-1 text-xs dark:border-gray-900`}
-                      style={{
-                        background: `rgb(${FLY_RARITY_COLORS[fly.rarity]})`,
-                      }}
-                    >
-                      {fly.rarity}
-                    </div>
-                  </div>
-                </div>
-                <div className="flex flex-row items-end gap-2">
-                  <Mods items={equipped} title="Mods" />
-                  <Mods items={inventory} title="Inventory" />
-                </div>
-                {fly.win_loss?.wl_ratio_24h ? (
-                  <div className="flex flex-1 items-end">
-                    <span className="mt-2.5 text-xs font-light text-slate-500">
-                      24h W/L: {fly.win_loss.wl_ratio_24h}
+                <Link prefetch="intent" to={`battlefly/${fly.token_id}`}>
+                  <motion.div
+                    className="flex items-center gap-1 text-lg font-medium dark:text-gray-100"
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                  >
+                    {fly.name}
+                    <span className="text-sm text-muted-foreground">
+                      #{fly.token_id}
                     </span>
+                  </motion.div>
+                </Link>
+                <div className="flex gap-6 pt-1">
+                  {fly.win_loss ? (
+                    <div className="flex flex-col">
+                      <p className="text-sm font-light">24h W/L</p>
+                      <p className="font-semibold">
+                        {fly.win_loss.wl_ratio_24h}
+                      </p>
+                    </div>
+                  ) : null}
+                  <div className="flex flex-col">
+                    <p className="text-sm font-light">CP</p>
+                    <p className="font-semibold">
+                      {fly.contest_points.toLocaleString()}
+                    </p>
                   </div>
-                ) : null}
-                <div className="absolute bottom-0 right-0">
-                  <Pill>{fly.location}</Pill>
+                  <div className="flex flex-col">
+                    <p className="text-sm font-light">Lv.</p>
+                    <p className="font-semibold">{fly.level}</p>
+                  </div>
+                  <div className="flex flex-col">
+                    <p className="text-sm font-light">XP</p>
+                    <p className="font-semibold">{fly.xp}</p>
+                  </div>
+                </div>
+                <div className="flex gap-2 pt-1">
+                  {[
+                    {
+                      children: fly.soulbound ? 'Soulbound' : null,
+                    },
+                    {
+                      children: fly.location,
+                      filter: 'location',
+                      value: [fly.location.toLowerCase().replace(' ', '_')],
+                    },
+                    {
+                      children: fly.rarity,
+                      filter: 'rarity',
+                      value: [fly.rarity],
+                    },
+                    {
+                      children: fly.league,
+                      filter: 'league_full',
+                      value: [1, 2, 3].map((tier) => `${fly.league} ${tier}`),
+                    },
+                  ]
+                    .filter((item) => Boolean(item.children))
+                    .map((item) => {
+                      if (!item.filter) {
+                        return (
+                          <Badge
+                            key={item.children}
+                            className="text-[0.625rem]"
+                          >
+                            {item.children}
+                          </Badge>
+                        )
+                      }
+
+                      const parsed = queryString.parse(location.search)
+                      const where = JSON.parse(
+                        typeof parsed?.where === 'string' ? parsed.where : '{}',
+                      ) as Record<string, { _in: string[] }>
+                      const search = queryString.stringify(
+                        {
+                          where: JSON.stringify({
+                            ...where,
+                            [item.filter]: {
+                              _in: [
+                                ...(where[item.filter]?._in ?? []),
+                                ...item.value,
+                              ].filter(
+                                (value, index, all) =>
+                                  all.indexOf(value) === index,
+                              ),
+                            },
+                          }).replace('{}', ''),
+                        },
+                        { skipEmptyString: true },
+                      )
+
+                      return (
+                        <Link
+                          key={item.filter}
+                          onClick={() => {
+                            setColumnFilters((state) =>
+                              state
+                                .map((existing) =>
+                                  existing.id === item.filter
+                                    ? {
+                                        id: existing.id,
+                                        value: existing.value
+                                          ?.concat(item.value)
+                                          .filter(
+                                            (value, index, all) =>
+                                              all.indexOf(value) === index,
+                                          ),
+                                      }
+                                    : existing,
+                                )
+                                .concat({
+                                  id: item.filter,
+                                  value: item.value,
+                                })
+                                .filter(
+                                  (filter, index, filters) =>
+                                    filters.findIndex(
+                                      ({ id }) => id === filter.id,
+                                    ) === index,
+                                ),
+                            )
+                          }}
+                          to={{ pathname: '/', search }}
+                        >
+                          <Badge className="text-[0.625rem]">
+                            {item.children}
+                          </Badge>
+                        </Link>
+                      )
+                    })}
                 </div>
               </div>
             </div>

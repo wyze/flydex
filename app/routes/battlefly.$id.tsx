@@ -16,6 +16,7 @@ import Tabs from '~/components/Tabs'
 import ToggleGroup from '~/components/ToggleGroup'
 import Tooltip from '~/components/Tooltip'
 import UnderlineLink from '~/components/UnderlineLink'
+import { Badge } from '~/components/ui/badge'
 import usePagination from '~/hooks/usePagination'
 import * as normalize from '~/lib/normalize'
 import { json } from '~/lib/responses.server'
@@ -105,6 +106,11 @@ export default function BattleflyDetail() {
             'Token ID': `#${fly.token_id}`,
             Rarity: fly.rarity,
             Edition: fly.edition,
+            'XP (Level)': (
+              <div className="flex gap-1">
+                {fly.xp}/500<Badge>{fly.level}</Badge>
+              </div>
+            ),
             Owner: <Owner {...fly.token} />,
             Location: fly.location,
             Price:

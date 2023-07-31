@@ -81,6 +81,7 @@ const battlefly = z.object({
     z.literal('Pupa'),
   ]),
   league_tier: z.number(),
+  level: z.number(),
   location: z
     .union([
       z.literal('hyperdome'),
@@ -111,11 +112,13 @@ const battlefly = z.object({
     z.literal('Uncommon'),
   ]),
   token_id: z.number(),
+  soulbound: z.boolean(),
   win_loss: z
     .object({
       wl_ratio_24h: z.number().transform(formatPercent),
     })
     .nullable(),
+  xp: z.number().transform((value) => value % 500),
 })
 
 const detail = battlefly.merge(
