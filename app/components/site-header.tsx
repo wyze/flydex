@@ -1,9 +1,7 @@
 import { Link, NavLink, useFetcher, useNavigate } from '@remix-run/react'
-import { IconDeviceDesktop, IconMoon, IconSun } from '@tabler/icons-react'
 import { useCommandState } from 'cmdk'
 import { trackGoal } from 'fathom-client'
 import { motion } from 'framer-motion'
-import { File, Laptop, Moon, Sun } from 'lucide-react'
 import { forwardRef, useCallback, useEffect, useState } from 'react'
 import { useSpinDelay } from 'spin-delay'
 
@@ -207,7 +205,7 @@ function CommandMenu() {
                   runCommand(() => navigate(`/${to.replace('Home', '')}`))
                 }}
               >
-                <File className="mr-2" size={16} strokeWidth={1.5} />
+                <Icon className="mr-2" name="file" />
                 {to}
               </CommandItem>
             ))}
@@ -239,15 +237,15 @@ function CommandMenu() {
           <CommandSeparator />
           <CommandGroup heading="Theme">
             <CommandItem onSelect={() => runCommand(() => setTheme('light'))}>
-              <Sun className="mr-2" size={16} strokeWidth={1.5} />
+              <Icon className="mr-2" name="sun" />
               Light
             </CommandItem>
             <CommandItem onSelect={() => runCommand(() => setTheme('dark'))}>
-              <Moon className="mr-2" size={16} strokeWidth={1.5} />
+              <Icon className="mr-2" name="moon" />
               Dark
             </CommandItem>
             <CommandItem onSelect={() => runCommand(() => setTheme('system'))}>
-              <Laptop className="mr-2" size={16} strokeWidth={1.5} />
+              <Icon className="mr-2" name="laptop" />
               System
             </CommandItem>
           </CommandGroup>
@@ -263,14 +261,16 @@ function ThemeToggle() {
   return (
     <DropdownMenu>
       <DropdownMenu.Trigger>
-        <button className="inline-flex h-9 items-center justify-center rounded-md px-2 text-sm transition-colors duration-200 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-300 active:scale-90 radix-state-open:bg-gray-200 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:radix-state-open:bg-gray-800">
+        <button className="inline-flex h-9 items-center justify-center rounded-md px-2 transition-colors duration-200 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-300 active:scale-90 radix-state-open:bg-gray-200 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:radix-state-open:bg-gray-800">
           <Icon
             className="rotate-0 scale-100 text-gray-600 transition-all duration-200 hover:text-gray-700 dark:-rotate-90 dark:scale-0"
-            icon={IconSun}
+            name="sun"
+            size="md"
           />
           <Icon
             className="absolute rotate-90 scale-0 transition-all duration-200 dark:rotate-0 dark:scale-100 dark:text-gray-400"
-            icon={IconMoon}
+            name="moon"
+            size="md"
           />
           <span className="sr-only">Toggle theme</span>
         </button>
@@ -284,15 +284,15 @@ function ThemeToggle() {
           value={theme}
         >
           <DropdownMenu.RadioItem value="light">
-            <Icon className="mr-2 h-4 w-4" icon={IconSun} />
+            <Icon className="mr-2" name="sun" />
             <span>Light</span>
           </DropdownMenu.RadioItem>
           <DropdownMenu.RadioItem value="dark">
-            <Icon className="mr-2 h-4 w-4" icon={IconMoon} />
+            <Icon className="mr-2" name="moon" />
             <span>Dark</span>
           </DropdownMenu.RadioItem>
           <DropdownMenu.RadioItem value="system">
-            <Icon className="mr-2 h-4 w-4" icon={IconDeviceDesktop} />
+            <Icon className="mr-2" name="laptop" />
             <span>System</span>
           </DropdownMenu.RadioItem>
         </DropdownMenu.RadioGroup>

@@ -16,7 +16,6 @@ import {
   getFilteredRowModel,
   useReactTable,
 } from '@tanstack/react-table'
-import { CheckIcon, PlusCircle, X } from 'lucide-react'
 import queryString from 'query-string'
 import { useRef, useState } from 'react'
 
@@ -49,6 +48,8 @@ import {
 } from '~/components/ui/table'
 import { usePagination } from '~/hooks/use-pagination'
 import { cn } from '~/lib/helpers'
+
+import { Icon } from './icon'
 
 type FilterOption = {
   label: string
@@ -199,7 +200,7 @@ export function DataTable<TData, TValue>({
               className="h-8 px-2 lg:px-3"
             >
               Reset
-              <X className="ml-2" size={16} strokeWidth={1.5} />
+              <Icon className="ml-2" name="x" />
             </Button>
           ) : null}
         </div>
@@ -274,7 +275,7 @@ export function DataTableFacetedFilter<TData, TValue>({
     <Popover>
       <PopoverTrigger asChild>
         <Button variant="outline" size="sm" className="h-8 border-dashed">
-          <PlusCircle className="mr-2 h-4 w-4" />
+          <Icon className="mr-2 h-4 w-4" name="plus-circle" />
           {title}
           {selectedValues.size > 0 ? (
             <>
@@ -371,7 +372,7 @@ export function MobileFilters<TData>({
       >
         <PopoverTrigger asChild>
           <Button variant="outline" size="sm" className="h-8 border-dashed">
-            <PlusCircle className="mr-2 h-4 w-4" />
+            <Icon className="mr-2 h-4 w-4" name="plus-circle" />
             Filters
             <Separator orientation="vertical" className="mx-2 h-4" />
             <Badge
@@ -502,7 +503,7 @@ function FilterCommandGroup<TData, TValue>({
                     : 'opacity-50 [&_svg]:invisible',
                 )}
               >
-                <CheckIcon className={cn('h-4 w-4')} aria-hidden="true" />
+                <Icon aria-hidden="true" className="h-4 w-4" name="check" />
               </div>
               {option.icon ? (
                 <option.icon

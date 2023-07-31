@@ -1,5 +1,4 @@
 import * as RadixDropdownMenu from '@radix-ui/react-dropdown-menu'
-import { IconCheck, IconPointFilled } from '@tabler/icons-react'
 import React from 'react'
 
 import { Icon } from './icon'
@@ -71,7 +70,7 @@ DropdownMenu.CheckboxItem = function DropdownCheckboxItem({
       {...props}
     >
       <RadixDropdownMenu.ItemIndicator className="absolute left-0 inline-flex w-6 items-center justify-center">
-        <Icon className="h-4 w-4" icon={IconCheck} />
+        <Icon name="check" />
       </RadixDropdownMenu.ItemIndicator>
       {children}
     </RadixDropdownMenu.CheckboxItem>
@@ -90,7 +89,7 @@ DropdownMenu.RadioItem = function DropdownRadioItem({
       {...props}
     >
       <RadixDropdownMenu.ItemIndicator className="absolute left-0 inline-flex w-6 items-center justify-center">
-        <Icon className="h-4 w-4" icon={IconPointFilled} />
+        <Icon name="dot" size="lg" />
       </RadixDropdownMenu.ItemIndicator>
       {children}
     </RadixDropdownMenu.RadioItem>

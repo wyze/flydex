@@ -1,9 +1,9 @@
 import type { ActionArgs, SerializeFrom } from '@remix-run/node'
 import { useNavigate } from '@remix-run/react'
-import { Wallet } from 'lucide-react'
 import { z } from 'zod'
 import { zx } from 'zodix'
 
+import { Icon } from '~/components/icon'
 import { CommandGroup, CommandItem } from '~/components/ui/command'
 import { json } from '~/lib/responses.server'
 import { getFlydexOwners } from '~/services/hasura.server'
@@ -50,7 +50,7 @@ export function CommandGetWallets({
             runCommand(() => navigate(`/owner/${owner}`))
           }}
         >
-          <Wallet className="mr-2" size={16} strokeWidth={1.5} />
+          <Icon className="mr-2" name="wallet" />
           {owner}
         </CommandItem>
       ))}

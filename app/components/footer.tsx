@@ -1,5 +1,3 @@
-import { IconCell } from '@tabler/icons-react'
-
 import { Icon } from './icon'
 
 export function Footer() {
@@ -12,7 +10,7 @@ export function Footer() {
         rel="noreferrer"
         target="_blank"
       >
-        <Icon icon={IconCell} /> Honeycomb
+        <Icon className="mr-0.5" name="cell" /> Honeycomb
       </a>
     </div>
   )

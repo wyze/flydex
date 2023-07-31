@@ -10,13 +10,13 @@ import {
   useSearchParams,
 } from '@remix-run/react'
 import { motion } from 'framer-motion'
-import { TrophyIcon, X } from 'lucide-react'
 import queryString from 'query-string'
 import { useState } from 'react'
 import { z } from 'zod'
 import { zx } from 'zodix'
 
 import { DataTableFacetedFilter, MobileFilters } from '~/components/data-table'
+import { Icon } from '~/components/icon'
 import { Pagination } from '~/components/pagination'
 import { Badge } from '~/components/ui/badge'
 import { Button } from '~/components/ui/button'
@@ -247,7 +247,7 @@ export default function Index() {
               className="ml-2 h-8 px-2 lg:px-3"
             >
               Reset
-              <X className="ml-2" size={16} strokeWidth={1.5} />
+              <Icon className="ml-2" name="x" />
             </Button>
           ) : null}
         </div>
@@ -286,7 +286,7 @@ export default function Index() {
               </div>
               <div className="flex flex-1 flex-col items-end">
                 <div className="mt-1 flex items-center gap-1 text-sm">
-                  <TrophyIcon size={16} />
+                  <Icon name="trophy" />
                   {String(fly.rank).replace(/^0$/, '-')}
                 </div>
                 <Link prefetch="intent" to={`battlefly/${fly.token_id}`}>

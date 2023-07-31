@@ -1,5 +1,4 @@
 import * as RadixPopover from '@radix-ui/react-popover'
-import { IconX } from '@tabler/icons-react'
 import { forwardRef } from 'react'
 
 import { Icon } from './icon'
@@ -41,7 +40,7 @@ Popover.Content = forwardRef<
           className="absolute right-2 top-2 inline-flex h-6 w-6 cursor-default items-center justify-center rounded-full text-pink-500 outline-none transition duration-200 hover:bg-pink-200 focus:shadow-[0_0_0_2px] focus:shadow-pink-200 dark:text-pink-200 dark:hover:bg-pink-500 dark:focus:shadow-pink-500"
           aria-label="Close"
         >
-          <Icon className="h-4 w-4" icon={IconX} />
+          <Icon name="x" />
         </RadixPopover.Close>
         <RadixPopover.Arrow className="fill-white dark:fill-gray-700" />
       </RadixPopover.Content>

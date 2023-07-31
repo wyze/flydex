@@ -1,5 +1,4 @@
 import * as RadixSelect from '@radix-ui/react-select'
-import { IconCheck, IconChevronDown, IconChevronUp } from '@tabler/icons-react'
 
 import { Icon } from './icon'
 
@@ -30,7 +29,7 @@ Select.Trigger = function SelectTrigger({
     >
       <RadixSelect.Value placeholder={placeholder} />
       <RadixSelect.Icon className="text-pink-500">
-        <Icon className="h-4 w-4" icon={IconChevronDown} />
+        <Icon name="chevron-down" size="sm" />
       </RadixSelect.Icon>
     </RadixSelect.Trigger>
   )
@@ -41,11 +40,11 @@ Select.Content = function SelectContent({ children }: ChildrenProps) {
     <RadixSelect.Portal>
       <RadixSelect.Content className="overflow-hidden rounded-md bg-white shadow-[0px_10px_38px_-10px_rgba(22,_23,_24,_0.35),0px_10px_20px_-15px_rgba(22,_23,_24,_0.2)] dark:bg-gray-700">
         <RadixSelect.ScrollUpButton className="flex h-6 cursor-default items-center justify-center bg-white text-pink-500">
-          <Icon className="h-4 w-4" icon={IconChevronUp} />
+          <Icon name="chevron-up" size="sm" />
         </RadixSelect.ScrollUpButton>
         <RadixSelect.Viewport className="p-1">{children}</RadixSelect.Viewport>
         <RadixSelect.ScrollDownButton className="flex h-6 cursor-default items-center justify-center bg-white text-pink-500">
-          <Icon className="h-4 w-4" icon={IconChevronDown} />
+          <Icon name="chevron-down" size="sm" />
         </RadixSelect.ScrollDownButton>
       </RadixSelect.Content>
     </RadixSelect.Portal>
@@ -75,7 +74,7 @@ Select.Item = function SelectItem({
     >
       <RadixSelect.ItemText>{children}</RadixSelect.ItemText>
       <RadixSelect.ItemIndicator className="absolute left-0 inline-flex w-[25px] items-center justify-center">
-        <Icon className="h-4 w-4" icon={IconCheck} />
+        <Icon name="check" />
       </RadixSelect.ItemIndicator>
     </RadixSelect.Item>
   )

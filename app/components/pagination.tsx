@@ -1,4 +1,3 @@
-import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react'
 import clsx from 'clsx'
 import { createElement } from 'react'
 
@@ -85,7 +84,7 @@ export function Pagination({
               <>
                 {' '}
                 <span className="sr-only">Previous</span>
-                <Icon icon={IconChevronLeft} />
+                <Icon name="chevron-left" />
               </>
             ),
             className:
@@ -112,7 +111,7 @@ export function Pagination({
             children: (
               <>
                 <span className="sr-only">Next</span>
-                <Icon icon={IconChevronRight} />
+                <Icon name="chevron-right" />
               </>
             ),
             className:

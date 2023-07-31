@@ -1,9 +1,9 @@
 import type { ActionArgs, SerializeFrom } from '@remix-run/node'
 import { useNavigate } from '@remix-run/react'
-import { Tag } from 'lucide-react'
 import { z } from 'zod'
 import { zx } from 'zodix'
 
+import { Icon } from '~/components/icon'
 import { CommandGroup, CommandItem } from '~/components/ui/command'
 import { json } from '~/lib/responses.server'
 import { getTreasureTagOwners } from '~/services/hasura.server'
@@ -46,7 +46,7 @@ export function CommandGetTreasureTags({
             runCommand(() => navigate(`/owner/${owner}`))
           }}
         >
-          <Tag className="mr-2" size={16} strokeWidth={1.5} />
+          <Icon className="mr-2" name="tag" />
           {display_name}
         </CommandItem>
       ))}
