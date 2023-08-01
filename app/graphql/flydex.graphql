@@ -223,6 +223,9 @@ query getModFilters {
   types: battlefly_mod(distinct_on: type, order_by: { type: asc }) {
     type
   }
+  seasons: battlefly_mod(distinct_on: season, order_by: { season: asc }) {
+    season
+  }
 }
 
 query getModGroup($group: String!) {
@@ -235,6 +238,7 @@ query getModGroup($group: String!) {
     defense_shield
     group
     id
+    season
     weapon_burst
     weapon_damage_per_fire
     weapon_damage_per_second
@@ -263,6 +267,7 @@ query getModList($limit: Int!, $offset: Int!, $where: battlefly_mod_bool_exp) {
         count
       }
     }
+    season
   }
   battlefly_mod_aggregate(where: $where) {
     aggregate {

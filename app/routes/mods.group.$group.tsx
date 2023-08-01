@@ -5,7 +5,7 @@ import { zx } from 'zodix'
 
 import { DescriptionListCard } from '~/components/description-list-card'
 import { Mods } from '~/components/mods'
-import { Pill } from '~/components/pill'
+import { Badge } from '~/components/ui/badge'
 import * as normalize from '~/lib/normalize'
 import { json } from '~/lib/responses.server'
 import { getModGroup } from '~/services/hasura.server'
@@ -45,13 +45,17 @@ export default function ModGroup() {
           {mod.group}
         </h1>
       </div>
-      <ul className="mx-6 mb-8 space-x-2 space-y-2 text-center md:mx-auto">
-        {[mod.category, mod.type].map((value, index) => (
-          <Pill as="li" key={index}>
-            {value}
-          </Pill>
+      <div className="mx-6 mb-8 space-x-2 space-y-2 text-center md:mx-auto">
+        <Badge variant="highlight">
+          {mod.season
+            .at(0)
+            ?.toUpperCase()
+            .concat(mod.season.slice(1).replace('-', ' '))}
+        </Badge>
+        {[mod.category, mod.type].map((value) => (
+          <Badge key={value}>{value}</Badge>
         ))}
-      </ul>
+      </div>
       <div className="mx-12 mt-8 grid gap-12 p-12 md:grid-cols-2">
         {mods.map((mod) => {
           return (

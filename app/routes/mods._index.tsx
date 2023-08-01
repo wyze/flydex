@@ -69,10 +69,22 @@ export default function ModsPage() {
             },
             {
               id: 'type',
-              title: 'Types',
+              title: 'Type',
               options: filters.types.map(({ type }) => ({
                 label: type,
                 value: type,
+              })),
+            },
+            {
+              id: 'season',
+              title: 'Season',
+              options: filters.seasons.map(({ season }) => ({
+                label:
+                  season
+                    .at(0)
+                    ?.toUpperCase()
+                    .concat(season.slice(1).replace('-', ' ')) ?? '',
+                value: season,
               })),
             },
           ]}
@@ -132,6 +144,18 @@ const columns: Array<ColumnDef<Data>> = [
   { accessorKey: 'rarity', header: 'Rarity' },
   { accessorKey: 'category', header: 'Category' },
   { accessorKey: 'type', header: 'Type' },
+  {
+    accessorKey: 'season',
+    header: 'Season',
+    cell({ getValue }) {
+      return (
+        (getValue() as string)
+          .at(0)
+          ?.toUpperCase()
+          .concat((getValue() as string).slice(1).replace('-', ' ')) ?? ''
+      )
+    },
+  },
   {
     accessorKey: 'equipped',
     header: 'Equipped',

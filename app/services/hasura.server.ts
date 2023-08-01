@@ -441,7 +441,7 @@ export async function getLeaderboardOverview(day: string) {
   }
 }
 
-export async function getModFilters() {
+async function getModFilters() {
   const data = await sdk.getModFilters()
   const schema = z.object({
     categories: z
@@ -459,6 +459,7 @@ export async function getModFilters() {
         type: z.string(),
       })
       .array(),
+    seasons: z.object({ season: z.string() }).array(),
   })
 
   return schema.parse(data)
@@ -474,6 +475,7 @@ export async function getModGroup(group: string) {
       defense_shield: z.number().nullable(),
       group: z.string(),
       name: z.string(),
+      season: z.string(),
       weapon_burst: z.number().nullable(),
       weapon_damage_per_fire: z.number().nullable(),
       weapon_damage_per_second: z.number().nullable(),
@@ -513,6 +515,7 @@ export async function getModList(params: GetModListQueryVariables) {
       group: z.string(),
       id: z.string(),
       inventory: aggregate,
+      season: z.string(),
     }),
   )
 
