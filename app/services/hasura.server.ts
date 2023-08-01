@@ -13,6 +13,7 @@ import {
   type GetFlydexTokensQueryVariables,
   type GetLeaderboardQueryVariables,
   type GetModListQueryVariables,
+  type GetTraitListQueryVariables,
   getSdk,
 } from '~/graphql/generated'
 import { MOD_RARITY_COLORS } from '~/lib/consts'
@@ -523,6 +524,66 @@ export async function getModList(params: GetModListQueryVariables) {
     filters,
     mods: schema.array().parse(data.battlefly_mod).map(getTopLoadout),
     total: z.number().parse(data.battlefly_mod_aggregate.aggregate?.count),
+  }
+}
+
+export async function getTraitList(params: GetTraitListQueryVariables) {
+  const [data, filters] = await Promise.all([
+    sdk.getTraitList(params),
+    sdk.getTraitFilters(),
+  ])
+  const aggregate = z.object({
+    aggregate: z.object({
+      count: z.number(),
+    }),
+  })
+  const schemas = {
+    data: z.object({
+      damage_type: z.union([
+        z.literal('Electric'),
+        z.literal('Energy'),
+        z.literal('Fusion'),
+        z.literal('Kinetic'),
+        z.literal('Missile'),
+        z.null(),
+      ]),
+      equipped: aggregate,
+      id: z.string(),
+      name: z.string(),
+      stat: z.union([
+        z.literal('ARM'),
+        z.literal('CRIT'),
+        z.literal('DAM'),
+        z.literal('DCRIT'),
+        z.literal('EVA'),
+        z.literal('HP'),
+        z.literal('HPRG'),
+        z.literal('SH'),
+        z.literal('SHRG'),
+        z.literal('RCRIT'),
+        z.literal('RLD'),
+      ]),
+      unit_type: z.union([z.literal('percentage'), z.literal('quantity')]),
+      value: z.number(),
+    }),
+    filters: z.object({
+      damage_types: z
+        .object({
+          damage_type: z.string(),
+        })
+        .array(),
+      stats: z
+        .object({
+          stat: z.string(),
+        })
+        .array(),
+    }),
+  }
+
+  return {
+    filters: schemas.filters.parse(filters),
+    total: z.number().parse(data.battlefly_trait_aggregate.aggregate?.count),
+    traits: schemas.data.array().parse(data.battlefly_trait),
   }
 }
 

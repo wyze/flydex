@@ -275,3 +275,46 @@ query getModList($limit: Int!, $offset: Int!, $where: battlefly_mod_bool_exp) {
     }
   }
 }
+
+query getTraitFilters {
+  damage_types: battlefly_trait(
+    distinct_on: damage_type
+    where: { damage_type: { _is_null: false } }
+    order_by: { damage_type: asc }
+  ) {
+    damage_type
+  }
+  stats: battlefly_trait(distinct_on: stat, order_by: { stat: asc }) {
+    stat
+  }
+}
+
+query getTraitList(
+  $limit: Int!
+  $offset: Int!
+  $where: battlefly_trait_bool_exp
+) {
+  battlefly_trait(
+    limit: $limit
+    offset: $offset
+    order_by: { name: asc }
+    where: $where
+  ) {
+    damage_type
+    id
+    name
+    stat
+    unit_type
+    value
+    equipped: traits_aggregate {
+      aggregate {
+        count
+      }
+    }
+  }
+  battlefly_trait_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+}
