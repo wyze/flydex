@@ -8,7 +8,6 @@ import { zx } from 'zodix'
 import { DescriptionListCard } from '~/components/description-list-card'
 import { Owner } from '~/components/owner'
 import { Pagination } from '~/components/pagination'
-import { Pill } from '~/components/pill'
 import { Popover } from '~/components/popover'
 import { ScrollArea } from '~/components/scroll-area'
 import { Separator } from '~/components/separator'
@@ -90,15 +89,15 @@ export default function BattleflyDetail() {
         </h1>
       </div>
       {fly.traits.length > 0 ? (
-        <ul className="mx-6 mb-8 space-x-2 space-y-2 text-center md:mx-auto">
+        <div className="mx-6 mb-8 space-x-2 space-y-2 text-center md:mx-auto">
           {fly.traits.map(({ trait }, index) => (
-            <Pill as="li" key={index}>
+            <Badge key={index}>
               {`+${trait.value}`.replace('+-', '-')}
               {trait.unit_type === 'percentage' ? '%' : ''}{' '}
               {trait.name.replace(' Trait', '')}
-            </Pill>
+            </Badge>
           ))}
-        </ul>
+        </div>
       ) : null}
       <div className="mx-6 grid flex-1 grid-cols-1 gap-12 pb-12 md:grid-cols-2 lg:mx-auto">
         <DescriptionListCard
