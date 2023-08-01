@@ -116,7 +116,7 @@ query getBattlefly($id: Int!) {
     }
     traits {
       trait {
-        name
+        stat
         value
         unit_type
       }

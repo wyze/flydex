@@ -69,6 +69,34 @@ const mod = z.object({
   ]),
 })
 
+const trait = z.object({
+  damage_type: z.union([
+    z.literal('Electric'),
+    z.literal('Energy'),
+    z.literal('Fusion'),
+    z.literal('Kinetic'),
+    z.literal('Missile'),
+    z.null(),
+  ]),
+  id: z.string(),
+  name: z.string(),
+  stat: z.union([
+    z.literal('ARM'),
+    z.literal('CRIT'),
+    z.literal('DAM'),
+    z.literal('DCRIT'),
+    z.literal('EVA'),
+    z.literal('HP'),
+    z.literal('HPRG'),
+    z.literal('SH'),
+    z.literal('SHRG'),
+    z.literal('RCRIT'),
+    z.literal('RLD'),
+  ]),
+  unit_type: z.union([z.literal('percentage'), z.literal('quantity')]),
+  value: z.number(),
+})
+
 const battlefly = z.object({
   body_color: z.string(),
   contest_points: z.number(),
@@ -159,10 +187,10 @@ const detail = battlefly.merge(
     }),
     traits: z
       .object({
-        trait: z.object({
-          name: z.string(),
-          unit_type: z.union([z.literal('percentage'), z.literal('quantity')]),
-          value: z.number(),
+        trait: trait.pick({
+          stat: true,
+          unit_type: true,
+          value: true,
         }),
       })
       .array(),
@@ -532,40 +560,16 @@ export async function getTraitList(params: GetTraitListQueryVariables) {
     sdk.getTraitList(params),
     sdk.getTraitFilters(),
   ])
-  const aggregate = z.object({
-    aggregate: z.object({
-      count: z.number(),
-    }),
-  })
   const schemas = {
-    data: z.object({
-      damage_type: z.union([
-        z.literal('Electric'),
-        z.literal('Energy'),
-        z.literal('Fusion'),
-        z.literal('Kinetic'),
-        z.literal('Missile'),
-        z.null(),
-      ]),
-      equipped: aggregate,
-      id: z.string(),
-      name: z.string(),
-      stat: z.union([
-        z.literal('ARM'),
-        z.literal('CRIT'),
-        z.literal('DAM'),
-        z.literal('DCRIT'),
-        z.literal('EVA'),
-        z.literal('HP'),
-        z.literal('HPRG'),
-        z.literal('SH'),
-        z.literal('SHRG'),
-        z.literal('RCRIT'),
-        z.literal('RLD'),
-      ]),
-      unit_type: z.union([z.literal('percentage'), z.literal('quantity')]),
-      value: z.number(),
-    }),
+    data: trait.merge(
+      z.object({
+        equipped: z.object({
+          aggregate: z.object({
+            count: z.number(),
+          }),
+        }),
+      }),
+    ),
     filters: z.object({
       damage_types: z
         .object({

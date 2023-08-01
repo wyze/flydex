@@ -17,6 +17,7 @@ import { Tooltip } from '~/components/tooltip'
 import { Badge } from '~/components/ui/badge'
 import { UnderlineLink } from '~/components/underline-link'
 import { usePagination } from '~/hooks/use-pagination'
+import { TRAIT_STAT_NAME } from '~/lib/consts'
 import * as normalize from '~/lib/normalize'
 import { json } from '~/lib/responses.server'
 import type { Mod } from '~/lib/types'
@@ -94,7 +95,7 @@ export default function BattleflyDetail() {
             <Badge key={index}>
               {`+${trait.value}`.replace('+-', '-')}
               {trait.unit_type === 'percentage' ? '%' : ''}{' '}
-              {trait.name.replace(' Trait', '')}
+              {TRAIT_STAT_NAME[trait.stat]}
             </Badge>
           ))}
         </div>
