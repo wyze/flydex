@@ -533,17 +533,12 @@ export async function getModList(params: GetModListQueryVariables) {
     sdk.getModList(params),
     getModFilters(),
   ])
-  const aggregate = z.object({
-    aggregate: z.object({
-      count: z.number(),
-    }),
-  })
   const schema = mod.merge(slots).merge(
     z.object({
-      equipped: aggregate,
+      equipped: z.number(),
       group: z.string(),
       id: z.string(),
-      inventory: aggregate,
+      inventory: z.number(),
       season: z.string(),
     }),
   )

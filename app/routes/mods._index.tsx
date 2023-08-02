@@ -1,10 +1,10 @@
 import type { DataFunctionArgs, SerializeFrom } from '@remix-run/node'
-import { useLoaderData } from '@remix-run/react'
+import { useLoaderData, useLocation } from '@remix-run/react'
 import type { ColumnDef } from '@tanstack/react-table'
 import { z } from 'zod'
 import { zx } from 'zodix'
 
-import { DataTable } from '~/components/data-table'
+import { DataTable, DataTableColumnHeader } from '~/components/data-table'
 import { Mods } from '~/components/mods'
 import { UnderlineLink } from '~/components/underline-link'
 import * as normalize from '~/lib/normalize'
@@ -21,13 +21,15 @@ export function loader({ request }: DataFunctionArgs) {
       .string()
       .default('0')
       .transform(Number)
-      .refine((value) => value <= 306),
+      .refine((value) => value <= 400),
+    order_by: z
+      .string()
+      .default(JSON.stringify([{ group: 'asc' }, { name: 'asc' }]))
+      .transform((value) => JSON.parse(value)),
     where: z
       .string()
       .default('{}')
-      .transform((value) => {
-        return JSON.parse(value)
-      }),
+      .transform((value) => JSON.parse(value)),
   })
 
   return json(`mods:${JSON.stringify(params)}`, () => getModList(params))
@@ -35,6 +37,7 @@ export function loader({ request }: DataFunctionArgs) {
 
 export default function ModsPage() {
   const { filters, mods, total } = useLoaderData<typeof loader>()
+  const { search } = useLocation()
 
   return (
     <div className="flex-1 p-12">
@@ -48,6 +51,7 @@ export default function ModsPage() {
       </div>
       <div className="flex flex-col">
         <DataTable
+          key={search}
           columns={columns}
           data={mods}
           filterableColumns={[
@@ -158,25 +162,27 @@ const columns: Array<ColumnDef<Data>> = [
   },
   {
     accessorKey: 'equipped',
-    header: 'Equipped',
-    cell({ getValue }) {
-      const {
-        aggregate: { count },
-      } = getValue<Data['equipped']>()
-
-      return count.toLocaleString()
+    header({ column }) {
+      return <DataTableColumnHeader column={column} title="Equipped" />
     },
+    cell({ getValue }) {
+      const count = getValue<Data['equipped']>()
+
+      return count?.toLocaleString()
+    },
+    sortingFn: 'basic',
   },
   {
     accessorKey: 'inventory',
-    header: 'Inventory',
+    header({ column }) {
+      return <DataTableColumnHeader column={column} title="Inventory" />
+    },
     cell({ getValue }) {
-      const {
-        aggregate: { count },
-      } = getValue<Data['inventory']>()
+      const count = getValue<Data['inventory']>()
 
       return count.toLocaleString()
     },
+    sortingFn: 'basic',
   },
   {
     accessorKey: 'loadout',

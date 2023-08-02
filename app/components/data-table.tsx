@@ -8,6 +8,7 @@ import {
   type Column,
   type ColumnDef,
   type ColumnFiltersState,
+  type SortingState,
   type Table as TanStackTable,
   flexRender,
   getCoreRowModel,
@@ -17,7 +18,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table'
 import queryString from 'query-string'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { Pagination } from '~/components/pagination'
 import { Badge } from '~/components/ui/badge'
@@ -50,6 +51,12 @@ import { usePagination } from '~/hooks/use-pagination'
 import { cn } from '~/lib/helpers'
 
 import { Icon } from './icon'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from './ui/dropdown-menu'
 
 type FilterOption = {
   label: string
@@ -113,6 +120,49 @@ export function DataTable<TData, TValue>({
       return Object.entries(where).map(([id, { _in }]) => ({ id, value: _in }))
     },
   )
+  const [sorting, setSorting] = useState<SortingState>(function initial() {
+    const parsed = queryString.parse(search)
+    const where = JSON.parse(
+      typeof parsed?.order_by === 'string' ? parsed.order_by : '{}',
+    ) as { equipped?: 'asc' | 'desc'; inventory?: 'asc' | 'desc' }
+
+    return Object.entries(where).map(([id, order]) => ({
+      id,
+      desc: order === 'desc',
+    }))
+  })
+
+  useEffect(() => {
+    const parsed = queryString.parse(search)
+    const orderBy =
+      typeof parsed.order_by === 'string'
+        ? (JSON.parse(parsed.order_by) as Record<string, 'asc' | 'desc'>)
+        : {}
+    const [order] = sorting
+
+    if (
+      order?.id === Object.keys(orderBy).at(0) &&
+      order?.desc === (Object.values(orderBy).at(0) === 'desc')
+    ) {
+      // State is current, no need to navigate
+      return
+    }
+
+    navigate({
+      pathname,
+      search: queryString.stringify(
+        {
+          ...parsed,
+          order_by: order
+            ? JSON.stringify({
+                [order.id]: order.desc ? 'desc' : 'asc',
+              })
+            : '',
+        },
+        { skipEmptyString: true },
+      ),
+    })
+  }, [navigate, pathname, search, sorting])
 
   const [params] = useSearchParams()
   const page = Number(params.get('offset') ?? '0') / PAGE_SIZE + 1
@@ -126,9 +176,12 @@ export function DataTable<TData, TValue>({
     getFacetedUniqueValues: getFacetedUniqueValues(),
     getFilteredRowModel: getFilteredRowModel(),
     manualFiltering: true,
+    manualSorting: true,
     onColumnFiltersChange: setColumnFilters,
+    onSortingChange: setSorting,
     state: {
       columnFilters,
+      sorting,
     },
   })
 
@@ -549,5 +602,101 @@ function FilterCommandGroup<TData, TValue>({
         </>
       ) : null}
     </>
+  )
+}
+
+export function DataTableColumnHeader<TData, TValue>({
+  column,
+  title,
+  className,
+}: React.HTMLAttributes<HTMLDivElement> & {
+  column: Column<TData, TValue>
+  title: string
+}) {
+  if (!column.getCanSort()) {
+    return <div className={cn(className)}>{title}</div>
+  }
+
+  const sorted = column.getIsSorted()
+  const type = column.columnDef.sortingFn === 'basic' ? 'number' : 'string'
+  const icon = sorted
+    ? sorted === 'asc'
+      ? type === 'number'
+        ? 'arrow-up-0-1'
+        : 'arrow-up-a-z'
+      : type === 'number'
+      ? 'arrow-down-1-0'
+      : 'arrow-down-z-a'
+    : 'arrow-down-up'
+
+  return (
+    <div className={cn('flex items-center space-x-2', className)}>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            aria-label={
+              sorted === 'desc'
+                ? 'Sorted descending.'
+                : sorted === 'asc'
+                ? 'Sorted ascending.'
+                : 'Not sorted.'
+            }
+            variant="ghost"
+            size="sm"
+            className="-ml-3 h-8 data-[state=open]:bg-accent"
+          >
+            <span>{title}</span>
+            <Icon
+              className={cn(
+                'ml-2',
+                icon === 'arrow-down-up' ? null : 'text-foreground',
+              )}
+              aria-hidden="true"
+              name={icon}
+              size="sm"
+            />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="start">
+          <DropdownMenuItem
+            aria-label="Sort ascending"
+            onClick={() => column.toggleSorting(false)}
+          >
+            <Icon
+              className="mr-2 text-muted-foreground/80"
+              aria-hidden="true"
+              name={type === 'number' ? 'arrow-up-0-1' : 'arrow-up-a-z'}
+              size="sm"
+            />
+            Sort ascending
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            aria-label="Sort descending"
+            onClick={() => column.toggleSorting(true)}
+          >
+            <Icon
+              className="mr-2 text-muted-foreground/80"
+              aria-hidden="true"
+              name={type === 'number' ? 'arrow-down-1-0' : 'arrow-down-z-a'}
+              size="sm"
+            />
+            Sort descending
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            aria-label="Remove sort"
+            onClick={() => column.clearSorting()}
+            disabled={!sorted}
+          >
+            <Icon
+              className="mr-2 text-muted-foreground/80"
+              aria-hidden="true"
+              name="x"
+              size="sm"
+            />
+            Remove sort
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
   )
 }
