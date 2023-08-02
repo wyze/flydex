@@ -303,11 +303,7 @@ query getTraitList(
     stat
     unit_type
     value
-    equipped: traits_aggregate {
-      aggregate {
-        count
-      }
-    }
+    equipped
   }
   battlefly_trait_aggregate(where: $where) {
     aggregate {

@@ -4,7 +4,7 @@ import type { ColumnDef } from '@tanstack/react-table'
 import { z } from 'zod'
 import { zx } from 'zodix'
 
-import { DataTable } from '~/components/data-table'
+import { DataTable, DataTableColumnHeader } from '~/components/data-table'
 import { TRAIT_STAT_NAME } from '~/lib/consts'
 import { json } from '~/lib/responses.server'
 import { getTraitList } from '~/services/hasura.server'
@@ -101,11 +101,11 @@ const columns: Array<ColumnDef<Data>> = [
   },
   {
     accessorKey: 'equipped',
-    header: 'Equipped',
+    header({ column }) {
+      return <DataTableColumnHeader column={column} title="Equipped" />
+    },
     cell({ getValue }) {
-      const {
-        aggregate: { count },
-      } = getValue<Data['equipped']>()
+      const count = getValue<Data['equipped']>()
 
       return count.toLocaleString()
     },

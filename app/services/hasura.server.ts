@@ -558,11 +558,7 @@ export async function getTraitList(params: GetTraitListQueryVariables) {
   const schemas = {
     data: trait.merge(
       z.object({
-        equipped: z.object({
-          aggregate: z.object({
-            count: z.number(),
-          }),
-        }),
+        equipped: z.number(),
       }),
     ),
     filters: z.object({
