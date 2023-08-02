@@ -93,6 +93,7 @@ const trait = z.object({
     z.literal('RCRIT'),
     z.literal('RLD'),
   ]),
+  stat_name: z.string(),
   unit_type: z.union([z.literal('percentage'), z.literal('quantity')]),
   value: z.number(),
 })
@@ -188,7 +189,7 @@ const detail = battlefly.merge(
     traits: z
       .object({
         trait: trait.pick({
-          stat: true,
+          stat_name: true,
           unit_type: true,
           value: true,
         }),
@@ -562,14 +563,14 @@ export async function getTraitList(params: GetTraitListQueryVariables) {
       }),
     ),
     filters: z.object({
-      damage_types: z
-        .object({
-          damage_type: z.string(),
+      damage_types: trait
+        .pick({
+          damage_type: true,
         })
         .array(),
-      stats: z
-        .object({
-          stat: z.string(),
+      stats: trait
+        .pick({
+          stat_name: true,
         })
         .array(),
     }),

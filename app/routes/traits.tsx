@@ -1,11 +1,10 @@
 import type { DataFunctionArgs, SerializeFrom } from '@remix-run/node'
-import { useLoaderData } from '@remix-run/react'
+import { useLoaderData, useLocation } from '@remix-run/react'
 import type { ColumnDef } from '@tanstack/react-table'
 import { z } from 'zod'
 import { zx } from 'zodix'
 
 import { DataTable, DataTableColumnHeader } from '~/components/data-table'
-import { TRAIT_STAT_NAME } from '~/lib/consts'
 import { json } from '~/lib/responses.server'
 import { getTraitList } from '~/services/hasura.server'
 
@@ -19,13 +18,15 @@ export function loader({ request }: DataFunctionArgs) {
       .string()
       .default('0')
       .transform(Number)
-      .refine((value) => value <= 306),
+      .refine((value) => value <= 20),
+    order_by: z
+      .string()
+      .default(JSON.stringify({ name: 'asc' }))
+      .transform((value) => JSON.parse(value)),
     where: z
       .string()
       .default('{}')
-      .transform((value) => {
-        return JSON.parse(value)
-      }),
+      .transform((value) => JSON.parse(value)),
   })
 
   return json(`traits:${JSON.stringify(params)}`, () => getTraitList(params))
@@ -33,6 +34,7 @@ export function loader({ request }: DataFunctionArgs) {
 
 export default function TraitsPage() {
   const { filters, total, traits } = useLoaderData<typeof loader>()
+  const { search } = useLocation()
 
   return (
     <div className="flex-1 p-12">
@@ -46,6 +48,7 @@ export default function TraitsPage() {
       </div>
       <div className="flex flex-col">
         <DataTable
+          key={search}
           columns={columns}
           data={traits}
           filterableColumns={[
@@ -53,19 +56,17 @@ export default function TraitsPage() {
               id: 'damage_type',
               title: 'Damage Type',
               options: filters.damage_types.map(({ damage_type }) => ({
-                label: damage_type,
-                value: damage_type,
+                label: damage_type ?? '',
+                value: damage_type ?? '',
               })),
             },
             {
-              id: 'stat',
+              id: 'stat_name',
               title: 'Stat',
-              options: filters.stats
-                .map(({ stat }) => ({
-                  label: TRAIT_STAT_NAME[stat],
-                  value: stat,
-                }))
-                .sort((left, right) => left.label.localeCompare(right.label)),
+              options: filters.stats.map(({ stat_name }) => ({
+                label: stat_name,
+                value: stat_name,
+              })),
             },
           ]}
           searchableColumns={[
@@ -92,13 +93,7 @@ const columns: Array<ColumnDef<Data>> = [
     },
   },
   { accessorKey: 'damage_type', header: 'Damage Type' },
-  {
-    accessorKey: 'stat',
-    header: 'Stat',
-    cell({ getValue }) {
-      return TRAIT_STAT_NAME[getValue() as string]
-    },
-  },
+  { accessorKey: 'stat_name', header: 'Stat' },
   {
     accessorKey: 'equipped',
     header({ column }) {
@@ -114,12 +109,12 @@ const columns: Array<ColumnDef<Data>> = [
     id: 'effect',
     header: 'Effect',
     cell({ row }) {
-      const { unit_type, stat, value } = row.original
+      const { unit_type, stat_name, value } = row.original
 
       return (
         <>
           {`+${value}`.replace('+-', '-')}
-          {unit_type === 'percentage' ? '%' : ''} {TRAIT_STAT_NAME[stat]}
+          {unit_type === 'percentage' ? '%' : ''} {stat_name}
         </>
       )
     },

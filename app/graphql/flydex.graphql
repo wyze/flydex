@@ -116,7 +116,7 @@ query getBattlefly($id: Int!) {
     }
     traits {
       trait {
-        stat
+        stat_name
         value
         unit_type
       }
@@ -281,26 +281,28 @@ query getTraitFilters {
   ) {
     damage_type
   }
-  stats: battlefly_trait(distinct_on: stat, order_by: { stat: asc }) {
-    stat
+  stats: battlefly_trait(distinct_on: stat_name, order_by: { stat_name: asc }) {
+    stat_name
   }
 }
 
 query getTraitList(
   $limit: Int!
   $offset: Int!
+  $order_by: [battlefly_trait_order_by!]
   $where: battlefly_trait_bool_exp
 ) {
   battlefly_trait(
     limit: $limit
     offset: $offset
-    order_by: { name: asc }
+    order_by: $order_by
     where: $where
   ) {
     damage_type
     id
     name
     stat
+    stat_name
     unit_type
     value
     equipped

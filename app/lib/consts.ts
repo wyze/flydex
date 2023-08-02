@@ -15,17 +15,3 @@ export const MOD_RARITY_COLORS = {
   Rare: '0, 240, 255',
   Uncommon: '52, 238, 166',
 }
-
-export const TRAIT_STAT_NAME: Record<string, string> = {
-  CRIT: 'Critical Chance',
-  EVA: 'Evasion',
-  ARM: 'Armor',
-  HP: 'Hull Points',
-  HPRG: 'Hull Point Regen',
-  SH: 'Shields',
-  SHRG: 'Shields Regen',
-  RLD: 'Weapon Reload',
-  DAM: 'Weapon Damage',
-  RCRIT: 'Critical Resist',
-  DCRIT: 'Critical Damage',
-}
