@@ -1,9 +1,9 @@
-import { useNavigation } from '@remix-run/react'
+import { useLocation } from '@remix-run/react'
 import { load, trackPageview } from 'fathom-client'
 import { useEffect } from 'react'
 
 export function useFathom() {
-  const navigation = useNavigation()
+  const { pathname, search } = useLocation()
 
   useEffect(() => {
     load('DSXEEGPL', {
@@ -13,19 +13,10 @@ export function useFathom() {
   }, [])
 
   useEffect(() => {
-    if (navigation.location?.pathname === '/') {
+    if (['/', '/battlefly', '/mods', '/traits'].includes(pathname)) {
       trackPageview({
-        url: navigation.location.search.replace('?', '/') || '/',
+        url: [pathname, search.slice(1)].join(':'),
       })
     }
-
-    if (navigation.location?.pathname.startsWith('/battlefly')) {
-      trackPageview({
-        url: [
-          navigation.location.pathname,
-          navigation.location.search.slice(1),
-        ].join(':'),
-      })
-    }
-  }, [navigation.location])
+  }, [pathname, search])
 }
