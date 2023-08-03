@@ -70,30 +70,9 @@ const mod = z.object({
 })
 
 const trait = z.object({
-  damage_type: z.union([
-    z.literal('Electric'),
-    z.literal('Energy'),
-    z.literal('Fusion'),
-    z.literal('Kinetic'),
-    z.literal('Missile'),
-    z.null(),
-  ]),
   id: z.string(),
   name: z.string(),
-  stat: z.union([
-    z.literal('ARM'),
-    z.literal('CRIT'),
-    z.literal('DAM'),
-    z.literal('DCRIT'),
-    z.literal('EVA'),
-    z.literal('HP'),
-    z.literal('HPRG'),
-    z.literal('SH'),
-    z.literal('SHRG'),
-    z.literal('RCRIT'),
-    z.literal('RLD'),
-  ]),
-  stat_name: z.string(),
+  stat: z.string(),
   unit_type: z.union([z.literal('percentage'), z.literal('quantity')]),
   value: z.number(),
 })
@@ -189,7 +168,7 @@ const detail = battlefly.merge(
     traits: z
       .object({
         trait: trait.pick({
-          stat_name: true,
+          stat: true,
           unit_type: true,
           value: true,
         }),
@@ -563,14 +542,14 @@ export async function getTraitList(params: GetTraitListQueryVariables) {
       }),
     ),
     filters: z.object({
-      damage_types: trait
-        .pick({
-          damage_type: true,
-        })
-        .array(),
       stats: trait
         .pick({
-          stat_name: true,
+          stat: true,
+        })
+        .array(),
+      units: trait
+        .pick({
+          unit_type: true,
         })
         .array(),
     }),

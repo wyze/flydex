@@ -53,19 +53,19 @@ export default function TraitsPage() {
           data={traits}
           filterableColumns={[
             {
-              id: 'damage_type',
-              title: 'Damage Type',
-              options: filters.damage_types.map(({ damage_type }) => ({
-                label: damage_type ?? '',
-                value: damage_type ?? '',
+              id: 'stat',
+              title: 'Stat',
+              options: filters.stats.map(({ stat }) => ({
+                label: stat,
+                value: stat,
               })),
             },
             {
-              id: 'stat_name',
-              title: 'Stat',
-              options: filters.stats.map(({ stat_name }) => ({
-                label: stat_name,
-                value: stat_name,
+              id: 'unit_type',
+              title: 'Value',
+              options: filters.units.map(({ unit_type }) => ({
+                label: unit_type,
+                value: unit_type,
               })),
             },
           ]}
@@ -92,8 +92,7 @@ const columns: Array<ColumnDef<Data>> = [
       return <span className="font-semibold">{getValue() as string}</span>
     },
   },
-  { accessorKey: 'damage_type', header: 'Damage Type' },
-  { accessorKey: 'stat_name', header: 'Stat' },
+  { accessorKey: 'stat', header: 'Stat' },
   {
     accessorKey: 'equipped',
     header({ column }) {
@@ -105,16 +104,17 @@ const columns: Array<ColumnDef<Data>> = [
       return count.toLocaleString()
     },
   },
+  { accessorKey: 'unit_type', header: 'Value Type' },
   {
     id: 'effect',
     header: 'Effect',
     cell({ row }) {
-      const { unit_type, stat_name, value } = row.original
+      const { unit_type, stat, value } = row.original
 
       return (
         <>
           {`+${value}`.replace('+-', '-')}
-          {unit_type === 'percentage' ? '%' : ''} {stat_name}
+          {unit_type === 'percentage' ? '%' : ''} {stat}
         </>
       )
     },

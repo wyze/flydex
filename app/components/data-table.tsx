@@ -181,6 +181,7 @@ export function DataTable<TData, TValue>({
     onSortingChange: setSorting,
     state: {
       columnFilters,
+      columnVisibility: { unit_type: false },
       sorting,
     },
   })
