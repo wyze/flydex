@@ -5,6 +5,7 @@ import { z } from 'zod'
 import { zx } from 'zodix'
 
 import { DataTable, DataTableColumnHeader } from '~/components/data-table'
+import { Badge } from '~/components/ui/badge'
 import { json } from '~/lib/responses.server'
 import { getTraitList } from '~/services/hasura.server'
 
@@ -53,19 +54,14 @@ export default function TraitsPage() {
           data={traits}
           filterableColumns={[
             {
-              id: 'stat',
-              title: 'Stat',
-              options: filters.stats.map(({ stat }) => ({
-                label: stat,
-                value: stat,
-              })),
-            },
-            {
-              id: 'unit_type',
-              title: 'Value',
-              options: filters.units.map(({ unit_type }) => ({
-                label: unit_type,
-                value: unit_type,
+              id: 'tags',
+              title: 'Tags',
+              options: filters.tags.map(({ tag }) => ({
+                label: tag
+                  .at(0)!
+                  .toUpperCase()
+                  .concat(...tag.slice(1)),
+                value: tag,
               })),
             },
           ]}
@@ -92,7 +88,20 @@ const columns: Array<ColumnDef<Data>> = [
       return <span className="font-semibold">{getValue() as string}</span>
     },
   },
-  { accessorKey: 'stat', header: 'Stat' },
+  {
+    id: 'effect',
+    header: 'Effect',
+    cell({ row }) {
+      const { description, tags, value } = row.original
+
+      return (
+        <>
+          {`+${value}`.replace('+-', '-')}
+          {tags.includes('percentage') ? '%' : ''} {description}
+        </>
+      )
+    },
+  },
   {
     accessorKey: 'equipped',
     header({ column }) {
@@ -104,18 +113,21 @@ const columns: Array<ColumnDef<Data>> = [
       return count.toLocaleString()
     },
   },
-  { accessorKey: 'unit_type', header: 'Value Type' },
   {
-    id: 'effect',
-    header: 'Effect',
-    cell({ row }) {
-      const { unit_type, stat, value } = row.original
-
+    accessorKey: 'tags',
+    header: 'Tags',
+    cell({ getValue }) {
       return (
-        <>
-          {`+${value}`.replace('+-', '-')}
-          {unit_type === 'percentage' ? '%' : ''} {stat}
-        </>
+        <div className="space-x-2">
+          {getValue<string[]>().map((tag) => (
+            <Badge key={tag} variant="secondary">
+              {tag
+                .at(0)!
+                .toUpperCase()
+                .concat(...tag.slice(1))}
+            </Badge>
+          ))}
+        </div>
       )
     },
   },

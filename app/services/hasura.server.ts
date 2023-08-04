@@ -70,10 +70,10 @@ const mod = z.object({
 })
 
 const trait = z.object({
+  description: z.string(),
   id: z.string(),
   name: z.string(),
-  stat: z.string(),
-  unit_type: z.union([z.literal('percentage'), z.literal('quantity')]),
+  tags: z.string().array(),
   value: z.number(),
 })
 
@@ -168,8 +168,8 @@ const detail = battlefly.merge(
     traits: z
       .object({
         trait: trait.pick({
-          stat: true,
-          unit_type: true,
+          description: true,
+          tags: true,
           value: true,
         }),
       })
@@ -542,14 +542,9 @@ export async function getTraitList(params: GetTraitListQueryVariables) {
       }),
     ),
     filters: z.object({
-      stats: trait
-        .pick({
-          stat: true,
-        })
-        .array(),
-      units: trait
-        .pick({
-          unit_type: true,
+      tags: z
+        .object({
+          tag: z.string(),
         })
         .array(),
     }),

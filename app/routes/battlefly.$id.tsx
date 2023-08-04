@@ -93,7 +93,7 @@ export default function BattleflyDetail() {
           {fly.traits.map(({ trait }, index) => (
             <Badge key={index}>
               {`+${trait.value}`.replace('+-', '-')}
-              {trait.unit_type === 'percentage' ? '%' : ''} {trait.stat}
+              {trait.tags.includes('percentage') ? '%' : ''} {trait.description}
             </Badge>
           ))}
         </div>

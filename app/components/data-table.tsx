@@ -115,9 +115,16 @@ export function DataTable<TData, TValue>({
       const parsed = queryString.parse(search)
       const where = JSON.parse(
         typeof parsed?.where === 'string' ? parsed.where : '{}',
-      ) as { category?: { _in: string[] }; type?: { _in: string[] } }
+      ) as {
+        category?: { _in: string[] }
+        tags?: { _contains: string[] }
+        type?: { _in: string[] }
+      }
 
-      return Object.entries(where).map(([id, { _in }]) => ({ id, value: _in }))
+      return Object.entries(where).map(([id, value]) => ({
+        id,
+        value: '_in' in value ? value._in : value._contains,
+      }))
     },
   )
   const [sorting, setSorting] = useState<SortingState>(function initial() {
@@ -536,7 +543,12 @@ function FilterCommandGroup<TData, TValue>({
                       where: JSON.stringify({
                         ...where,
                         ...(filterValues.length > 0
-                          ? { [key]: { _in: filterValues } }
+                          ? {
+                              [key]: {
+                                [key === 'tags' ? '_contains' : '_in']:
+                                  filterValues,
+                              },
+                            }
                           : { [key]: undefined }),
                       }).replace('{}', ''),
                     },

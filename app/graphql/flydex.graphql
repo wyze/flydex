@@ -116,9 +116,9 @@ query getBattlefly($id: Int!) {
     }
     traits {
       trait {
-        stat
+        description
+        tags
         value
-        unit_type
       }
     }
     updated_at
@@ -274,11 +274,8 @@ query getModList(
 }
 
 query getTraitFilters {
-  stats: battlefly_trait(distinct_on: stat, order_by: { stat: asc }) {
-    stat
-  }
-  units: battlefly_trait(distinct_on: unit_type, order_by: { unit_type: asc }) {
-    unit_type
+  tags: battlefly_trait_tag(distinct_on: tag, order_by: { tag: asc }) {
+    tag
   }
 }
 
@@ -294,12 +291,12 @@ query getTraitList(
     order_by: $order_by
     where: $where
   ) {
+    description
+    equipped
     id
     name
-    stat
-    unit_type
+    tags
     value
-    equipped
   }
   battlefly_trait_aggregate(where: $where) {
     aggregate {
