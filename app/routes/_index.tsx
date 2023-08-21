@@ -369,12 +369,11 @@ export default function Index() {
                     .map((item) => {
                       if (!item.filter) {
                         return (
-                          <Badge
-                            key={item.children}
-                            className="text-[0.625rem]"
-                          >
-                            {item.children}
-                          </Badge>
+                          <div key={item.children}>
+                            <Badge className="text-[0.625rem]">
+                              {item.children}
+                            </Badge>
+                          </div>
                         )
                       }
 
