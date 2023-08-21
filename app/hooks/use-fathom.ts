@@ -15,7 +15,7 @@ export function useFathom() {
   useEffect(() => {
     if (['/', '/battlefly', '/mods', '/traits'].includes(pathname)) {
       trackPageview({
-        url: [pathname, search.slice(1)].join(':'),
+        url: [pathname, search.slice(1)].join(':').replace(/:$/, ''),
       })
     }
   }, [pathname, search])
