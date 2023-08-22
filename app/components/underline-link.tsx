@@ -1,8 +1,6 @@
 import { Link } from '@remix-run/react'
 import { motion } from 'framer-motion'
 
-const MotionLink = motion(Link)
-
 export function UnderlineLink({
   children,
   href,
@@ -41,8 +39,8 @@ export function UnderlineLink({
   }
 
   return (
-    <MotionLink to={href} whileHover="hover">
-      {content}
-    </MotionLink>
+    <motion.span whileHover="hover">
+      <Link to={href}>{content}</Link>
+    </motion.span>
   )
 }

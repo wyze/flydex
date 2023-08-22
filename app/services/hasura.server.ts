@@ -8,6 +8,7 @@ import { GraphQLClient } from 'graphql-request'
 import { z } from 'zod'
 
 import {
+  type GetCombatHistoryQueryVariables,
   type GetFlydexOwnersQueryVariables,
   type GetFlydexQueryVariables,
   type GetFlydexTokensQueryVariables,
@@ -321,6 +322,38 @@ export async function getBattlefly(id: number) {
       .number()
       .parse(data.battlefly_flydex_aggregate.aggregate?.max?.rank),
     updatedAt: fly.updated_at,
+  }
+}
+
+export async function getCombatHistory(
+  variables: GetCombatHistoryQueryVariables,
+) {
+  const data = await sdk.getCombatHistory(variables)
+  const schema = z
+    .object({
+      created_at: date,
+      id: z.string(),
+      location: z.string(),
+      loser: battlefly.omit({
+        win_loss: true,
+      }),
+      loser_slot_0_mod: mod,
+      loser_slot_1_mod: mod,
+      loser_slot_2_mod: mod,
+      loser_slot_3_mod: mod,
+      winner: battlefly.omit({
+        win_loss: true,
+      }),
+      winner_slot_0_mod: mod,
+      winner_slot_1_mod: mod,
+      winner_slot_2_mod: mod,
+      winner_slot_3_mod: mod,
+    })
+    .array()
+
+  return {
+    combat: schema.parse(data.battlefly_combat),
+    total: z.number().parse(data.battlefly_combat_aggregate.aggregate?.count),
   }
 }
 

@@ -20,6 +20,7 @@ import { usePagination } from '~/hooks/use-pagination'
 import * as normalize from '~/lib/normalize'
 import { json } from '~/lib/responses.server'
 import type { Mod } from '~/lib/types'
+import { CombatHistory } from '~/routes/resources.combat-history'
 import { getBattlefly } from '~/services/hasura.server'
 
 export function loader({ params }: LoaderArgs) {
@@ -461,6 +462,7 @@ export default function BattleflyDetail() {
             </div>
           </section>
         ) : null}
+        <CombatHistory />
       </div>
     </>
   )

@@ -17,11 +17,7 @@ fragment Battlefly on battlefly_flydex {
   location
   mods(order_by: { slot: asc }) {
     mod {
-      category
-      image
-      name
-      rarity
-      type
+      ...Mod
     }
     slot
   }
@@ -161,6 +157,58 @@ query getBattlefly($id: Int!) {
       max {
         rank
       }
+    }
+  }
+}
+
+query getCombatHistory($limit: Int!, $offset: Int!, $id: Int!) {
+  battlefly_combat(
+    limit: $limit
+    offset: $offset
+    order_by: { created_at: desc }
+    where: { _or: [{ loser_id: { _eq: $id } }, { winner_id: { _eq: $id } }] }
+  ) {
+    created_at
+    id
+    location
+    loser {
+      token_id
+      ...Battlefly
+    }
+    loser_slot_0_mod {
+      ...Mod
+    }
+    loser_slot_1_mod {
+      ...Mod
+    }
+    loser_slot_2_mod {
+      ...Mod
+    }
+    loser_slot_3_mod {
+      ...Mod
+    }
+    winner {
+      token_id
+      ...Battlefly
+    }
+    winner_slot_0_mod {
+      ...Mod
+    }
+    winner_slot_1_mod {
+      ...Mod
+    }
+    winner_slot_2_mod {
+      ...Mod
+    }
+    winner_slot_3_mod {
+      ...Mod
+    }
+  }
+  battlefly_combat_aggregate(
+    where: { _or: [{ loser_id: { _eq: $id } }, { winner_id: { _eq: $id } }] }
+  ) {
+    aggregate {
+      count
     }
   }
 }
