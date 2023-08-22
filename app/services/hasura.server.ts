@@ -491,6 +491,11 @@ async function getModFilters() {
         category: z.string(),
       })
       .array(),
+    leagues: z
+      .object({
+        league: z.string(),
+      })
+      .array(),
     rarities: z
       .object({
         rarity: z.string(),
@@ -552,6 +557,7 @@ export async function getModList(params: GetModListQueryVariables) {
       group: z.string(),
       id: z.string(),
       inventory: z.number(),
+      leagues: z.string().array(),
       season: z.string(),
     }),
   )

@@ -185,6 +185,40 @@ const columns: Array<ColumnDef<Data>> = [
     sortingFn: 'basic',
   },
   {
+    accessorKey: 'leagues',
+    header: 'Leagues',
+    cell({ getValue }) {
+      return (
+        <div className="grid grid-cols-[repeat(2,max-content)] gap-2 lg:grid-cols-[repeat(3,max-content)]">
+          {getValue<string[]>()
+            .reduce<string[]>((acc, item) => {
+              const [league, tier] = item.split(' ')
+              const index = acc.findIndex((value) => value.startsWith(league))
+
+              switch (index) {
+                case -1:
+                  acc.push(`${league} ${tier}`)
+
+                  break
+                default:
+                  acc[index] = acc[index].concat(`, ${tier}`)
+
+                  break
+              }
+
+              return acc
+            }, [])
+            .sort(compare.league)
+            .map((league) => (
+              <Badge key={league} className="w-max" variant="secondary">
+                {league}
+              </Badge>
+            ))}
+        </div>
+      )
+    },
+  },
+  {
     accessorKey: 'loadout',
     header: 'Top Loadout',
     cell({ getValue }) {

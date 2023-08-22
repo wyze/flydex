@@ -117,6 +117,7 @@ export function DataTable<TData, TValue>({
         typeof parsed?.where === 'string' ? parsed.where : '{}',
       ) as {
         category?: { _in: string[] }
+        league?: { _contains: string[] }
         tags?: { _contains: string[] }
         type?: { _in: string[] }
       }
@@ -545,8 +546,9 @@ function FilterCommandGroup<TData, TValue>({
                         ...(filterValues.length > 0
                           ? {
                               [key]: {
-                                [key === 'tags' ? '_contains' : '_in']:
-                                  filterValues,
+                                [['leagues', 'tags'].includes(key)
+                                  ? '_contains'
+                                  : '_in']: filterValues,
                               },
                             }
                           : { [key]: undefined }),

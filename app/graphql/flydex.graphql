@@ -265,6 +265,9 @@ query getModFilters {
   ) {
     category
   }
+  leagues: battlefly_mod_league(order_by: { league: asc }) {
+    league
+  }
   rarities: battlefly_mod(distinct_on: rarity, order_by: { rarity: asc }) {
     rarity
   }
@@ -312,6 +315,7 @@ query getModList(
     group
     id
     inventory
+    leagues
     season
   }
   battlefly_mod_aggregate(where: $where) {
