@@ -6,7 +6,9 @@ import { zx } from 'zodix'
 
 import { DataTable, DataTableColumnHeader } from '~/components/data-table'
 import { Mods } from '~/components/mods'
+import { Badge } from '~/components/ui/badge'
 import { UnderlineLink } from '~/components/underline-link'
+import * as compare from '~/lib/compare'
 import * as normalize from '~/lib/normalize'
 import { json } from '~/lib/responses.server'
 import { getModList } from '~/services/hasura.server'
@@ -64,12 +66,24 @@ export default function ModsPage() {
               })),
             },
             {
+              id: 'leagues',
+              title: 'League',
+              options: filters.leagues
+                .sort(compare.league)
+                .map(({ league }) => ({
+                  label: league,
+                  value: league,
+                })),
+            },
+            {
               id: 'rarity',
               title: 'Rarity',
-              options: filters.rarities.map(({ rarity }) => ({
-                label: rarity,
-                value: rarity,
-              })),
+              options: filters.rarities
+                .sort(compare.rarity)
+                .map(({ rarity }) => ({
+                  label: rarity,
+                  value: rarity,
+                })),
             },
             {
               id: 'type',
@@ -153,10 +167,12 @@ const columns: Array<ColumnDef<Data>> = [
     header: 'Season',
     cell({ getValue }) {
       return (
-        (getValue() as string)
-          .at(0)
-          ?.toUpperCase()
-          .concat((getValue() as string).slice(1).replace('-', ' ')) ?? ''
+        <span className="whitespace-nowrap">
+          {(getValue() as string)
+            .at(0)
+            ?.toUpperCase()
+            .concat((getValue() as string).slice(1).replace('-', ' ')) ?? ''}
+        </span>
       )
     },
   },

@@ -55,7 +55,7 @@ export default function TraitsPage() {
           filterableColumns={[
             {
               id: 'tags',
-              title: 'Tags',
+              title: 'Tag',
               options: filters.tags.map(({ tag }) => ({
                 label: tag
                   .at(0)!

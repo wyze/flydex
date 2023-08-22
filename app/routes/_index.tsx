@@ -30,6 +30,7 @@ import {
   DropdownMenuTrigger,
 } from '~/components/ui/dropdown-menu'
 import { usePagination } from '~/hooks/use-pagination'
+import * as compare from '~/lib/compare'
 import { FLY_RARITY_COLORS } from '~/lib/consts'
 import { cn } from '~/lib/helpers'
 import { json } from '~/lib/responses.server'
@@ -165,7 +166,7 @@ export default function Index() {
   const filterableColumns = [
     {
       id: 'league_full',
-      options: filters.leagues.map(({ league_full }) => ({
+      options: filters.leagues.sort(compare.league).map(({ league_full }) => ({
         label: league_full,
         value: league_full,
       })),
@@ -185,7 +186,7 @@ export default function Index() {
     },
     {
       id: 'rarity',
-      options: filters.rarities.map(({ rarity }) => ({
+      options: filters.rarities.sort(compare.rarity).map(({ rarity }) => ({
         label: rarity,
         value: rarity,
       })),
