@@ -386,6 +386,7 @@ async function getFlydexFilters() {
         location: z.string(),
       })
       .array(),
+    mods: z.object({ id: z.string(), name: z.string() }).array(),
     rarities: z
       .object({
         rarity: z.string(),

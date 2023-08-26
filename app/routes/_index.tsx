@@ -128,6 +128,10 @@ export async function loader({ request }: LoaderArgs) {
           data.token = { ...data.token, staked: { _eq: true } }
         }
 
+        if ('mods' in data) {
+          data.mods = { mod_id: data.mods }
+        }
+
         return data
       }),
   })
@@ -183,6 +187,14 @@ export default function Index() {
         value: location,
       })),
       title: 'Location',
+    },
+    {
+      id: 'mods',
+      options: filters.mods.map(({ id, name }) => ({
+        label: name,
+        value: id,
+      })),
+      title: 'Mods',
     },
     {
       id: 'rarity',
