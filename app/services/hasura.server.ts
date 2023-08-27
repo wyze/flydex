@@ -430,8 +430,19 @@ export async function getFlydexTokens(
   }
 }
 
+const invitational = {
+  league: {},
+  token_id: {
+    _in: [17968, 2916, 9551, 623, 3747, 28686, 8033, 20273, 21147, 1647, 14540],
+  },
+}
+
 export async function getLeaderboard(params: GetLeaderboardQueryVariables) {
-  const data = await sdk.getLeaderboard(params)
+  const data = await sdk.getLeaderboard(
+    params.where?.league?._eq === 'Invitational'
+      ? { ...params, where: { ...params.where, ...invitational } }
+      : params,
+  )
 
   return {
     leaderboard: leaderboard.parse(data.battlefly_leaderboard),
@@ -468,13 +479,24 @@ export async function getLeaderboardOverview(day: string) {
   )
 
   const data = await Promise.all(
-    leagues.map(([league], index) =>
-      sdk.getLeaderboard({
-        limit: totals[index],
-        offset: 0,
-        where: { day: { _eq: day }, league: { _eq: league } },
-      }),
-    ),
+    leagues
+      .map(([league], index) =>
+        sdk.getLeaderboard({
+          limit: totals[index],
+          offset: 0,
+          where: { day: { _eq: day }, league: { _eq: league } },
+        }),
+      )
+      .concat(
+        sdk.getLeaderboard({
+          limit: 3,
+          offset: 0,
+          where: {
+            day: { _eq: day },
+            ...invitational,
+          },
+        }),
+      ),
   )
 
   return {

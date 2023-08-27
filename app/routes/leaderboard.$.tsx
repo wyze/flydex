@@ -100,6 +100,8 @@ export default function Leaderboard() {
             <Select.Content>
               <Select.Item value="overview">Overview</Select.Item>
               <Select.Separator className="m-1 h-px bg-gray-200 dark:bg-gray-600" />
+              <Select.Item value="invitational">Invitational</Select.Item>
+              <Select.Separator className="m-1 h-px bg-gray-200 dark:bg-gray-600" />
               {['Apex', 'Predator', 'Monarch', 'Pupa']
                 .flatMap((league) =>
                   [1, 2, 3].map((tier) => `${league} ${tier}`),

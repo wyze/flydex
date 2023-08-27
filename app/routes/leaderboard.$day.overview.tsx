@@ -69,8 +69,11 @@ export default function Leaderboard() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200 dark:divide-gray-800 dark:bg-gray-700">
-                  {leaderboards.map((leaderboard) => {
-                    const { league } = leaderboard.at(0) ?? {}
+                  {leaderboards.map((leaderboard, index) => {
+                    const { league } =
+                      index < leaderboards.length - 1
+                        ? leaderboard.at(0) ?? {}
+                        : { league: 'Invitational' }
 
                     return (
                       <Fragment key={league}>
