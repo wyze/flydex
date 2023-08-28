@@ -90,34 +90,55 @@ export function CombatHistory() {
                   <Skeleton className="h-4 w-full py-6" />
                 </div>
               ))
-            : combat.map((item, index) => (
-                <a
-                  key={item.id}
-                  className={cn(
-                    'grid grid-cols-1 items-center gap-10 px-6 py-4 transition-opacity duration-300 hover:opacity-70 lg:grid-cols-2',
-                    index % 2 ? undefined : 'bg-muted dark:bg-gray-700',
-                  )}
-                  href={`https://play.battlefly.game/battleflies/view/${id}/battlelog/${item.id}`}
-                  rel="noreferrer"
-                  target="_blank"
-                >
-                  <div className="flex flex-1 flex-col items-center gap-2 sm:flex-row sm:gap-10">
-                    <YouCell {...item} />
-                    <span className="mt-2 font-bold tracking-widest">VS</span>
-                    <ThemCell {...item} />
-                  </div>
-                  <div className="text-center text-muted-foreground sm:text-left">
-                    The battle occurred in the{' '}
-                    <span className="font-medium text-primary">
-                      {item.location
-                        .at(0)
-                        ?.toUpperCase()
-                        .concat(item.location.slice(1))}
-                    </span>{' '}
-                    {item.created_at}.
-                  </div>
-                </a>
-              ))}
+            : combat.map((item, index) => {
+                const loser = {
+                  ...item.loser,
+                  mods: [
+                    { mod: item.loser_slot_0_mod, slot: 0 },
+                    { mod: item.loser_slot_1_mod, slot: 1 },
+                    { mod: item.loser_slot_2_mod, slot: 2 },
+                    { mod: item.loser_slot_3_mod, slot: 3 },
+                  ],
+                }
+                const winner = {
+                  ...item.winner,
+                  mods: [
+                    { mod: item.winner_slot_0_mod, slot: 0 },
+                    { mod: item.winner_slot_1_mod, slot: 1 },
+                    { mod: item.winner_slot_2_mod, slot: 2 },
+                    { mod: item.winner_slot_3_mod, slot: 3 },
+                  ],
+                }
+
+                return (
+                  <a
+                    key={item.id}
+                    className={cn(
+                      'grid grid-cols-1 items-center gap-10 px-6 py-4 transition-opacity duration-300 hover:opacity-70 lg:grid-cols-2',
+                      index % 2 ? undefined : 'bg-muted dark:bg-gray-700',
+                    )}
+                    href={`https://play.battlefly.game/battleflies/view/${id}/battlelog/${item.id}`}
+                    rel="noreferrer"
+                    target="_blank"
+                  >
+                    <div className="flex flex-1 flex-col items-center gap-2 sm:flex-row sm:gap-10">
+                      <YouCell loser={loser} winner={winner} />
+                      <span className="mt-2 font-bold tracking-widest">VS</span>
+                      <ThemCell loser={loser} winner={winner} />
+                    </div>
+                    <div className="text-center text-muted-foreground sm:text-left">
+                      The battle occurred in the{' '}
+                      <span className="font-medium text-primary">
+                        {item.location
+                          .at(0)
+                          ?.toUpperCase()
+                          .concat(item.location.slice(1))}
+                      </span>{' '}
+                      {item.created_at}.
+                    </div>
+                  </a>
+                )
+              })}
           <div className="px-2">
             <Pagination button={ParamsLink} {...pagination} />
           </div>
