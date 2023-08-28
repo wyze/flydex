@@ -19,7 +19,7 @@ export function loader({ request }: DataFunctionArgs) {
       .string()
       .default('0')
       .transform(Number)
-      .refine((value) => value <= 20),
+      .refine((value) => value <= 60),
     order_by: z
       .string()
       .default(JSON.stringify({ name: 'asc' }))
