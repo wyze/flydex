@@ -216,7 +216,7 @@ const detail = battlefly.merge(
           ({
             ...Object.fromEntries(
               ['battles', 'losses', 'wins', 'wl_ratio'].flatMap((stat) =>
-                ['24h', '3d', '7d'].map((time) => [
+                ['24h', '3d', '7d', 'today'].map((time) => [
                   `${stat}_${time}`,
                   stat === 'wl_ratio' ? '0%' : 0,
                 ]),
