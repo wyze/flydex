@@ -181,6 +181,7 @@ const detail = battlefly.merge(
         battles_24h: z.number(),
         battles_3d: z.number(),
         battles_7d: z.number(),
+        battles_today: z.number(),
         loadouts: z
           .object({
             battles: z.number(),
@@ -198,12 +199,15 @@ const detail = battlefly.merge(
         losses_24h: z.number(),
         losses_3d: z.number(),
         losses_7d: z.number(),
+        losses_today: z.number(),
         wins_24h: z.number(),
         wins_3d: z.number(),
         wins_7d: z.number(),
+        wins_today: z.number(),
         wl_ratio_24h: z.number().transform(formatPercent),
         wl_ratio_3d: z.number().transform(formatPercent),
         wl_ratio_7d: z.number().transform(formatPercent),
+        wl_ratio_today: z.number().transform(formatPercent),
       })
       .nullable()
       .transform(

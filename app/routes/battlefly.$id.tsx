@@ -12,9 +12,16 @@ import { Popover } from '~/components/popover'
 import { ScrollArea } from '~/components/scroll-area'
 import { Separator } from '~/components/separator'
 import { Tabs } from '~/components/tabs'
-import { ToggleGroup } from '~/components/toggle-group'
 import { Tooltip } from '~/components/tooltip'
 import { Badge } from '~/components/ui/badge'
+import { Button } from '~/components/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
+} from '~/components/ui/dropdown-menu'
 import { UnderlineLink } from '~/components/underline-link'
 import { usePagination } from '~/hooks/use-pagination'
 import * as normalize from '~/lib/normalize'
@@ -37,10 +44,11 @@ export default function BattleflyDetail() {
   const startColor = bodyColor.at(1) === '1' ? '#a2a2a2' : '#2a2a2a'
   const { equipped, inventory } = normalize.mods(fly)
   const [params, setParams] = useSearchParams()
-  const performance = (params.get('performance') ?? '24h') as
+  const performance = (params.get('performance') ?? 'today') as
     | '24h'
     | '3d'
     | '7d'
+    | 'today'
   const page = Number(params.get('loadout_page') ?? '1')
 
   const stats = Object.entries(fly)
@@ -67,6 +75,13 @@ export default function BattleflyDetail() {
     page,
     size: PAGE_SIZE,
   })
+
+  const performanceOptions = [
+    { label: 'Today', value: 'today' },
+    { label: '24 Hours', value: '24h' },
+    { label: '3 Days', value: '3d' },
+    { label: '7 Days', value: '7d' },
+  ]
 
   const traits =
     fly.traits.length === 4
@@ -167,48 +182,42 @@ export default function BattleflyDetail() {
           title={
             <div className="flex justify-between">
               Performance
-              <ToggleGroup
-                className="w-max"
-                label="Change performance data"
-                onValueChange={(performance) => {
-                  const loadoutPage = params.get('loadout_page')
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button size="xs">
+                    {
+                      performanceOptions.find(
+                        (item) => item.value === performance,
+                      )?.label
+                    }
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuRadioGroup
+                    value={performance}
+                    onValueChange={(value) => {
+                      setParams(
+                        (params) => {
+                          params.set('performance', value)
 
-                  if (!performance) {
-                    return
-                  }
-
-                  setParams(
-                    loadoutPage
-                      ? { loadout_page: loadoutPage, performance }
-                      : { performance },
-                    { preventScrollReset: true },
-                  )
-                }}
-                type="single"
-                value={performance}
-              >
-                <ToggleGroup.Item
-                  className="w-max px-2 py-3"
-                  label="24 hours"
-                  value="24h"
-                >
-                  24 Hours
-                </ToggleGroup.Item>
-                <ToggleGroup.Item
-                  className="w-max px-2 py-3"
-                  label="3 days"
-                  value="3d"
-                >
-                  3 Days
-                </ToggleGroup.Item>
-                <ToggleGroup.Item
-                  className="w-max px-2 py-3"
-                  label="7 days"
-                  value="7d"
-                >
-                  7 Days
-                </ToggleGroup.Item>
-              </ToggleGroup>
+                          return params
+                        },
+                        { preventScrollReset: true },
+                      )
+                    }}
+                  >
+                    {performanceOptions.map(({ label, value }) => (
+                      <DropdownMenuRadioItem
+                        key={value}
+                        aria-label={`Performance for ${label}`}
+                        value={value}
+                      >
+                        {label}
+                      </DropdownMenuRadioItem>
+                    ))}
+                  </DropdownMenuRadioGroup>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           }
         />
