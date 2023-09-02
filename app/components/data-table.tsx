@@ -19,6 +19,7 @@ import {
 } from '@tanstack/react-table'
 import queryString from 'query-string'
 import { useEffect, useRef, useState } from 'react'
+import { useDebouncedCallback } from 'use-debounce'
 
 import { Pagination } from '~/components/pagination'
 import { Badge } from '~/components/ui/badge'
@@ -109,7 +110,10 @@ export function DataTable<TData, TValue>({
   total,
 }: DataTableProps<TData, TValue>) {
   const { pathname, search } = useLocation()
-  const navigate = useNavigate()
+  const navigate = useDebouncedCallback(
+    useNavigate(),
+    500,
+  ) as unknown as ReturnType<typeof useNavigate>
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(
     function initial() {
       const parsed = queryString.parse(search)
@@ -118,13 +122,19 @@ export function DataTable<TData, TValue>({
       ) as {
         category?: { _in: string[] }
         league?: { _contains: string[] }
+        name?: { _iregex: string }
         tags?: { _contains: string[] }
         type?: { _in: string[] }
       }
 
       return Object.entries(where).map(([id, value]) => ({
         id,
-        value: '_in' in value ? value._in : value._contains,
+        value:
+          '_in' in value
+            ? value._in
+            : '_iregex' in value
+            ? value._iregex
+            : value._contains,
       }))
     },
   )
@@ -205,6 +215,9 @@ export function DataTable<TData, TValue>({
               table.getColumn(column.id ? String(column.id) : '') && (
                 <Input
                   key={String(column.id)}
+                  autoFocus={Boolean(
+                    table.getColumn(String(column.id))?.getFilterValue(),
+                  )}
                   placeholder={`Filter ${column.title}...`}
                   value={
                     (table

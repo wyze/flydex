@@ -4,6 +4,7 @@ import { trackGoal } from 'fathom-client'
 import { motion } from 'framer-motion'
 import { forwardRef, useCallback, useEffect, useState } from 'react'
 import { useSpinDelay } from 'spin-delay'
+import { useDebounce } from 'use-debounce'
 
 import { DropdownMenu } from '~/components/dropdown-menu'
 import { Icon } from '~/components/icon'
@@ -17,7 +18,6 @@ import {
   CommandList,
   CommandSeparator,
 } from '~/components/ui/command'
-import { useDebouncedValue } from '~/hooks/use-debounced-value'
 import { useNavigationState } from '~/hooks/use-navigation-state'
 import { cn } from '~/lib/helpers'
 import { CommandGetBattleflies } from '~/routes/resources.battleflies'
@@ -141,7 +141,7 @@ function CommandMenu() {
   const tags = useFetcher()
   const wallets = useFetcher()
 
-  const [debouncedSearch] = useDebouncedValue(search)
+  const [debouncedSearch] = useDebounce(search, 500)
   const isLoading = useSpinDelay(
     navigationState === 'loading' || debouncedSearch !== search,
     { delay: 100, minDuration: 500 },
