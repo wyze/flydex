@@ -68,6 +68,13 @@ export default function BattleflyDetail() {
     size: PAGE_SIZE,
   })
 
+  const traits =
+    fly.traits.length === 4
+      ? [fly.traits.slice(0, 2), fly.traits.slice(2)]
+      : [fly.traits.slice(0, 3), fly.traits.slice(3)].filter(
+          (item) => item.length > 0,
+        )
+
   return (
     <>
       <div
@@ -90,12 +97,17 @@ export default function BattleflyDetail() {
         </h1>
       </div>
       {fly.traits.length > 0 ? (
-        <div className="mx-6 mb-8 space-x-2 space-y-2 text-center md:mx-auto">
-          {fly.traits.map(({ trait }, index) => (
-            <Badge key={index}>
-              {`+${trait.value}`.replace('+-', '-')}
-              {trait.tags.includes('percentage') ? '%' : ''} {trait.description}
-            </Badge>
+        <div className="mx-6 mb-8 space-y-2 md:mx-auto">
+          {traits.map((trait, index) => (
+            <div key={index} className="flex justify-center gap-2">
+              {trait.map(({ trait }, index) => (
+                <Badge key={index}>
+                  {`+${trait.value}`.replace('+-', '-')}
+                  {trait.tags.includes('percentage') ? '%' : ''}{' '}
+                  {trait.description}
+                </Badge>
+              ))}
+            </div>
           ))}
         </div>
       ) : null}
