@@ -78,6 +78,20 @@ const trait = z.object({
   value: z.number(),
 })
 
+function traitDescription<
+  T extends { description: string; tags: string[]; value: number },
+>({ description, tags, value, ...item }: T) {
+  const prefix = description.indexOf('<value>') > 0 ? '' : value > 0 ? '+' : '-'
+  const suffix = tags.includes('percentage') ? '%' : ''
+
+  return {
+    ...item,
+    description: description.replace('<value>', `${prefix}${value}${suffix}`),
+    tags,
+    value,
+  }
+}
+
 const battlefly = z.object({
   body_color: z.string(),
   contest_points: z.number(),
@@ -168,11 +182,13 @@ const detail = battlefly.merge(
     }),
     traits: z
       .object({
-        trait: trait.pick({
-          description: true,
-          tags: true,
-          value: true,
-        }),
+        trait: trait
+          .pick({
+            description: true,
+            tags: true,
+            value: true,
+          })
+          .transform(traitDescription),
       })
       .array(),
     updated_at: date,
@@ -593,11 +609,13 @@ export async function getTraitList(params: GetTraitListQueryVariables) {
     sdk.getTraitFilters(),
   ])
   const schemas = {
-    data: trait.merge(
-      z.object({
-        equipped: z.number(),
-      }),
-    ),
+    data: trait
+      .merge(
+        z.object({
+          equipped: z.number(),
+        }),
+      )
+      .transform(traitDescription),
     filters: z.object({
       tags: z
         .object({
