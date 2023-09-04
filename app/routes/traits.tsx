@@ -89,18 +89,8 @@ const columns: Array<ColumnDef<Data>> = [
     },
   },
   {
-    id: 'effect',
+    accessorKey: 'description',
     header: 'Effect',
-    cell({ row }) {
-      const { description, tags, value } = row.original
-
-      return (
-        <>
-          {`+${value}`.replace('+-', '-')}
-          {tags.includes('percentage') ? '%' : ''} {description}
-        </>
-      )
-    },
   },
   {
     accessorKey: 'equipped',

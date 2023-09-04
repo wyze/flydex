@@ -116,11 +116,7 @@ export default function BattleflyDetail() {
           {traits.map((trait, index) => (
             <div key={index} className="flex justify-center gap-2">
               {trait.map(({ trait }, index) => (
-                <Badge key={index}>
-                  {`+${trait.value}`.replace('+-', '-')}
-                  {trait.tags.includes('percentage') ? '%' : ''}{' '}
-                  {trait.description}
-                </Badge>
+                <Badge key={index}>{trait.description}</Badge>
               ))}
             </div>
           ))}
