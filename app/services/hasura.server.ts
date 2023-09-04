@@ -485,24 +485,13 @@ export async function getLeaderboardOverview(day: string) {
   )
 
   const data = await Promise.all(
-    leagues
-      .map(([league], index) =>
-        sdk.getLeaderboard({
-          limit: totals[index],
-          offset: 0,
-          where: { day: { _eq: day }, league: { _eq: league } },
-        }),
-      )
-      .concat(
-        sdk.getLeaderboard({
-          limit: 3,
-          offset: 0,
-          where: {
-            day: { _eq: day },
-            ...invitational,
-          },
-        }),
-      ),
+    leagues.map(([league], index) =>
+      sdk.getLeaderboard({
+        limit: totals[index],
+        offset: 0,
+        where: { day: { _eq: day }, league: { _eq: league } },
+      }),
+    ),
   )
 
   return {

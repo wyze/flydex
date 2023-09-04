@@ -69,96 +69,95 @@ export default function Leaderboard() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200 dark:divide-gray-800 dark:bg-gray-700">
-                  {leaderboards.map((leaderboard, index) => {
-                    const { league } =
-                      index < leaderboards.length - 1
-                        ? leaderboard.at(0) ?? {}
-                        : { league: 'Invitational' }
+                  {leaderboards
+                    .filter((leaderboard) => leaderboard.length > 0)
+                    .map((leaderboard) => {
+                      const { league } = leaderboard.at(0) ?? {}
 
-                    return (
-                      <Fragment key={league}>
-                        <tr className="border-t border-gray-200 dark:border-gray-700">
-                          <th
-                            colSpan={4}
-                            scope="colgroup"
-                            className="bg-gray-50 py-2 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 dark:bg-gray-900 sm:pl-6"
-                          >
-                            <Link
-                              className="text-pink-500 underline"
-                              prefetch="intent"
-                              to={`/leaderboard/${day}/${league
-                                ?.toLowerCase()
-                                .replace(' ', '-')}`}
+                      return (
+                        <Fragment key={league}>
+                          <tr className="border-t border-gray-200 dark:border-gray-700">
+                            <th
+                              colSpan={4}
+                              scope="colgroup"
+                              className="bg-gray-50 py-2 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 dark:bg-gray-900 sm:pl-6"
                             >
-                              {league}
-                            </Link>
-                          </th>
-                        </tr>
-                        {leaderboard.map(
-                          ({ flydex, league, token_id, wins }, index) => {
-                            const bodyColor = flydex.body_color
-                            const startColor =
-                              bodyColor.at(1) === '1' ? '#a2a2a2' : '#2a2a2a'
-                            const { equipped } = normalize.mods(flydex)
-
-                            return (
-                              <tr
-                                key={token_id}
-                                className={
-                                  index % 2
-                                    ? undefined
-                                    : 'bg-gray-50 dark:bg-gray-800'
-                                }
+                              <Link
+                                className="text-pink-500 underline"
+                                prefetch="intent"
+                                to={`/leaderboard/${day}/${league
+                                  ?.toLowerCase()
+                                  .replace(' ', '-')}`}
                               >
-                                <td className="whitespace-nowrap text-sm">
-                                  <div className="py-4 pl-4 pr-3 sm:pl-6">
-                                    <div className="flex items-center">
-                                      <div className="w-3 flex-shrink-0 text-xs text-gray-500 dark:text-gray-400">
-                                        {index + 1}.
-                                      </div>
-                                      <div className="mx-4 h-10 w-10 flex-shrink-0 select-none">
-                                        <img
-                                          alt=""
-                                          className="h-10 w-10 rounded-full p-1"
-                                          style={{
-                                            background: `linear-gradient(to bottom, ${bodyColor}, ${startColor})`,
-                                          }}
-                                          src={flydex.image}
-                                        />
-                                      </div>
-                                      <div className="flex flex-col gap-1">
-                                        <div className="font-medium">
-                                          <UnderlineLink
-                                            href={`/battlefly/${token_id}`}
-                                          >
-                                            {flydex.name}
-                                          </UnderlineLink>
+                                {league}
+                              </Link>
+                            </th>
+                          </tr>
+                          {leaderboard.map(
+                            ({ flydex, league, token_id, wins }, index) => {
+                              const bodyColor = flydex.body_color
+                              const startColor =
+                                bodyColor.at(1) === '1' ? '#a2a2a2' : '#2a2a2a'
+                              const { equipped } = normalize.mods(flydex)
+
+                              return (
+                                <tr
+                                  key={token_id}
+                                  className={
+                                    index % 2
+                                      ? undefined
+                                      : 'bg-gray-50 dark:bg-gray-800'
+                                  }
+                                >
+                                  <td className="whitespace-nowrap text-sm">
+                                    <div className="py-4 pl-4 pr-3 sm:pl-6">
+                                      <div className="flex items-center">
+                                        <div className="w-3 flex-shrink-0 text-xs text-gray-500 dark:text-gray-400">
+                                          {index + 1}.
                                         </div>
-                                        <Mods items={equipped} title="" />
+                                        <div className="mx-4 h-10 w-10 flex-shrink-0 select-none">
+                                          <img
+                                            alt=""
+                                            className="h-10 w-10 rounded-full p-1"
+                                            style={{
+                                              background: `linear-gradient(to bottom, ${bodyColor}, ${startColor})`,
+                                            }}
+                                            src={flydex.image}
+                                          />
+                                        </div>
+                                        <div className="flex flex-col gap-1">
+                                          <div className="font-medium">
+                                            <UnderlineLink
+                                              href={`/battlefly/${token_id}`}
+                                            >
+                                              {flydex.name}
+                                            </UnderlineLink>
+                                          </div>
+                                          <Mods items={equipped} title="" />
+                                        </div>
                                       </div>
                                     </div>
-                                  </div>
-                                </td>
-                                <td className="whitespace-nowrap px-3 text-sm">
-                                  <Owner {...flydex.token} />
-                                </td>
-                                <td className="whitespace-nowrap px-3 text-sm">
-                                  <div className="text-gray-900 dark:text-gray-200">
-                                    {league}
-                                  </div>
-                                </td>
-                                <td className="whitespace-nowrap px-3 text-sm">
-                                  <div className="text-gray-500 dark:text-gray-400">
-                                    {wins}
-                                  </div>
-                                </td>
-                              </tr>
-                            )
-                          },
-                        )}
-                      </Fragment>
-                    )
-                  })}
+                                  </td>
+                                  <td className="whitespace-nowrap px-3 text-sm">
+                                    <Owner {...flydex.token} />
+                                  </td>
+                                  <td className="whitespace-nowrap px-3 text-sm">
+                                    <div className="text-gray-900 dark:text-gray-200">
+                                      {league}
+                                    </div>
+                                  </td>
+                                  <td className="whitespace-nowrap px-3 text-sm">
+                                    <div className="text-gray-500 dark:text-gray-400">
+                                      {wins}
+                                    </div>
+                                  </td>
+                                </tr>
+                              )
+                            },
+                          )}
+                        </Fragment>
+                      )
+                    })}
                 </tbody>
               </table>
             </div>
