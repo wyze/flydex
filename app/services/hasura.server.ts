@@ -1,6 +1,7 @@
 import {
   format,
   formatDistanceToNow,
+  isToday,
   startOfToday,
   startOfYesterday,
 } from 'date-fns'
@@ -516,6 +517,9 @@ export async function getLeaderboardOverview(day: string) {
       }),
     ),
   )
+
+  console.log('~> isToday', isToday(new Date(`${day} 00:00:00`)))
+  console.log('~> Now', new Date())
 
   return {
     leaderboards: data.map((item) =>
