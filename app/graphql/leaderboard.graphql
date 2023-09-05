@@ -37,6 +37,11 @@ query getLeaderboard(
     }
     league
     token_id
+    reward {
+      credit
+      nectar
+      share
+    }
     wins
   }
   battlefly_leaderboard_aggregate(where: $where) {

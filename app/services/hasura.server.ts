@@ -280,6 +280,13 @@ const leaderboard = z
       z.literal('Pupa 3'),
     ]),
     token_id: z.number(),
+    reward: z
+      .object({
+        credit: z.string().regex(/\w:\d/).nullable(),
+        nectar: z.number(),
+        share: z.number(),
+      })
+      .nullable(),
     wins: z.number(),
   })
   .array()

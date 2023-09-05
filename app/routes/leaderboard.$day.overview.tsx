@@ -66,6 +66,12 @@ export default function Leaderboard() {
                     >
                       Wins
                     </th>
+                    <th
+                      scope="col"
+                      className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-50"
+                    >
+                      Reward
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200 dark:divide-gray-800 dark:bg-gray-700">
@@ -94,7 +100,10 @@ export default function Leaderboard() {
                             </th>
                           </tr>
                           {leaderboard.map(
-                            ({ flydex, league, token_id, wins }, index) => {
+                            (
+                              { flydex, league, token_id, reward, wins },
+                              index,
+                            ) => {
                               const bodyColor = flydex.body_color
                               const startColor =
                                 bodyColor.at(1) === '1' ? '#a2a2a2' : '#2a2a2a'
@@ -149,6 +158,11 @@ export default function Leaderboard() {
                                   <td className="whitespace-nowrap px-3 text-sm">
                                     <div className="text-gray-500 dark:text-gray-400">
                                       {wins}
+                                    </div>
+                                  </td>
+                                  <td className="whitespace-nowrap px-3 text-sm">
+                                    <div className="text-gray-500 dark:text-gray-400">
+                                      {normalize.reward(reward)}
                                     </div>
                                   </td>
                                 </tr>
