@@ -1,6 +1,5 @@
 import { type LoaderArgs } from '@remix-run/node'
 import { Link, useLoaderData, useParams } from '@remix-run/react'
-import { isToday } from 'date-fns'
 import { Fragment } from 'react'
 import { z } from 'zod'
 import { zx } from 'zodix'
@@ -21,9 +20,8 @@ export async function loader({ params }: LoaderArgs) {
 }
 
 export default function Leaderboard() {
-  const { leaderboards } = useLoaderData<typeof loader>()
+  const { leaderboards, showRewards } = useLoaderData<typeof loader>()
   const { day } = useParams()
-  const showRewards = !isToday(new Date(`${day} 00:00:00`))
 
   return (
     <div className="px-4 pb-16 pt-8 sm:px-6 lg:px-8">

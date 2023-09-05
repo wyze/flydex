@@ -1,6 +1,5 @@
 import { type LoaderArgs } from '@remix-run/node'
 import { Link, useLoaderData, useNavigate, useParams } from '@remix-run/react'
-import { isToday } from 'date-fns'
 import { z } from 'zod'
 
 import { Mods } from '~/components/mods'
@@ -44,7 +43,7 @@ export async function loader({ params }: LoaderArgs) {
 }
 
 export default function Leaderboard() {
-  const { leaderboard, today, total, yesterday } =
+  const { leaderboard, showRewards, today, total, yesterday } =
     useLoaderData<typeof loader>()
   const [day, league, page] = useParams()['*']?.split('/') ?? []
   const navigate = useNavigate()
@@ -52,7 +51,6 @@ export default function Leaderboard() {
     page: page ? Number(page) : 1,
     size: PAGE_SIZE,
   })
-  const showRewards = !isToday(new Date(`${day} 00:00:00`))
 
   return (
     <div className="px-4 pb-16 pt-8 sm:px-6 lg:px-8">

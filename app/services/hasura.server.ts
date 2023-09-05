@@ -476,6 +476,7 @@ export async function getLeaderboard(params: GetLeaderboardQueryVariables) {
 
   return {
     leaderboard: leaderboard.parse(data.battlefly_leaderboard),
+    showRewards: !isToday(new Date(`${params.where?.day?._eq} 00:00:00`)),
     today: format(startOfToday(), 'yyyy-MM-dd'),
     total: z
       .number()
@@ -518,13 +519,11 @@ export async function getLeaderboardOverview(day: string) {
     ),
   )
 
-  console.log('~> isToday', isToday(new Date(`${day} 00:00:00`)))
-  console.log('~> Now', new Date())
-
   return {
     leaderboards: data.map((item) =>
       leaderboard.parse(item.battlefly_leaderboard),
     ),
+    showRewards: !isToday(new Date(`${day} 00:00:00`)),
   }
 }
 
