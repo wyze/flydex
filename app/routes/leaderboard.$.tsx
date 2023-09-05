@@ -1,5 +1,6 @@
 import { type LoaderArgs } from '@remix-run/node'
 import { Link, useLoaderData, useNavigate, useParams } from '@remix-run/react'
+import { isToday } from 'date-fns'
 import { z } from 'zod'
 
 import { Mods } from '~/components/mods'
@@ -51,6 +52,7 @@ export default function Leaderboard() {
     page: page ? Number(page) : 1,
     size: PAGE_SIZE,
   })
+  const showRewards = !isToday(new Date(`${day} 00:00:00`))
 
   return (
     <div className="px-4 pb-16 pt-8 sm:px-6 lg:px-8">
@@ -147,12 +149,14 @@ export default function Leaderboard() {
                     >
                       Wins
                     </th>
-                    <th
-                      scope="col"
-                      className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-50"
-                    >
-                      Reward
-                    </th>
+                    {showRewards ? (
+                      <th
+                        scope="col"
+                        className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-50"
+                      >
+                        Reward
+                      </th>
+                    ) : null}
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200 dark:divide-gray-800 dark:bg-gray-700">
@@ -217,11 +221,13 @@ export default function Leaderboard() {
                               {wins}
                             </div>
                           </td>
-                          <td className="whitespace-nowrap px-3 text-sm">
-                            <div className="text-gray-500 dark:text-gray-400">
-                              {normalize.reward(reward)}
-                            </div>
-                          </td>
+                          {showRewards ? (
+                            <td className="whitespace-nowrap px-3 text-sm">
+                              <div className="text-gray-500 dark:text-gray-400">
+                                {normalize.reward(reward)}
+                              </div>
+                            </td>
+                          ) : null}
                         </tr>
                       )
                     },
