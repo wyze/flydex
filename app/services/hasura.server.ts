@@ -1,7 +1,6 @@
 import {
   format,
   formatDistanceToNow,
-  isToday,
   startOfToday,
   startOfYesterday,
 } from 'date-fns'
@@ -474,9 +473,11 @@ export async function getLeaderboard(params: GetLeaderboardQueryVariables) {
       : params,
   )
 
+  const parsed = leaderboard.parse(data.battlefly_leaderboard)
+
   return {
-    leaderboard: leaderboard.parse(data.battlefly_leaderboard),
-    showRewards: !isToday(new Date(`${params.where?.day?._eq} 00:00:00`)),
+    leaderboard: parsed,
+    showRewards: parsed.some((item) => item.reward !== null),
     today: format(startOfToday(), 'yyyy-MM-dd'),
     total: z
       .number()
@@ -519,11 +520,15 @@ export async function getLeaderboardOverview(day: string) {
     ),
   )
 
+  const leaderboards = data.map((item) =>
+    leaderboard.parse(item.battlefly_leaderboard),
+  )
+
   return {
-    leaderboards: data.map((item) =>
-      leaderboard.parse(item.battlefly_leaderboard),
+    leaderboards,
+    showRewards: leaderboards.some((leaderboard) =>
+      leaderboard.some((item) => item.reward !== null),
     ),
-    showRewards: !isToday(new Date(`${day} 00:00:00`)),
   }
 }
 
