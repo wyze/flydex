@@ -8,8 +8,9 @@ query getLeaderboard(
     offset: $offset
     order_by: [
       { wins: desc }
+      { league_battles: desc }
+      { contest_points: desc }
       { created_at: asc }
-      { flydex: { contest_points: desc } }
     ]
     where: $where
   ) {
