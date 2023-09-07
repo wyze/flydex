@@ -103,7 +103,7 @@ export default function Leaderboard() {
                           </tr>
                           {leaderboard.map(
                             (
-                              { flydex, league, token_id, reward, wins },
+                              { flydex, league, token_id, rank, reward, wins },
                               index,
                             ) => {
                               const bodyColor = flydex.body_color
@@ -124,7 +124,7 @@ export default function Leaderboard() {
                                     <div className="py-4 pl-4 pr-3 sm:pl-6">
                                       <div className="flex items-center">
                                         <div className="w-3 flex-shrink-0 text-xs text-gray-500 dark:text-gray-400">
-                                          {index + 1}.
+                                          {rank}.
                                         </div>
                                         <div className="mx-4 h-10 w-10 flex-shrink-0 select-none">
                                           <img

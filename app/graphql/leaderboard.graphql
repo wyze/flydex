@@ -6,12 +6,7 @@ query getLeaderboard(
   battlefly_leaderboard(
     limit: $limit
     offset: $offset
-    order_by: [
-      { wins: desc }
-      { league_battles: desc }
-      { contest_points: desc }
-      { created_at: asc }
-    ]
+    order_by: [{ rank: asc }]
     where: $where
   ) {
     day
@@ -38,6 +33,7 @@ query getLeaderboard(
     }
     league
     token_id
+    rank
     reward {
       credit
       nectar

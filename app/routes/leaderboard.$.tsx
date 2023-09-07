@@ -159,7 +159,10 @@ export default function Leaderboard() {
                 </thead>
                 <tbody className="divide-y divide-gray-200 dark:divide-gray-800 dark:bg-gray-700">
                   {leaderboard.map(
-                    ({ flydex, league, token_id, reward, wins }, index) => {
+                    (
+                      { flydex, league, token_id, rank, reward, wins },
+                      index,
+                    ) => {
                       const bodyColor = flydex.body_color
                       const startColor =
                         bodyColor.at(1) === '1' ? '#a2a2a2' : '#2a2a2a'
@@ -178,10 +181,7 @@ export default function Leaderboard() {
                             <div className="py-4 pl-4 pr-3 sm:pl-6">
                               <div className="flex items-center">
                                 <div className="w-3 flex-shrink-0 text-xs text-gray-500 dark:text-gray-400">
-                                  {index +
-                                    1 +
-                                    (page ? (Number(page) - 1) * PAGE_SIZE : 0)}
-                                  .
+                                  {rank}.
                                 </div>
                                 <div className="mx-4 h-10 w-10 flex-shrink-0 select-none">
                                   <img

@@ -279,6 +279,7 @@ const leaderboard = z
       z.literal('Pupa 2'),
       z.literal('Pupa 3'),
     ]),
+    rank: z.number(),
     token_id: z.number(),
     reward: z
       .object({
