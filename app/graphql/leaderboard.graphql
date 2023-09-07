@@ -1,3 +1,5 @@
+#import './flydex.graphql'
+
 query getLeaderboard(
   $limit: Int!
   $offset: Int!
@@ -13,16 +15,6 @@ query getLeaderboard(
     flydex {
       body_color
       image
-      mods(order_by: { slot: asc }, where: { slot: { _is_null: false } }) {
-        mod {
-          category
-          image
-          name
-          rarity
-          type
-        }
-        slot
-      }
       name
       token {
         owner
@@ -32,6 +24,18 @@ query getLeaderboard(
       }
     }
     league
+    slot_0 {
+      ...Mod
+    }
+    slot_1 {
+      ...Mod
+    }
+    slot_2 {
+      ...Mod
+    }
+    slot_3 {
+      ...Mod
+    }
     token_id
     rank
     reward {

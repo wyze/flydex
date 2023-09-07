@@ -249,21 +249,19 @@ const flydex = battlefly.array()
 const leaderboard = z
   .object({
     day: z.string(),
-    flydex: z
-      .object({
-        body_color: z.string(),
-        image: z.string().url(),
-        name: z.string(),
-        token: z.object({
-          owner: z.string(),
-          treasure_tag: z
-            .object({
-              display_name: z.string(),
-            })
-            .nullable(),
-        }),
-      })
-      .merge(battlefly.pick({ mods: true })),
+    flydex: z.object({
+      body_color: z.string(),
+      image: z.string().url(),
+      name: z.string(),
+      token: z.object({
+        owner: z.string(),
+        treasure_tag: z
+          .object({
+            display_name: z.string(),
+          })
+          .nullable(),
+      }),
+    }),
     league: z.union([
       z.literal('Apex 1'),
       z.literal('Apex 2'),
@@ -280,6 +278,10 @@ const leaderboard = z
       z.literal('Pupa 3'),
     ]),
     rank: z.number(),
+    slot_0: mod,
+    slot_1: mod,
+    slot_2: mod,
+    slot_3: mod,
     token_id: z.number(),
     reward: z
       .object({
