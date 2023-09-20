@@ -3,6 +3,7 @@ import type { getLeaderboard } from '~/services/hasura.server'
 
 import { Mods } from './mods'
 import { Owner } from './owner'
+import { Button } from './ui/button'
 import { UnderlineLink } from './underline-link'
 
 type LeaderboardData = Awaited<ReturnType<typeof getLeaderboard>>
@@ -11,6 +12,7 @@ export function LeaderboardRow({
   day,
   flydex,
   index,
+  invite,
   league,
   rank,
   reward,
@@ -19,6 +21,11 @@ export function LeaderboardRow({
   wins,
   ...mods
 }: LeaderboardData['leaderboard'][number] & {
+  invite?: {
+    name: string
+    username: string
+    wallet: string
+  }
   index: number
   showRewards: LeaderboardData['showRewards']
 }) {
@@ -55,7 +62,7 @@ export function LeaderboardRow({
             <div className="flex flex-col gap-1">
               <div className="font-medium">
                 <UnderlineLink href={`/battlefly/${token_id}`}>
-                  {flydex.name}
+                  {invite?.name ?? flydex.name}
                 </UnderlineLink>
               </div>
               <Mods items={equipped} title="" />
@@ -64,8 +71,37 @@ export function LeaderboardRow({
         </div>
       </td>
       <td className="whitespace-nowrap px-3 text-sm">
-        <Owner {...flydex.token} />
+        {invite ? invite.username : <Owner {...flydex.token} />}
       </td>
+      {invite ? (
+        <td className="whitespace-nowrap px-3 text-sm">
+          <div className="flex gap-3">
+            <Button asChild size="xs">
+              <a
+                className="w-7"
+                href={`https://twitter.com/${invite.username}`}
+                rel="noreferrer"
+                target="_blank"
+              >
+                𝕏
+              </a>
+            </Button>
+            <Button asChild size="xs">
+              <a
+                href={`https://friend.tech/rooms/${invite.wallet}`}
+                rel="noreferrer"
+                target="_blank"
+              >
+                <img
+                  alt="friend.tech logo"
+                  className="w-3"
+                  src="/images/friendtech.png"
+                />
+              </a>
+            </Button>
+          </div>
+        </td>
+      ) : null}
       <td className="whitespace-nowrap px-3 text-sm">
         <div className="text-gray-900 dark:text-gray-200">{league}</div>
       </td>

@@ -17,7 +17,7 @@ import {
   type GetTraitListQueryVariables,
   getSdk,
 } from '~/graphql/generated'
-import { MOD_RARITY_COLORS } from '~/lib/consts'
+import { INVITATIONAL_FLY_IDS, MOD_RARITY_COLORS } from '~/lib/consts'
 import { HASURA_API_KEY, HASURA_ENDPOINT } from '~/lib/env.server'
 
 const client = new GraphQLClient(HASURA_ENDPOINT, {
@@ -263,6 +263,7 @@ const leaderboard = z
       }),
     }),
     league: z.union([
+      z.literal('Invitational'),
       z.literal('Apex 1'),
       z.literal('Apex 2'),
       z.literal('Apex 3'),
@@ -353,6 +354,35 @@ export async function getBattlefly(id: number) {
       .parse(data.battlefly_flydex_aggregate.aggregate?.max?.rank),
     updatedAt: fly.updated_at,
   }
+}
+
+export async function getInvitationalBattles() {
+  const data = await sdk.getInvitationalBattles({
+    ids: INVITATIONAL_FLY_IDS,
+  })
+  const schema = z
+    .object({
+      created_at: date,
+      id: z.string(),
+      location: z.string(),
+      loser: battlefly.omit({
+        win_loss: true,
+      }),
+      loser_slot_0_mod: mod,
+      loser_slot_1_mod: mod,
+      loser_slot_2_mod: mod,
+      loser_slot_3_mod: mod,
+      winner: battlefly.omit({
+        win_loss: true,
+      }),
+      winner_slot_0_mod: mod,
+      winner_slot_1_mod: mod,
+      winner_slot_2_mod: mod,
+      winner_slot_3_mod: mod,
+    })
+    .array()
+
+  return schema.parse(data.battlefly_combat)
 }
 
 export async function getCombatHistory(
@@ -460,15 +490,6 @@ export async function getFlydexTokens(
   }
 }
 
-const invitational = {
-  league: {},
-  token_id: {
-    _in: [
-      17968, 2916, 9551, 623, 3747, 28686, 8033, 20273, 21147, 29635, 14540,
-    ],
-  },
-}
-
 export async function getInvitational() {
   const data = await sdk.getInvitational()
 
@@ -488,13 +509,38 @@ export async function getInvitational() {
     .parse(data.battlefly_invitational)
 }
 
-export async function getLeaderboard(params: GetLeaderboardQueryVariables) {
-  const data = await sdk.getLeaderboard(
-    params.where?.league?._eq === 'Invitational'
-      ? { ...params, where: { ...params.where, ...invitational } }
-      : params,
-  )
+export async function getInvitationalLeaderboard() {
+  const data = await sdk.getInvitationalLeaderboard()
+  const parsed = leaderboard.element
+    .merge(
+      z.object({
+        flydex: z.object({
+          body_color: z.string(),
+          image: z.string().url(),
+        }),
+        invite: z.object({
+          name: z.string(),
+          username: z.string(),
+          wallet: z.string(),
+        }),
+        league: z.literal('Invitational'),
+      }),
+    )
+    .array()
+    .parse(data.battlefly_leaderboard_invitational)
 
+  return {
+    leaderboard: parsed,
+    total: z
+      .number()
+      .parse(
+        data.battlefly_leaderboard_invitational_aggregate.aggregate?.count,
+      ),
+  }
+}
+
+export async function getLeaderboard(params: GetLeaderboardQueryVariables) {
+  const data = await sdk.getLeaderboard(params)
   const parsed = leaderboard.parse(data.battlefly_leaderboard)
 
   return {

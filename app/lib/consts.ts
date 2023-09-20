@@ -15,3 +15,8 @@ export const MOD_RARITY_COLORS = {
   Rare: '0, 240, 255',
   Uncommon: '52, 238, 166',
 }
+
+export const INVITATIONAL_FLY_IDS = [
+  623, 702, 2751, 2916, 3188, 3750, 8704, 9551, 9966, 10387, 14838, 16856,
+  17488, 17968, 20273, 21147, 28686,
+]
