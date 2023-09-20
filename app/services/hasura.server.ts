@@ -356,9 +356,14 @@ export async function getBattlefly(id: number) {
   }
 }
 
-export async function getInvitationalBattles() {
+export async function getInvitationalBattles({
+  limit = 40,
+}: {
+  limit?: number
+} = {}) {
   const data = await sdk.getInvitationalBattles({
     ids: INVITATIONAL_FLY_IDS,
+    limit,
   })
   const schema = z
     .object({

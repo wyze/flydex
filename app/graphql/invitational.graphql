@@ -18,9 +18,9 @@ query getInvitational {
   }
 }
 
-query getInvitationalBattles($ids: [Int!]!) {
+query getInvitationalBattles($limit: Int!, $ids: [Int!]!) {
   battlefly_combat(
-    limit: 40
+    limit: $limit
     order_by: { created_at: desc }
     where: {
       _and: { created_at: { _gt: "2023-09-21" } }
