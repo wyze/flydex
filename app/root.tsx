@@ -1,9 +1,5 @@
 import fontStyles from '@fontsource-variable/inter/index.css'
-import type {
-  LinksFunction,
-  LoaderArgs,
-  V2_MetaFunction,
-} from '@remix-run/node'
+import type { LinksFunction } from '@remix-run/node'
 import * as remix from '@remix-run/node'
 import {
   Links,
@@ -36,13 +32,13 @@ export const links: LinksFunction = () =>
     .map((href) => ({ rel: 'stylesheet', href }))
     .concat([{ rel: 'shortcut icon', href: '/images/logo.png' }])
 
-export const meta: V2_MetaFunction = () => [
+export const meta: remix.MetaFunction = () => [
   { charSet: 'utf-8' },
   { title: 'FlyDex' },
   { name: 'viewport', content: 'width=device-width,initial-scale=1' },
 ]
 
-export async function loader({ request }: LoaderArgs) {
+export async function loader({ request }: remix.DataFunctionArgs) {
   const { theme } = await getSession(request)
 
   return remix.json({ env: { NODE_ENV }, theme })

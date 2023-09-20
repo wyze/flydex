@@ -1,4 +1,4 @@
-import { type LoaderArgs } from '@remix-run/node'
+import { type DataFunctionArgs } from '@remix-run/node'
 import { Link, useLoaderData, useParams } from '@remix-run/react'
 import { Fragment } from 'react'
 import { z } from 'zod'
@@ -8,7 +8,7 @@ import { LeaderboardRow } from '~/components/leaderboard'
 import { json } from '~/lib/responses.server'
 import { getLeaderboardOverview } from '~/services/hasura.server'
 
-export async function loader({ params }: LoaderArgs) {
+export async function loader({ params }: DataFunctionArgs) {
   const { day } = zx.parseParams(params, {
     day: z.string().regex(/\d{4}-\d{2}-\d{2}/),
   })

@@ -1,4 +1,4 @@
-import type { LoaderArgs, SerializeFrom } from '@remix-run/node'
+import type { DataFunctionArgs, SerializeFrom } from '@remix-run/node'
 import { Link, useFetcher, useParams, useSearchParams } from '@remix-run/react'
 import queryString from 'query-string'
 import { Fragment, useEffect } from 'react'
@@ -21,7 +21,7 @@ import { getCombatHistory } from '~/services/hasura.server'
 
 const PAGE_SIZE = 10
 
-export function loader({ request }: LoaderArgs) {
+export function loader({ request }: DataFunctionArgs) {
   const { combat_offset, ...rest } = zx.parseQuery(request, {
     id: z.string().transform(Number),
     limit: z

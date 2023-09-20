@@ -1,5 +1,5 @@
 import { DropdownMenuGroup } from '@radix-ui/react-dropdown-menu'
-import { type ActionArgs, type LoaderArgs, redirect } from '@remix-run/node'
+import { type DataFunctionArgs, redirect } from '@remix-run/node'
 import {
   Form,
   Link,
@@ -38,7 +38,7 @@ import { getFlydex, getTreasureTag } from '~/services/hasura.server'
 
 const PAGE_SIZE = 30
 
-export async function action({ request }: ActionArgs) {
+export async function action({ request }: DataFunctionArgs) {
   const parsed = await zx.parseFormSafe(request, {
     query: z.union([
       z
@@ -95,7 +95,7 @@ export async function action({ request }: ActionArgs) {
   )
 }
 
-export async function loader({ request }: LoaderArgs) {
+export async function loader({ request }: DataFunctionArgs) {
   const params = zx.parseQuery(request, {
     limit: z
       .number()

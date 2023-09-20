@@ -1,4 +1,4 @@
-import type { ActionArgs, SerializeFrom } from '@remix-run/node'
+import type { DataFunctionArgs, SerializeFrom } from '@remix-run/node'
 import { useNavigate } from '@remix-run/react'
 import { z } from 'zod'
 import { zx } from 'zodix'
@@ -14,7 +14,7 @@ interface CommandGetBattlefliesProps {
   runCommand: (command: () => void) => void
 }
 
-export async function loader({ request }: ActionArgs) {
+export async function loader({ request }: DataFunctionArgs) {
   const parsed = zx.parseQuerySafe(request, {
     query: z
       .string()

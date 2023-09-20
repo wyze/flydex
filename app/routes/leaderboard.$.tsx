@@ -1,4 +1,4 @@
-import { type LoaderArgs } from '@remix-run/node'
+import { type DataFunctionArgs } from '@remix-run/node'
 import { Link, useLoaderData, useNavigate, useParams } from '@remix-run/react'
 import { z } from 'zod'
 
@@ -12,7 +12,7 @@ import { getLeaderboard } from '~/services/hasura.server'
 
 const PAGE_SIZE = 30
 
-export async function loader({ params }: LoaderArgs) {
+export async function loader({ params }: DataFunctionArgs) {
   const parsed = z
     .string()
     .transform((value) => {

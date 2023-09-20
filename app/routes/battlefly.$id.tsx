@@ -1,4 +1,4 @@
-import type { LoaderArgs } from '@remix-run/node'
+import type { DataFunctionArgs } from '@remix-run/node'
 import { Link, useLoaderData, useSearchParams } from '@remix-run/react'
 import queryString from 'query-string'
 import { Fragment } from 'react'
@@ -30,7 +30,7 @@ import type { Mod } from '~/lib/types'
 import { CombatHistory } from '~/routes/resources.combat-history'
 import { getBattlefly } from '~/services/hasura.server'
 
-export function loader({ params }: LoaderArgs) {
+export function loader({ params }: DataFunctionArgs) {
   const parsed = zx.parseParams(params, { id: z.string().transform(Number) })
 
   return json(`fly:${parsed.id}`, () => getBattlefly(parsed.id))
