@@ -469,6 +469,25 @@ const invitational = {
   },
 }
 
+export async function getInvitational() {
+  const data = await sdk.getInvitational()
+
+  return z
+    .object({
+      flydex: battlefly.pick({ mods: true }).merge(
+        z.object({
+          body_color: z.string(),
+          image: z.string().url(),
+        }),
+      ),
+      name: z.string(),
+      username: z.string(),
+      wallet: z.string(),
+    })
+    .array()
+    .parse(data.battlefly_invitational)
+}
+
 export async function getLeaderboard(params: GetLeaderboardQueryVariables) {
   const data = await sdk.getLeaderboard(
     params.where?.league?._eq === 'Invitational'

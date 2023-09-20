@@ -1,0 +1,19 @@
+#import './flydex.graphql'
+
+query getInvitational {
+  battlefly_invitational(order_by: { name: asc }) {
+    flydex {
+      body_color
+      image
+      mods(order_by: { slot: asc }) {
+        mod {
+          ...Mod
+        }
+        slot
+      }
+    }
+    name
+    username
+    wallet
+  }
+}

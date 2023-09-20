@@ -58,7 +58,7 @@ function App() {
         <Links />
         <ThemeHead ssrTheme={data.theme !== 'system'} />
       </head>
-      <body className="flex h-full flex-col bg-white dark:bg-gray-900">
+      <body className="flex min-h-screen flex-col bg-white dark:bg-gray-900">
         <ThemeBody ssrTheme={data.theme !== 'system'} />
         <SiteHeader />
         <Outlet />

@@ -68,7 +68,7 @@ function MainNav() {
         </motion.div>
       </Link>
       <nav className="flex items-center space-x-6 text-sm font-medium">
-        {['Leaderboard', 'Mods', 'Traits'].map((to) => (
+        {['Invitational', 'Leaderboard', 'Mods', 'Traits'].map((to) => (
           <NavLink to={`/${to.toLowerCase()}`} key={to}>
             {({ isActive }) => (
               <motion.div
@@ -197,18 +197,20 @@ function CommandMenu() {
             <CommandEmpty>No results found.</CommandEmpty>
           )}
           <CommandGroup heading="Links">
-            {['Home', 'Leaderboard', 'Mods', 'Traits'].map((to) => (
-              <CommandItem
-                key={to}
-                value={to.toLowerCase()}
-                onSelect={() => {
-                  runCommand(() => navigate(`/${to.replace('Home', '')}`))
-                }}
-              >
-                <Icon className="mr-2" name="file" />
-                {to}
-              </CommandItem>
-            ))}
+            {['Home', 'Invitational', 'Leaderboard', 'Mods', 'Traits'].map(
+              (to) => (
+                <CommandItem
+                  key={to}
+                  value={to.toLowerCase()}
+                  onSelect={() => {
+                    runCommand(() => navigate(`/${to.replace('Home', '')}`))
+                  }}
+                >
+                  <Icon className="mr-2" name="file" />
+                  {to}
+                </CommandItem>
+              ),
+            )}
           </CommandGroup>
           {flies.data && !isLoading ? (
             <>
