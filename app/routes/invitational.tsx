@@ -498,7 +498,7 @@ function Panel({ timer }: { timer: number }) {
     .split('')
 
   return (
-    <div className="absolute flex text-9xl">
+    <div className="absolute flex text-4xl md:text-9xl">
       <Digit value={hour[0]} />
       <Digit value={hour[1]} />
       <div>:</div>
