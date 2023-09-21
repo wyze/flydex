@@ -19,7 +19,9 @@ import { Badge } from '~/components/ui/badge'
 import { Button } from '~/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '~/components/ui/tabs'
+import { useToast } from '~/components/ui/use-toast'
 import { UnderlineLink } from '~/components/underline-link'
+import { useDocumentVisibility } from '~/hooks/use-document-visibility'
 import { usePagination } from '~/hooks/use-pagination'
 import { INVITATIONAL_FLY_IDS } from '~/lib/consts'
 import { cn } from '~/lib/helpers'
@@ -42,7 +44,13 @@ export async function loader() {
     getInvitational(),
   ])
 
-  return json({ battles, ...leaderboard, initialTimer, players })
+  return json({
+    battles,
+    ...leaderboard,
+    initialLastCombatId: `${battles.at(0)?.id}`,
+    initialTimer,
+    players,
+  })
 }
 
 type EventSourceOptions = {
@@ -84,11 +92,18 @@ export function useEventSource(
 }
 
 export default function Invitational() {
-  const { battles, initialTimer, leaderboard, players, total } =
-    useLoaderData<typeof loader>()
+  const {
+    battles,
+    initialLastCombatId,
+    initialTimer,
+    leaderboard,
+    players,
+    total,
+  } = useLoaderData<typeof loader>()
   const [timer, setTimer] = useState(initialTimer)
   const [battleTimer, setBattleTimer] = useState(1140)
   const { revalidate } = useRevalidator()
+  const { toast } = useToast()
 
   const [params, setSearchParams] = useSearchParams()
   const [tab, setTab] = useState(params.get('tab') ?? 'leaderboard')
@@ -99,11 +114,25 @@ export default function Invitational() {
     size: 20,
   })
 
+  const visibility = useDocumentVisibility()
   const lastCombatId = useEventSource('/sse/invitational', { event: 'combat' })
 
   useEffect(() => {
-    revalidate()
-  }, [lastCombatId, revalidate])
+    if (initialLastCombatId !== lastCombatId) {
+      toast({
+        title: 'New battles detected',
+        description: 'Refreshing content to pull latest battles',
+      })
+
+      revalidate()
+    }
+  }, [initialLastCombatId, lastCombatId, revalidate, toast])
+
+  useEffect(() => {
+    if (visibility === 'visible') {
+      revalidate()
+    }
+  }, [revalidate, visibility])
 
   useEffect(() => {
     if (params.get('tab') !== tab) {

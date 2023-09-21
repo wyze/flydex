@@ -20,6 +20,7 @@ import {
   ThemeProvider,
   useTheme,
 } from '~/components/theme-provider'
+import { Toaster } from '~/components/ui/toaster'
 import { useFathom } from '~/hooks/use-fathom'
 import { useNProgress } from '~/hooks/use-n-progress'
 import { NODE_ENV } from '~/lib/env.server'
@@ -62,6 +63,7 @@ function App() {
         <ThemeBody ssrTheme={data.theme !== 'system'} />
         <SiteHeader />
         <Outlet />
+        <Toaster />
         <ScrollRestoration />
         <Scripts />
         <LiveReload />

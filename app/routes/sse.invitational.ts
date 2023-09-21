@@ -87,11 +87,15 @@ export function eventStream(
 
 export async function loader({ request }: DataFunctionArgs) {
   return eventStream(request.signal, function setup(send) {
-    const timer = setInterval(async () => {
+    async function check() {
       const [{ id }] = await getInvitationalBattles({ limit: 1 })
 
       send({ event: 'combat', data: id })
-    }, 30_000) // Every 30 seconds
+    }
+
+    const timer = setInterval(check, 30_000) // Every 30 seconds
+
+    void check()
 
     return function clear() {
       clearInterval(timer)
