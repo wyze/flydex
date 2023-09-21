@@ -91,15 +91,10 @@ export async function loader({ request }: DataFunctionArgs) {
       const [{ id }] = await getInvitationalBattles({ limit: 1 })
 
       send({ event: 'combat', data: id })
-    }, 60_000 * 3) // Every 3 minutes
-
-    const heartbeat = setInterval(() => {
-      send({ event: 'heartbeat', data: '' })
-    }, 2000)
+    }, 30_000) // Every 30 seconds
 
     return function clear() {
       clearInterval(timer)
-      clearInterval(heartbeat)
     }
   })
 }
