@@ -1,4 +1,4 @@
-import * as remix from '@remix-run/node'
+import { type SerializeFrom, json } from '@remix-run/node'
 import {
   useLoaderData,
   useRevalidator,
@@ -24,7 +24,6 @@ import { usePagination } from '~/hooks/use-pagination'
 import { INVITATIONAL_FLY_IDS } from '~/lib/consts'
 import { cn } from '~/lib/helpers'
 import * as normalize from '~/lib/normalize'
-import { json } from '~/lib/responses.server'
 import type { Mod } from '~/lib/types'
 import {
   getInvitational,
@@ -43,13 +42,7 @@ export async function loader() {
     getInvitational(),
   ])
 
-  if (initialTimer >= 0) {
-    return remix.json({ battles, ...leaderboard, initialTimer, players })
-  }
-
-  return json('invitational', () =>
-    Promise.resolve({ battles, ...leaderboard, initialTimer: 0, players }),
-  )
+  return json({ battles, ...leaderboard, initialTimer, players })
 }
 
 type EventSourceOptions = {
@@ -511,7 +504,7 @@ function Panel({ timer }: { timer: number }) {
   )
 }
 
-type Data = remix.SerializeFrom<typeof loader>['battles'][number]
+type Data = SerializeFrom<typeof loader>['battles'][number]
 
 function ThemCell({
   id,
