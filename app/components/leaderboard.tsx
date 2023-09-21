@@ -94,7 +94,7 @@ export function LeaderboardRow({
               >
                 <img
                   alt="friend.tech logo"
-                  className="w-3"
+                  className="w-3 dark:invert"
                   src="/images/friendtech.png"
                 />
               </a>

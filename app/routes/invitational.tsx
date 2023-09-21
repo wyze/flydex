@@ -33,7 +33,7 @@ import {
 
 export async function loader() {
   const initialTimer = differenceInSeconds(
-    new Date('2023-09-21 00:00:00'),
+    new Date('2023-09-20 00:00:00'),
     new Date(),
   )
   const [battles, leaderboard, players] = await Promise.all([
@@ -202,7 +202,7 @@ export default function Invitational() {
                         >
                           <img
                             alt="friend.tech logo"
-                            className="w-3"
+                            className="w-3 dark:invert"
                             src="/images/friendtech.png"
                           />
                         </a>
@@ -411,7 +411,7 @@ export default function Invitational() {
                           >
                             <img
                               alt="friend.tech logo"
-                              className="w-3"
+                              className="w-3 dark:invert"
                               src="/images/friendtech.png"
                             />
                           </a>
