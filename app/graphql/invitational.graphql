@@ -23,7 +23,10 @@ query getInvitationalBattles($limit: Int!, $ids: [Int!]!) {
     limit: $limit
     order_by: { created_at: desc }
     where: {
-      _and: { created_at: { _gt: "2023-09-21" } }
+      _and: [
+        { created_at: { _gt: "2023-09-21" } }
+        { created_at: { _lt: "2023-09-23" } }
+      ]
       _or: [{ loser_id: { _in: $ids } }, { winner_id: { _in: $ids } }]
     }
   ) {
@@ -78,6 +81,7 @@ query getInvitationalLeaderboard {
       wallet
     }
     league
+    league_battles
     slot_0 {
       ...Mod
     }

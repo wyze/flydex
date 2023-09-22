@@ -529,6 +529,7 @@ export async function getInvitationalLeaderboard() {
           wallet: z.string(),
         }),
         league: z.literal('Invitational'),
+        league_battles: z.number(),
       }),
     )
     .array()

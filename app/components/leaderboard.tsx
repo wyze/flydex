@@ -14,6 +14,7 @@ export function LeaderboardRow({
   index,
   invite,
   league,
+  league_battles,
   rank,
   reward,
   showRewards,
@@ -27,6 +28,7 @@ export function LeaderboardRow({
     wallet: string
   }
   index: number
+  league_battles?: number
   showRewards: LeaderboardData['showRewards']
 }) {
   const bodyColor = flydex.body_color
@@ -108,6 +110,13 @@ export function LeaderboardRow({
       <td className="whitespace-nowrap px-3 text-sm">
         <div className="text-gray-500 dark:text-gray-400">{wins}</div>
       </td>
+      {league_battles ? (
+        <td className="whitespace-nowrap px-3 text-sm">
+          <div className="text-gray-500 dark:text-gray-400">
+            {league_battles}
+          </div>
+        </td>
+      ) : null}
       {showRewards ? (
         <td className="whitespace-nowrap px-3 text-sm">
           <div className="text-gray-500 dark:text-gray-400">

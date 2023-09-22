@@ -307,6 +307,12 @@ export default function Invitational() {
                         >
                           Wins
                         </th>
+                        <th
+                          scope="col"
+                          className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-50"
+                        >
+                          Battles
+                        </th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200 dark:divide-gray-800 dark:bg-gray-700">
