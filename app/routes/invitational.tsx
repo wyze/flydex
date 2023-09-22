@@ -7,6 +7,7 @@ import {
 import { differenceInSeconds } from 'date-fns'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Fragment, useEffect, useState } from 'react'
+import Confetti from 'react-confetti'
 import { useDebouncedCallback } from 'use-debounce'
 
 import { Icon } from '~/components/icon'
@@ -38,6 +39,10 @@ export async function loader() {
     new Date('2023-09-20 00:00:00'),
     new Date(),
   )
+  const initialPodiumTimer = differenceInSeconds(
+    new Date('2023-09-23 00:00:00'),
+    new Date(),
+  )
   const [battles, leaderboard, players] = await Promise.all([
     getInvitationalBattles(),
     getInvitationalLeaderboard(),
@@ -48,6 +53,7 @@ export async function loader() {
     battles,
     ...leaderboard,
     initialLastCombatId: `${battles.at(0)?.id}`,
+    initialPodiumTimer,
     initialTimer,
     players,
   })
@@ -95,12 +101,14 @@ export default function Invitational() {
   const {
     battles,
     initialLastCombatId,
+    initialPodiumTimer,
     initialTimer,
     leaderboard,
     players,
     total,
   } = useLoaderData<typeof loader>()
   const [timer, setTimer] = useState(initialTimer)
+  const [podiumTimer, setPodiumTimer] = useState(initialPodiumTimer)
   const [battleTimer, setBattleTimer] = useState(1140)
   const { revalidate } = useRevalidator()
   const { toast } = useToast()
@@ -159,6 +167,26 @@ export default function Invitational() {
       }
     }
   }, [initialTimer, revalidate])
+
+  useEffect(() => {
+    if (initialPodiumTimer > 0) {
+      const interval = setInterval(() => {
+        setPodiumTimer((state) => {
+          if (state < 0) {
+            clearInterval(interval)
+
+            setTab('podium')
+          }
+
+          return state - 1
+        })
+      }, 1000)
+
+      return function cleanup() {
+        clearInterval(interval)
+      }
+    }
+  }, [initialPodiumTimer])
 
   useEffect(() => {
     if (battles.length === 0) {
@@ -265,10 +293,77 @@ export default function Invitational() {
       </div>
       <Tabs className="mb-8" onValueChange={setTab} value={tab}>
         <TabsList className="my-5">
+          {podiumTimer > 0 ? null : (
+            <TabsTrigger value="podium">Podium</TabsTrigger>
+          )}
           <TabsTrigger value="leaderboard">Leaderboard</TabsTrigger>
           <TabsTrigger value="battles">Battles</TabsTrigger>
           <TabsTrigger value="players">Players</TabsTrigger>
         </TabsList>
+        <TabsContent value="podium">
+          <div className="flex h-80 items-end justify-center gap-4">
+            {[
+              {
+                container: { duration: 1 },
+                fly: leaderboard[2],
+                height: '30%',
+                stand: { delay: 1.2 },
+              },
+              {
+                container: { delay: 5.2 },
+                fly: leaderboard[0],
+                height: '90%',
+                stand: { delay: 6.7 },
+              },
+              {
+                container: { delay: 2.5 },
+                fly: leaderboard[1],
+                height: '60%',
+                stand: { delay: 3.7 },
+              },
+            ].map(({ container, fly, height, stand }) => {
+              const bodyColor = fly.flydex.body_color
+              const startColor = bodyColor.at(1) === '1' ? '#a2a2a2' : '#2a2a2a'
+
+              return (
+                <motion.div
+                  key={fly.rank}
+                  className="flex w-32 flex-col gap-1 text-center"
+                  animate={{ height, opacity: 1 }}
+                  initial={{ height: 0, opacity: 0 }}
+                  transition={{ ...container, duration: 1 }}
+                >
+                  <motion.div
+                    className="flex flex-col items-center"
+                    animate={{ opacity: 1 }}
+                    initial={{ opacity: 0 }}
+                    transition={{ duration: 0.3, ...stand }}
+                  >
+                    <div className="mx-4 h-10 w-10 flex-shrink-0 select-none">
+                      <img
+                        alt=""
+                        className="h-10 w-10 rounded-full p-1"
+                        style={{
+                          background: `linear-gradient(to bottom, ${bodyColor}, ${startColor})`,
+                        }}
+                        src={fly.flydex.image}
+                      />
+                    </div>
+                    <motion.span
+                      animate={{ opacity: 1 }}
+                      initial={{ opacity: 0 }}
+                      transition={{ delay: stand.delay + 0.5, duration: 0.25 }}
+                    >
+                      {fly.rank === 1 ? <Celebrate /> : null}
+                      {fly.invite.username}
+                    </motion.span>
+                  </motion.div>
+                  <div className="mx-auto w-20 flex-1 rounded-t bg-gradient-to-br from-orange-500 to-blue-500" />
+                </motion.div>
+              )
+            })}
+          </div>
+        </TabsContent>
         <TabsContent value="leaderboard">
           <div className="flex flex-col space-y-4">
             <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -465,6 +560,22 @@ export default function Invitational() {
       </Tabs>
     </div>
   )
+}
+
+function Celebrate() {
+  const [recycle, setRecycle] = useState(true)
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setRecycle(false)
+    }, 10_000)
+
+    return function cleanup() {
+      clearTimeout(timeout)
+    }
+  }, [])
+
+  return <Confetti recycle={recycle} />
 }
 
 function Mods({ items }: { items: Mod[] }) {
