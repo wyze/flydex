@@ -69,7 +69,7 @@ function MainNav() {
       </Link>
       <nav className="flex items-center space-x-6 text-sm font-medium">
         {['Invitational', 'Leaderboard', 'Mods', 'Traits'].map((to) => (
-          <NavLink to={`/${to.toLowerCase()}`} key={to}>
+          <NavLink key={to} prefetch="intent" to={`/${to.toLowerCase()}`}>
             {({ isActive }) => (
               <motion.div
                 className={cn(
