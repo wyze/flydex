@@ -154,7 +154,7 @@ export default function Leaderboard() {
                     ) : null}
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-200 dark:divide-gray-800 dark:bg-gray-700">
+                <tbody className="divide-y divide-gray-200 dark:divide-gray-800 dark:bg-gray-900">
                   {leaderboard.map((props, index) => (
                     <LeaderboardRow
                       key={props.rank}

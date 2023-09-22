@@ -108,7 +108,9 @@ export function LeaderboardRow({
         <div className="text-gray-900 dark:text-gray-200">{league}</div>
       </td>
       <td className="whitespace-nowrap px-3 text-sm">
-        <div className="text-gray-500 dark:text-gray-400">{wins}</div>
+        <div className="font-medium text-gray-600 dark:text-gray-300">
+          {wins}
+        </div>
       </td>
       {league_battles ? (
         <td className="whitespace-nowrap px-3 text-sm">
