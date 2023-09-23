@@ -1,4 +1,4 @@
-import { type SerializeFrom, json } from '@remix-run/node'
+import { type SerializeFrom } from '@remix-run/node'
 import {
   useLoaderData,
   useRevalidator,
@@ -27,6 +27,7 @@ import { usePagination } from '~/hooks/use-pagination'
 import { INVITATIONAL_FLY_IDS } from '~/lib/consts'
 import { cn } from '~/lib/helpers'
 import * as normalize from '~/lib/normalize'
+import { json } from '~/lib/responses.server'
 import type { Mod } from '~/lib/types'
 import {
   getInvitational,
@@ -43,20 +44,21 @@ export async function loader() {
     new Date('2023-09-23 00:00:00'),
     new Date(),
   )
-  const [battles, leaderboard, players] = await Promise.all([
-    getInvitationalBattles(),
-    getInvitationalLeaderboard(),
-    getInvitational(),
-  ])
 
-  return json({
-    battles,
-    ...leaderboard,
-    initialLastCombatId: `${battles.at(0)?.id}`,
-    initialPodiumTimer,
-    initialTimer,
-    players,
-  })
+  return json('invitational', () =>
+    Promise.all([
+      getInvitationalBattles(),
+      getInvitationalLeaderboard(),
+      getInvitational(),
+    ]).then(([battles, leaderboard, players]) => ({
+      battles,
+      ...leaderboard,
+      initialLastCombatId: `${battles.at(0)?.id}`,
+      initialPodiumTimer,
+      initialTimer,
+      players,
+    })),
+  )
 }
 
 type EventSourceOptions = {
