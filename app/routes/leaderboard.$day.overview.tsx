@@ -63,6 +63,12 @@ export default function Leaderboard() {
                     >
                       Wins
                     </th>
+                    <th
+                      scope="col"
+                      className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-50"
+                    >
+                      Battles
+                    </th>
                     {showRewards ? (
                       <th
                         scope="col"

@@ -278,6 +278,7 @@ const leaderboard = z
       z.literal('Pupa 2'),
       z.literal('Pupa 3'),
     ]),
+    league_battles: z.number(),
     rank: z.number(),
     slot_0: mod,
     slot_1: mod,

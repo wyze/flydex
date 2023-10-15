@@ -24,6 +24,7 @@ query getLeaderboard(
       }
     }
     league
+    league_battles
     slot_0 {
       ...Mod
     }
