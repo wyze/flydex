@@ -30,8 +30,8 @@ import styles from '~/styles/tailwind.css'
 
 export const links: LinksFunction = () =>
   [styles, nProgressStyles, fontStyles]
-    .map((href) => ({ rel: 'stylesheet', href }))
-    .concat([{ rel: 'shortcut icon', href: '/images/logo.png' }])
+    .map((href) => ({ rel: 'stylesheet', href, type: 'text/css' }))
+    .concat([{ rel: 'icon', href: '/images/logo.png', type: 'image/png' }])
 
 export const meta: remix.MetaFunction = () => [
   { charSet: 'utf-8' },
