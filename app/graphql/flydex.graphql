@@ -1,5 +1,6 @@
 fragment Mod on battlefly_mod {
   category
+  class
   image
   name
   rarity
@@ -273,6 +274,9 @@ query getModFilters {
   ) {
     category
   }
+  classes: battlefly_mod(distinct_on: class, order_by: { class: asc }) {
+    class
+  }
   leagues: battlefly_mod_league(order_by: { league: asc }) {
     league
   }
@@ -293,14 +297,19 @@ query getModGroup($group: String!) {
     ...ModLoadout
     description
     defense_armor
+    defense_deploy
     defense_evasion
+    defense_hp
     defense_shield
+    defense_taunt
     group
     id
     season
     weapon_burst
     weapon_damage_per_fire
     weapon_damage_per_second
+    weapon_deploy
+    weapon_hp
     weapon_reload
   }
 }

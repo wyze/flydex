@@ -66,6 +66,14 @@ export default function ModsPage() {
               })),
             },
             {
+              id: 'class',
+              title: 'Class',
+              options: filters.classes.map(({ class: value }) => ({
+                label: value,
+                value,
+              })),
+            },
+            {
               id: 'leagues',
               title: 'League',
               options: filters.leagues
@@ -161,6 +169,7 @@ const columns: Array<ColumnDef<Data>> = [
   },
   { accessorKey: 'rarity', header: 'Rarity' },
   { accessorKey: 'category', header: 'Category' },
+  { accessorKey: 'class', header: 'Class' },
   { accessorKey: 'type', header: 'Type' },
   {
     accessorKey: 'season',

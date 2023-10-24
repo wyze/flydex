@@ -52,6 +52,7 @@ export default function ModGroup() {
             ?.toUpperCase()
             .concat(mod.season.slice(1).replace('-', ' '))}
         </Badge>
+        <Badge variant="secondary">{mod.class}</Badge>
         {[mod.category, mod.type].map((value) => (
           <Badge key={value}>{value}</Badge>
         ))}
@@ -77,8 +78,11 @@ export default function ModGroup() {
                   </div>
                 ),
                 Armor: mod.defense_armor,
+                Deploy: mod.defense_deploy ?? mod.weapon_deploy,
                 Evasion: mod.defense_evasion,
+                HP: mod.defense_hp ?? mod.weapon_hp,
                 Sheild: mod.defense_shield,
+                Taunt: mod.defense_taunt,
                 Burst: mod.weapon_burst,
                 Damage: mod.weapon_damage_per_fire,
                 DPS: mod.weapon_damage_per_second,

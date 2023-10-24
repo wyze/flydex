@@ -53,6 +53,7 @@ const mod = z.object({
     z.literal('Missile'),
     z.literal('Shield'),
   ]),
+  class: z.union([z.literal('Regular'), z.literal('Swarm')]),
   image: z.string().url(),
   name: z.string(),
   rarity: z.union([
@@ -615,6 +616,11 @@ async function getModFilters() {
         category: z.string(),
       })
       .array(),
+    classes: z
+      .object({
+        class: z.string(),
+      })
+      .array(),
     leagues: z
       .object({
         league: z.string(),
@@ -640,16 +646,22 @@ export async function getModGroup(group: string) {
   const data = await sdk.getModGroup({ group })
   const schema = z
     .object({
+      class: z.string(),
       description: z.string(),
       defense_armor: z.number().nullable(),
+      defense_deploy: z.number().nullable(),
       defense_evasion: z.number().nullable(),
+      defense_hp: z.number().nullable(),
       defense_shield: z.number().nullable(),
+      defense_taunt: z.number().nullable(),
       group: z.string(),
       name: z.string(),
       season: z.string(),
       weapon_burst: z.number().nullable(),
       weapon_damage_per_fire: z.number().nullable(),
       weapon_damage_per_second: z.number().nullable(),
+      weapon_deploy: z.number().nullable(),
+      weapon_hp: z.number().nullable(),
       weapon_reload: z.number().nullable(),
     })
     .merge(mod)
