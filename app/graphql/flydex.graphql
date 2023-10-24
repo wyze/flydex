@@ -292,7 +292,7 @@ query getModFilters {
 }
 
 query getModGroup($group: String!) {
-  battlefly_mod(where: { group: { _ilike: $group } }) {
+  battlefly_mod(where: { group: { _iregex: $group } }) {
     ...Mod
     ...ModLoadout
     description

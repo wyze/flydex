@@ -15,7 +15,9 @@ export function loader({ params }: DataFunctionArgs) {
     group: z.string().min(1),
   })
 
-  return json(`mod:group:${group}`, () => getModGroup(group.replace(/-/g, ' ')))
+  return json(`mod:group:${group}`, () =>
+    getModGroup(group.replace(/-/g, '(-| )')),
+  )
 }
 
 export default function ModGroup() {
