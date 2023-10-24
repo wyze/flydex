@@ -20,9 +20,18 @@ import {
 } from '~/components/ui/command'
 import { useNavigationState } from '~/hooks/use-navigation-state'
 import { cn } from '~/lib/helpers'
-import { CommandGetBattleflies } from '~/routes/resources.battleflies'
-import { CommandGetTreasureTags } from '~/routes/resources.treasure-tags'
-import { CommandGetWallets } from '~/routes/resources.wallets'
+import {
+  CommandGetBattleflies,
+  type loader as flyLoader,
+} from '~/routes/resources.battleflies'
+import {
+  CommandGetTreasureTags,
+  type loader as tagLoader,
+} from '~/routes/resources.treasure-tags'
+import {
+  CommandGetWallets,
+  type loader as walletLoader,
+} from '~/routes/resources.wallets'
 
 interface CommandLoadingProps extends React.HTMLAttributes<HTMLDivElement> {
   children?: React.ReactNode
@@ -137,9 +146,9 @@ function CommandMenu() {
   const [search, setSearch] = useState('')
   const [, , setTheme] = useTheme()
 
-  const flies = useFetcher()
-  const tags = useFetcher()
-  const wallets = useFetcher()
+  const flies = useFetcher<typeof flyLoader>()
+  const tags = useFetcher<typeof tagLoader>()
+  const wallets = useFetcher<typeof walletLoader>()
 
   const [debouncedSearch] = useDebounce(search, 500)
   const isLoading = useSpinDelay(
