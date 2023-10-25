@@ -41,12 +41,12 @@ export function loader({ request }: DataFunctionArgs) {
   return json(`trending:${JSON.stringify(params)}`, () => getTrending(params))
 }
 
-export default function ModsPage() {
+export default function TrendingPage() {
   const { flies, total } = useLoaderData<typeof loader>()
   const { search } = useLocation()
   const [params, setParams] = useSearchParams()
   const where = JSON.parse(params.get('where') ?? '{}')
-  const selected: string = where?.league_full._eq ?? DEFAULT_LEAGUE
+  const selected: string = where?.league_full?._eq ?? DEFAULT_LEAGUE
 
   return (
     <div className="flex-1 p-12">
