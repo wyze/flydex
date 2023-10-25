@@ -21,6 +21,7 @@ import { Icon } from '~/components/icon'
 import { Pagination } from '~/components/pagination'
 import { Badge } from '~/components/ui/badge'
 import { Button } from '~/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -29,12 +30,17 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '~/components/ui/dropdown-menu'
+import { UnderlineLink } from '~/components/underline-link'
 import { usePagination } from '~/hooks/use-pagination'
 import * as compare from '~/lib/compare'
 import { FLY_RARITY_COLORS } from '~/lib/consts'
 import { cn } from '~/lib/helpers'
 import { json } from '~/lib/responses.server'
-import { getFlydex, getTreasureTag } from '~/services/hasura.server'
+import {
+  getFlydex,
+  getTreasureTag,
+  getTrendingTop,
+} from '~/services/hasura.server'
 
 const PAGE_SIZE = 30
 
@@ -136,19 +142,22 @@ export async function loader({ request }: DataFunctionArgs) {
       }),
   })
 
-  return json(`flies:${JSON.stringify(params)}`, () =>
-    getFlydex(params).then((data) => {
-      if (data.total === 0) {
-        throw new Response('No battleflies found', { status: 404 })
-      }
+  return json(`flies:${JSON.stringify(params)}`, async function query() {
+    const [flydex, trending] = await Promise.all([
+      getFlydex(params),
+      getTrendingTop(),
+    ])
 
-      return data
-    }),
-  )
+    if (flydex.total === 0) {
+      throw new Response('No battleflies found', { status: 404 })
+    }
+
+    return { ...flydex, trending }
+  })
 }
 
 export default function Index() {
-  const { filters, flies, total } = useLoaderData<typeof loader>()
+  const { filters, flies, total, trending } = useLoaderData<typeof loader>()
   const [params] = useSearchParams()
   const location = useLocation()
   const navigate = useNavigate()
@@ -208,6 +217,44 @@ export default function Index() {
 
   return (
     <div className="flex-1 space-y-5 p-4 md:p-12">
+      <div>
+        <h3 className="flex items-center gap-4 text-lg font-semibold">
+          Top Trending
+          <Link
+            className="inline-flex items-center gap-1 text-sm text-pink-600 hover:underline dark:text-pink-300"
+            to="/trending"
+            prefetch="intent"
+          >
+            View All
+            <Icon name="move-right" />
+          </Link>
+        </h3>
+        <p className="pb-2 text-xs text-muted-foreground">
+          Based on win/loss ratio.
+        </p>
+        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+          {trending.map(({ change, flydex, wl_ratio }) => (
+            <Card key={flydex.token_id}>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">
+                  <UnderlineLink href={`/battlefly/${flydex.token_id}`}>
+                    {flydex.name}
+                  </UnderlineLink>
+                </CardTitle>
+                <span className="text-xs text-muted-foreground">
+                  {flydex.league} {flydex.league_tier}
+                </span>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{wl_ratio}</div>
+                <p className="text-xs text-muted-foreground">
+                  {change} from last 24 hours
+                </p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
       <div className="flex items-center justify-between">
         <div className="flex flex-1 items-center">
           <div className="hidden space-x-2 md:block">

@@ -15,6 +15,7 @@ import {
   type GetLeaderboardQueryVariables,
   type GetModListQueryVariables,
   type GetTraitListQueryVariables,
+  type GetTrendingQueryVariables,
   getSdk,
 } from '~/graphql/generated'
 import { INVITATIONAL_FLY_IDS, MOD_RARITY_COLORS } from '~/lib/consts'
@@ -753,4 +754,63 @@ export async function getTreasureTagOwners(name: string) {
     tags: schema.parse(data.treasure_tag),
     total: z.number().parse(data.treasure_tag_aggregate.aggregate?.count),
   }
+}
+
+export async function getTrending(params: GetTrendingQueryVariables) {
+  const data = await sdk.getTrending(params)
+  const schema = z
+    .object({
+      change: z.number().transform((value) => {
+        const symbol = value > 0 ? '+' : '-'
+
+        return `${symbol}${formatPercent(Math.abs(value))}`
+      }),
+      flydex: z
+        .object({
+          token: z.object({
+            owner: z.string(),
+            treasure_tag: z
+              .object({
+                display_name: z.string(),
+              })
+              .nullable(),
+          }),
+        })
+        .merge(battlefly),
+      rank: z.number().transform((value) => `${value}.`),
+      wl_ratio: z.number().transform(formatPercent),
+      wl_ratio_previous: z.number().transform(formatPercent),
+    })
+    .array()
+
+  return {
+    flies: schema.parse(data.battlefly_win_loss_trending),
+    total: z
+      .number()
+      .parse(data.battlefly_win_loss_trending_aggregate.aggregate?.count),
+  }
+}
+
+export async function getTrendingTop() {
+  const data = await sdk.getTrendingTop()
+  const schema = z
+    .object({
+      change: z.number().transform((value) => {
+        const symbol = value > 0 ? '+' : '-'
+
+        return `${symbol}${formatPercent(Math.abs(value))}`
+      }),
+      flydex: battlefly,
+      wl_ratio: z.number().transform(formatPercent),
+    })
+    .array()
+
+  return schema
+    .parse(data.battlefly_win_loss_trending)
+    .filter(
+      (item, index, array) =>
+        array.findIndex(
+          ({ flydex: { league } }) => league === item.flydex.league,
+        ) === index,
+    )
 }

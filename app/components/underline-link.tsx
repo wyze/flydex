@@ -40,7 +40,9 @@ export function UnderlineLink({
 
   return (
     <motion.span whileHover="hover">
-      <Link to={href}>{content}</Link>
+      <Link to={href} prefetch="intent">
+        {content}
+      </Link>
     </motion.span>
   )
 }

@@ -373,3 +373,54 @@ query getTraitList(
     }
   }
 }
+
+query getTrending(
+  $limit: Int!
+  $offset: Int!
+  $where: battlefly_win_loss_trending_bool_exp
+) {
+  battlefly_win_loss_trending(
+    limit: $limit
+    offset: $offset
+    order_by: { rank: asc }
+    where: $where
+  ) {
+    change
+    flydex {
+      ...Battlefly
+      token {
+        owner
+        treasure_tag {
+          display_name
+        }
+      }
+      win_loss {
+        wl_ratio_24h
+      }
+    }
+    rank
+    wl_ratio
+    wl_ratio_previous
+  }
+  battlefly_win_loss_trending_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+}
+
+query getTrendingTop {
+  battlefly_win_loss_trending(
+    distinct_on: league_full
+    order_by: { league_full: asc }
+  ) {
+    change
+    flydex {
+      ...Battlefly
+      win_loss {
+        wl_ratio_24h
+      }
+    }
+    wl_ratio
+  }
+}

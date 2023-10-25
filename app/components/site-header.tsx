@@ -77,7 +77,7 @@ function MainNav() {
         </motion.div>
       </Link>
       <nav className="flex items-center space-x-6 text-sm font-medium">
-        {['Leaderboard', 'Mods', 'Traits'].map((to) => (
+        {['Leaderboard', 'Mods', 'Traits', 'Trending'].map((to) => (
           <NavLink key={to} prefetch="intent" to={`/${to.toLowerCase()}`}>
             {({ isActive }) => (
               <motion.div
@@ -206,7 +206,7 @@ function CommandMenu() {
             <CommandEmpty>No results found.</CommandEmpty>
           )}
           <CommandGroup heading="Links">
-            {['Home', 'Leaderboard', 'Mods', 'Traits'].map((to) => (
+            {['Home', 'Leaderboard', 'Mods', 'Traits', 'Trending'].map((to) => (
               <CommandItem
                 key={to}
                 value={to.toLowerCase()}

@@ -204,7 +204,9 @@ export function DataTable<TData, TValue>({
     },
   })
 
-  const isFiltered = table.getState().columnFilters.length > 0
+  const isFiltered =
+    (filterableColumns ?? []).length > 0 &&
+    table.getState().columnFilters.length > 0
 
   return (
     <div className="-mx-1 w-full space-y-4 overflow-auto px-1 py-4">
