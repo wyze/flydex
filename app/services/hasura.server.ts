@@ -761,7 +761,7 @@ export async function getTrending(params: GetTrendingQueryVariables) {
   const schema = z
     .object({
       change: z.number().transform((value) => {
-        const symbol = value > 0 ? '+' : '-'
+        const symbol = value === 0 ? '' : value > 0 ? '+' : '-'
 
         return `${symbol}${formatPercent(Math.abs(value))}`
       }),
@@ -796,7 +796,7 @@ export async function getTrendingTop() {
   const schema = z
     .object({
       change: z.number().transform((value) => {
-        const symbol = value > 0 ? '+' : '-'
+        const symbol = value === 0 ? '' : value > 0 ? '+' : '-'
 
         return `${symbol}${formatPercent(Math.abs(value))}`
       }),
