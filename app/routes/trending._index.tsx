@@ -64,12 +64,17 @@ export default function TrendingPage() {
           <Select
             onValueChange={(value) => {
               if (value !== selected) {
-                setParams({
-                  where: JSON.stringify({
-                    ...where,
-                    league_full:
-                      value === DEFAULT_LEAGUE ? undefined : { _eq: value },
-                  }),
+                setParams((params) => {
+                  if (value === DEFAULT_LEAGUE) {
+                    params.delete('where')
+                  } else {
+                    params.set(
+                      'where',
+                      JSON.stringify({ ...where, league_full: { _eq: value } }),
+                    )
+                  }
+
+                  return params
                 })
               }
             }}
