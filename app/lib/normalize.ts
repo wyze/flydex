@@ -1,7 +1,7 @@
-import { MOD_RARITY_COLORS } from './consts'
-import type { Fly, Mod } from './types'
+import { MOD_RARITY_COLORS } from './constants'
+import type { Mod, ModWithColor } from './types'
 
-export function mods<T extends { mods: Fly['mods'] }>(fly: T) {
+export function mods<T extends { mods: Mod[] }>(fly: T) {
   return fly.mods.reduce(
     (acc, mod) => {
       const color = MOD_RARITY_COLORS[mod.mod.rarity]
@@ -16,7 +16,7 @@ export function mods<T extends { mods: Fly['mods'] }>(fly: T) {
     },
     { equipped: [], inventory: [] } as unknown as Record<
       'equipped' | 'inventory',
-      Mod[]
+      ModWithColor[]
     >,
   )
 }

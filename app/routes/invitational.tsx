@@ -24,11 +24,11 @@ import { useToast } from '~/components/ui/use-toast'
 import { UnderlineLink } from '~/components/underline-link'
 import { useDocumentVisibility } from '~/hooks/use-document-visibility'
 import { usePagination } from '~/hooks/use-pagination'
-import { INVITATIONAL_FLY_IDS } from '~/lib/consts'
+import { INVITATIONAL_FLY_IDS } from '~/lib/constants'
 import { cn } from '~/lib/helpers'
 import * as normalize from '~/lib/normalize'
 import { json } from '~/lib/responses.server'
-import type { Mod } from '~/lib/types'
+import type { ModWithColor } from '~/lib/types'
 import {
   getInvitational,
   getInvitationalBattles,
@@ -580,7 +580,7 @@ function Celebrate() {
   return <Confetti recycle={recycle} />
 }
 
-function Mods({ items }: { items: Mod[] }) {
+function Mods({ items }: { items: ModWithColor[] }) {
   return (
     <ScrollArea
       className="max-w-sm dark:bg-gray-700 sm:max-w-none"

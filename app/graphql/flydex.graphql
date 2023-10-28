@@ -218,55 +218,6 @@ query getCombatHistory($limit: Int!, $offset: Int!, $id: Int!) {
   }
 }
 
-query getFlydex(
-  $limit: Int!
-  $offset: Int!
-  $order_by: [battlefly_flydex_order_by!]
-  $where: battlefly_flydex_bool_exp
-) {
-  battlefly_flydex(
-    limit: $limit
-    offset: $offset
-    order_by: $order_by
-    where: $where
-  ) {
-    ...Battlefly
-    win_loss {
-      wl_ratio_24h
-    }
-  }
-  battlefly_flydex_aggregate(where: $where) {
-    aggregate {
-      count
-      min {
-        updated_at
-      }
-    }
-  }
-}
-
-query getFlydexFilters {
-  leagues: battlefly_flydex(
-    distinct_on: league_full
-    order_by: { league_full: asc }
-  ) {
-    league_full
-  }
-  locations: battlefly_flydex(
-    distinct_on: location
-    order_by: { location: asc }
-  ) {
-    location
-  }
-  mods: battlefly_mod(order_by: { name: asc }) {
-    id
-    name
-  }
-  rarities: battlefly_flydex(distinct_on: rarity, order_by: { rarity: asc }) {
-    rarity
-  }
-}
-
 query getModFilters {
   categories: battlefly_mod(
     distinct_on: category
@@ -406,21 +357,5 @@ query getTrending(
     aggregate {
       count
     }
-  }
-}
-
-query getTrendingTop {
-  battlefly_win_loss_trending(
-    distinct_on: league_full
-    order_by: [{ league_full: asc }, { rank: asc }]
-  ) {
-    change
-    flydex {
-      ...Battlefly
-      win_loss {
-        wl_ratio_24h
-      }
-    }
-    wl_ratio
   }
 }

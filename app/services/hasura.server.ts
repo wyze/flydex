@@ -10,7 +10,6 @@ import { z } from 'zod'
 import {
   type GetCombatHistoryQueryVariables,
   type GetFlydexOwnersQueryVariables,
-  type GetFlydexQueryVariables,
   type GetFlydexTokensQueryVariables,
   type GetLeaderboardQueryVariables,
   type GetModListQueryVariables,
@@ -18,7 +17,7 @@ import {
   type GetTrendingQueryVariables,
   getSdk,
 } from '~/graphql/generated'
-import { INVITATIONAL_FLY_IDS, MOD_RARITY_COLORS } from '~/lib/consts'
+import { INVITATIONAL_FLY_IDS, MOD_RARITY_COLORS } from '~/lib/constants'
 import { HASURA_API_KEY, HASURA_ENDPOINT } from '~/lib/env.server'
 
 const client = new GraphQLClient(HASURA_ENDPOINT, {
@@ -246,8 +245,6 @@ const detail = battlefly.merge(
   }),
 )
 
-const flydex = battlefly.array()
-
 const leaderboard = z
   .object({
     day: z.string(),
@@ -423,46 +420,6 @@ export async function getCombatHistory(
     combat: schema.parse(data.battlefly_combat),
     total: z.number().parse(data.battlefly_combat_aggregate.aggregate?.count),
   }
-}
-
-export async function getFlydex(variables: GetFlydexQueryVariables) {
-  const [data, filters] = await Promise.all([
-    sdk.getFlydex(variables),
-    getFlydexFilters(),
-  ])
-
-  return {
-    filters,
-    flies: flydex.parse(data.battlefly_flydex),
-    total: z.number().parse(data.battlefly_flydex_aggregate.aggregate?.count),
-    updatedAt: date.parse(
-      data.battlefly_flydex_aggregate.aggregate?.min?.updated_at,
-    ),
-  }
-}
-
-async function getFlydexFilters() {
-  const data = await sdk.getFlydexFilters()
-  const schema = z.object({
-    leagues: z
-      .object({
-        league_full: z.string(),
-      })
-      .array(),
-    locations: z
-      .object({
-        location: z.string(),
-      })
-      .array(),
-    mods: z.object({ id: z.string(), name: z.string() }).array(),
-    rarities: z
-      .object({
-        rarity: z.string(),
-      })
-      .array(),
-  })
-
-  return schema.parse(data)
 }
 
 export async function getFlydexOwners(
@@ -735,12 +692,6 @@ export async function getTraitList(params: GetTraitListQueryVariables) {
   }
 }
 
-export async function getTreasureTag(name: string) {
-  const data = await sdk.getTreasureTag({ name })
-
-  return data.treasure_tag.at(0)?.owner ?? null
-}
-
 export async function getTreasureTagOwners(name: string) {
   const data = await sdk.getTreasureTagOwners({ name })
   const schema = z
@@ -789,28 +740,4 @@ export async function getTrending(params: GetTrendingQueryVariables) {
       .number()
       .parse(data.battlefly_win_loss_trending_aggregate.aggregate?.count),
   }
-}
-
-export async function getTrendingTop() {
-  const data = await sdk.getTrendingTop()
-  const schema = z
-    .object({
-      change: z.number().transform((value) => {
-        const symbol = value === 0 ? '' : value > 0 ? '+' : '-'
-
-        return `${symbol}${formatPercent(Math.abs(value))}`
-      }),
-      flydex: battlefly,
-      wl_ratio: z.number().transform(formatPercent),
-    })
-    .array()
-
-  return schema
-    .parse(data.battlefly_win_loss_trending)
-    .filter(
-      (item, index, array) =>
-        array.findIndex(
-          ({ flydex: { league } }) => league === item.flydex.league,
-        ) === index,
-    )
 }

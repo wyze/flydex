@@ -1,12 +1,18 @@
 import { motion } from 'framer-motion'
 
-import type { Mod } from '~/lib/types'
+import type { ModWithColor } from '~/lib/types'
 
 import { Popover } from './popover'
 import { ScrollArea } from './scroll-area'
 import { Tooltip } from './tooltip'
 
-export function Mods({ items, title }: { items: Mod[]; title: string }) {
+export function Mods({
+  items,
+  title,
+}: {
+  items: ModWithColor[]
+  title: string
+}) {
   if (items.length === 0) {
     return null
   }

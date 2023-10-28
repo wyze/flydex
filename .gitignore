@@ -1,8 +1,9 @@
 node_modules
 
-/.cache
 /app/components/icons
-/app/graphql/generated.ts
+/app/**/generated.ts
+/app/**/*.generated.ts
+/app/**/*.generated.server.ts
 /build
 /public/build
 .env

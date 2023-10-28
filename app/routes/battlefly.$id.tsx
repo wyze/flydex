@@ -26,7 +26,7 @@ import { UnderlineLink } from '~/components/underline-link'
 import { usePagination } from '~/hooks/use-pagination'
 import * as normalize from '~/lib/normalize'
 import { json } from '~/lib/responses.server'
-import type { Mod } from '~/lib/types'
+import type { ModWithColor } from '~/lib/types'
 import { CombatHistory } from '~/routes/resources.combat-history'
 import { getBattlefly } from '~/services/hasura.server'
 
@@ -485,7 +485,7 @@ export default function BattleflyDetail() {
   )
 }
 
-function Mods({ items }: { items: Mod[] }) {
+function Mods({ items }: { items: ModWithColor[] }) {
   return (
     <ScrollArea
       className="max-w-[53.5rem] dark:bg-gray-700"

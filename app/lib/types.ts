@@ -1,4 +1,6 @@
-import type { getFlydex } from '~/services/hasura.server'
+import type { z } from 'zod'
 
-export type Fly = Awaited<ReturnType<typeof getFlydex>>['flies'][number]
-export type Mod = Fly['mods'][number] & { color: string }
+import type { mod } from '~/lib/schemas.server'
+
+export type Mod = { mod: z.output<typeof mod>; slot: number | null }
+export type ModWithColor = Mod & { color: string }
