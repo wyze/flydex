@@ -1,24 +1,13 @@
-import type { DataFunctionArgs } from '@remix-run/node'
 import { useLoaderData } from '@remix-run/react'
-import { z } from 'zod'
-import { zx } from 'zodix'
 
 import { DescriptionListCard } from '~/components/description-list-card'
-import { Mods } from '~/components/mods'
 import { Badge } from '~/components/ui/badge'
-import * as normalize from '~/lib/normalize'
-import { json } from '~/lib/responses.server'
-import { getModGroup } from '~/services/hasura.server'
+import { Skeleton } from '~/components/ui/skeleton'
 
-export function loader({ params }: DataFunctionArgs) {
-  const { group } = zx.parseParams(params, {
-    group: z.string().min(1),
-  })
+import { TopLoadout } from '../mods._index/top-loadout'
+import { loader } from './server'
 
-  return json(`mod:group:${group}`, () =>
-    getModGroup(group.replace(/-/g, '(-| )')),
-  )
-}
+export { loader }
 
 export default function ModGroup() {
   const { mods } = useLoaderData<typeof loader>()
@@ -89,31 +78,23 @@ export default function ModGroup() {
                 Damage: mod.weapon_damage_per_fire,
                 DPS: mod.weapon_damage_per_second,
                 Reload: mod.weapon_reload ? `${mod.weapon_reload}s` : null,
-                'Top Loadout': mod.loadout ? (
-                  <div className="flex items-center gap-2">
-                    <Mods
-                      items={
-                        normalize.mods({
-                          mods: Object.entries(mod.loadout)
-                            .filter(([key]) => key.startsWith('slot_'))
-                            .map(
-                              ([key, mod]) =>
-                                ({
-                                  mod,
-                                  slot: Number(key.slice(-1)),
-                                }) as {
-                                  mod: Exclude<string, typeof mod>
-                                  slot: number
-                                },
-                            ),
-                        }).equipped
-                      }
-                      title=""
-                    />
-                    W/L Ratio: {mod.loadout.wl_ratio}
-                  </div>
-                ) : (
-                  'Unused'
+                'Top Loadout': (
+                  <TopLoadout
+                    className="flex items-center gap-2"
+                    display="children"
+                    fallback={
+                      <div className="flex w-44 gap-2">
+                        <div className="flex items-center gap-px">
+                          <Skeleton className="h-3 w-3" />
+                          <Skeleton className="h-3 w-3" />
+                          <Skeleton className="h-3 w-3" />
+                          <Skeleton className="h-3 w-3" />
+                        </div>
+                        <Skeleton className="mb-0.5 h-3 w-2/3" />
+                      </div>
+                    }
+                    id={mod.id}
+                  />
                 ),
               }}
               description={mod.description}

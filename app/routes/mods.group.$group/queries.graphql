@@ -1,0 +1,23 @@
+#import '../../graphql/flydex.graphq'
+
+query GetModGroup($group: String!) {
+  battlefly_mod(where: { group: { _iregex: $group } }) {
+    ...Mod
+    description
+    defense_armor
+    defense_deploy
+    defense_evasion
+    defense_hp
+    defense_shield
+    defense_taunt
+    group
+    id
+    season
+    weapon_burst
+    weapon_damage_per_fire
+    weapon_damage_per_second
+    weapon_deploy
+    weapon_hp
+    weapon_reload
+  }
+}

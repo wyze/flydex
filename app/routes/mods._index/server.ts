@@ -18,6 +18,7 @@ const sdk = getSdk(client)
 
 const loadout = z
   .object({
+    id: z.string(),
     slot_0: mod,
     slot_1: mod,
     slot_2: mod,
@@ -86,21 +87,32 @@ async function getModList(variables: GetModListQueryVariables) {
     'mods',
     variables,
   ])
-  const loadouts = cacheable(
-    function query() {
-      return Promise.all(
-        data.battlefly_mod.map(({ id }) => sdk.GetModLoadout({ id })),
-      )
-    },
-    ['mods', 'loadouts', variables],
-    ms('1h'),
-  )
+  const loadouts = getModsLoadout(data.battlefly_mod)
 
   return {
-    loadouts: slots.array().promise().parse(loadouts),
+    loadouts,
     mods: schema.mods.array().parse(data.battlefly_mod),
     total: z.number().parse(data.battlefly_mod_aggregate.aggregate?.count),
   }
+}
+
+export async function getModsLoadout<T extends { id: string }>(ids: T[]) {
+  const loadouts = Promise.all(
+    ids
+      .filter(
+        (item, index, array) =>
+          array.findIndex(({ id }) => id === item.id) === index,
+      )
+      .map(({ id }) =>
+        cacheable(
+          sdk.GetModsLoadout.bind(null, { id }),
+          ['mods', 'loadouts', id],
+          ms('1h'),
+        ),
+      ),
+  )
+
+  return slots.array().promise().parse(loadouts)
 }
 
 function parse(value: string) {

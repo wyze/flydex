@@ -1,5 +1,21 @@
 #import '../../graphql/flydex.graphq'
 
+fragment Loadout on battlefly_win_loss_loadout {
+  wl_ratio
+  slot_0 {
+    ...Mod
+  }
+  slot_1 {
+    ...Mod
+  }
+  slot_2 {
+    ...Mod
+  }
+  slot_3 {
+    ...Mod
+  }
+}
+
 query GetModFilters {
   categories: battlefly_mod(
     distinct_on: category
@@ -24,13 +40,14 @@ query GetModFilters {
   }
 }
 
-query GetModLoadout($id: String!) {
+query GetModsLoadout($id: String!) {
   slot_0: battlefly_win_loss_loadout(
     distinct_on: slot_0_id
     where: { slot_0_id: { _eq: $id }, battles: { _gte: 10 } }
     order_by: [{ slot_0_id: asc }, { wl_ratio: desc }]
   ) {
     ...Loadout
+    id: slot_0_id
   }
   slot_1: battlefly_win_loss_loadout(
     distinct_on: slot_1_id
@@ -38,6 +55,7 @@ query GetModLoadout($id: String!) {
     order_by: [{ slot_1_id: asc }, { wl_ratio: desc }]
   ) {
     ...Loadout
+    id: slot_1_id
   }
   slot_2: battlefly_win_loss_loadout(
     distinct_on: slot_2_id
@@ -45,6 +63,7 @@ query GetModLoadout($id: String!) {
     order_by: [{ slot_2_id: asc }, { wl_ratio: desc }]
   ) {
     ...Loadout
+    id: slot_2_id
   }
   slot_3: battlefly_win_loss_loadout(
     distinct_on: slot_3_id
@@ -52,6 +71,7 @@ query GetModLoadout($id: String!) {
     order_by: [{ slot_3_id: asc }, { wl_ratio: desc }]
   ) {
     ...Loadout
+    id: slot_3_id
   }
 }
 

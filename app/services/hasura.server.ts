@@ -15,23 +15,14 @@ import {
   type GetTrendingQueryVariables,
   getSdk,
 } from '~/graphql/generated'
-import { INVITATIONAL_FLY_IDS, MOD_RARITY_COLORS } from '~/lib/constants'
+import { INVITATIONAL_FLY_IDS } from '~/lib/constants'
 import { HASURA_API_KEY, HASURA_ENDPOINT } from '~/lib/env.server'
-import { traitDescription } from '~/lib/helpers'
+import { formatPercent, traitDescription } from '~/lib/helpers'
 
 const client = new GraphQLClient(HASURA_ENDPOINT, {
   headers: { 'x-hasura-admin-secret': HASURA_API_KEY },
 })
 const sdk = getSdk(client)
-
-function formatPercent(value: number) {
-  return Number.isNaN(value)
-    ? ''
-    : Intl.NumberFormat('en-US', {
-        maximumFractionDigits: 2,
-        style: 'percent',
-      }).format(value)
-}
 
 const date = z
   .string()
@@ -280,54 +271,6 @@ const leaderboard = z
   })
   .array()
 
-const loadout = z
-  .object({
-    slot_0: mod,
-    slot_1: mod,
-    slot_2: mod,
-    slot_3: mod,
-    wl_ratio: z.number().transform(formatPercent),
-  })
-  .array()
-  .max(1)
-
-const slots = z.object({
-  slot_0_loadouts: loadout,
-  slot_1_loadouts: loadout,
-  slot_2_loadouts: loadout,
-  slot_3_loadouts: loadout,
-})
-
-function getModColor<T extends { rarity: z.infer<typeof mod>['rarity'] }>(
-  value: T,
-) {
-  const color = MOD_RARITY_COLORS[value.rarity]
-
-  return { ...value, color }
-}
-
-function getTopLoadout<
-  T extends Record<`slot_${number}_loadouts`, Array<{ wl_ratio: string }>>,
->(value: T) {
-  const loadout = [
-    ...value.slot_0_loadouts,
-    ...value.slot_1_loadouts,
-    ...value.slot_2_loadouts,
-    ...value.slot_3_loadouts,
-  ].reduce<(typeof value)['slot_0_loadouts'][number] | null>((acc, loadout) => {
-    if (!acc) {
-      return loadout
-    }
-
-    return Number(loadout.wl_ratio.slice(0, -1)) >
-      Number(acc.wl_ratio.slice(0, -1))
-      ? loadout
-      : acc
-  }, null)
-
-  return { ...value, loadout }
-}
-
 export async function getBattlefly(id: number) {
   const data = await sdk.getBattlefly({ id })
   const fly = detail.parse(data.battlefly_flydex.at(0))
@@ -548,46 +491,6 @@ export async function getLeaderboardOverview(day: string) {
     showRewards: leaderboards.some((leaderboard) =>
       leaderboard.some((item) => item.reward !== null),
     ),
-  }
-}
-
-export async function getModGroup(group: string) {
-  const data = await sdk.getModGroup({ group })
-  const schema = z
-    .object({
-      class: z.string(),
-      description: z.string(),
-      defense_armor: z.number().nullable(),
-      defense_deploy: z.number().nullable(),
-      defense_evasion: z.number().nullable(),
-      defense_hp: z.number().nullable(),
-      defense_shield: z.number().nullable(),
-      defense_taunt: z.number().nullable(),
-      group: z.string(),
-      name: z.string(),
-      season: z.string(),
-      weapon_burst: z.number().nullable(),
-      weapon_damage_per_fire: z.number().nullable(),
-      weapon_damage_per_second: z.number().nullable(),
-      weapon_deploy: z.number().nullable(),
-      weapon_hp: z.number().nullable(),
-      weapon_reload: z.number().nullable(),
-    })
-    .merge(mod)
-    .merge(slots)
-    .array()
-  const order = ['Core', 'Common', 'Uncommon', 'Rare', 'Epic', 'Legendary']
-
-  return {
-    mods: schema
-      .parse(data.battlefly_mod)
-      .map(getTopLoadout)
-      .map(getModColor)
-      .sort(
-        (left, right) =>
-          order.findIndex((suffix) => left.rarity === suffix) -
-          order.findIndex((suffix) => right.rarity === suffix),
-      ),
   }
 }
 

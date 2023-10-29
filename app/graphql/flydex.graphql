@@ -30,53 +30,6 @@ fragment Battlefly on battlefly_flydex {
   xp
 }
 
-fragment Loadout on battlefly_win_loss_loadout {
-  wl_ratio
-  slot_0 {
-    ...Mod
-  }
-  slot_1 {
-    ...Mod
-  }
-  slot_2 {
-    ...Mod
-  }
-  slot_3 {
-    ...Mod
-  }
-}
-
-fragment ModLoadout on battlefly_mod {
-  slot_0_loadouts(
-    limit: 1
-    where: { battles: { _gte: 10 } }
-    order_by: { wl_ratio: desc }
-  ) {
-    ...Loadout
-  }
-  slot_1_loadouts(
-    limit: 1
-    where: { battles: { _gte: 10 } }
-    order_by: { wl_ratio: desc }
-  ) {
-    ...Loadout
-  }
-  slot_2_loadouts(
-    limit: 1
-    where: { battles: { _gte: 10 } }
-    order_by: { wl_ratio: desc }
-  ) {
-    ...Loadout
-  }
-  slot_3_loadouts(
-    limit: 1
-    where: { battles: { _gte: 10 } }
-    order_by: { wl_ratio: desc }
-  ) {
-    ...Loadout
-  }
-}
-
 query getBattlefly($id: Int!) {
   battlefly_flydex(where: { token_id: { _eq: $id } }) {
     ...Battlefly
@@ -215,29 +168,6 @@ query getCombatHistory($limit: Int!, $offset: Int!, $id: Int!) {
     aggregate {
       count
     }
-  }
-}
-
-query getModGroup($group: String!) {
-  battlefly_mod(where: { group: { _iregex: $group } }) {
-    ...Mod
-    ...ModLoadout
-    description
-    defense_armor
-    defense_deploy
-    defense_evasion
-    defense_hp
-    defense_shield
-    defense_taunt
-    group
-    id
-    season
-    weapon_burst
-    weapon_damage_per_fire
-    weapon_damage_per_second
-    weapon_deploy
-    weapon_hp
-    weapon_reload
   }
 }
 
