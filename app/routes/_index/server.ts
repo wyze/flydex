@@ -94,13 +94,17 @@ async function getBattleflies(variables: GetBattlefliesQueryVariables) {
 }
 
 async function getTreasureTag(name: string) {
-  const data = await getSdk(client).GetTreasureTag({ name })
+  const data = await cacheable(
+    sdk.GetTreasureTag.bind(null, { name }),
+    ['treasure-tag', name],
+    ms('1h'),
+  )
 
   return data.treasure_tag.at(0)?.owner ?? null
 }
 
 async function getTrendingTop() {
-  const data = await getSdk(client).GetTrendingTop()
+  const data = await cacheable(sdk.GetTrendingTop, ['top-trending'])
 
   return schema.trending.parse(data.battlefly_win_loss_trending)
 }
@@ -204,7 +208,7 @@ export async function loader({ request }: DataFunctionArgs) {
   })
 
   const flydex = await getBattleflies(params)
-  const trending = await cacheable(getTrendingTop, 'top-trending')
+  const trending = await getTrendingTop()
 
   return defer({ ...flydex, trending })
 }

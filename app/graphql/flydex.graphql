@@ -218,30 +218,6 @@ query getCombatHistory($limit: Int!, $offset: Int!, $id: Int!) {
   }
 }
 
-query getModFilters {
-  categories: battlefly_mod(
-    distinct_on: category
-    order_by: { category: asc }
-  ) {
-    category
-  }
-  classes: battlefly_mod(distinct_on: class, order_by: { class: asc }) {
-    class
-  }
-  leagues: battlefly_mod_league(order_by: { league: asc }) {
-    league
-  }
-  rarities: battlefly_mod(distinct_on: rarity, order_by: { rarity: asc }) {
-    rarity
-  }
-  types: battlefly_mod(distinct_on: type, order_by: { type: asc }) {
-    type
-  }
-  seasons: battlefly_mod(distinct_on: season, order_by: { season: asc }) {
-    season
-  }
-}
-
 query getModGroup($group: String!) {
   battlefly_mod(where: { group: { _iregex: $group } }) {
     ...Mod
@@ -262,34 +238,6 @@ query getModGroup($group: String!) {
     weapon_deploy
     weapon_hp
     weapon_reload
-  }
-}
-
-query getModList(
-  $limit: Int!
-  $offset: Int!
-  $order_by: [battlefly_mod_order_by!]
-  $where: battlefly_mod_bool_exp
-) {
-  battlefly_mod(
-    limit: $limit
-    offset: $offset
-    order_by: $order_by
-    where: $where
-  ) {
-    ...Mod
-    ...ModLoadout
-    equipped
-    group
-    id
-    inventory
-    leagues
-    season
-  }
-  battlefly_mod_aggregate(where: $where) {
-    aggregate {
-      count
-    }
   }
 }
 

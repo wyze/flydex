@@ -12,7 +12,6 @@ import {
   type GetFlydexOwnersQueryVariables,
   type GetFlydexTokensQueryVariables,
   type GetLeaderboardQueryVariables,
-  type GetModListQueryVariables,
   type GetTrendingQueryVariables,
   getSdk,
 } from '~/graphql/generated'
@@ -552,40 +551,6 @@ export async function getLeaderboardOverview(day: string) {
   }
 }
 
-async function getModFilters() {
-  const data = await sdk.getModFilters()
-  const schema = z.object({
-    categories: z
-      .object({
-        category: z.string(),
-      })
-      .array(),
-    classes: z
-      .object({
-        class: z.string(),
-      })
-      .array(),
-    leagues: z
-      .object({
-        league: z.string(),
-      })
-      .array(),
-    rarities: z
-      .object({
-        rarity: z.string(),
-      })
-      .array(),
-    types: z
-      .object({
-        type: z.string(),
-      })
-      .array(),
-    seasons: z.object({ season: z.string() }).array(),
-  })
-
-  return schema.parse(data)
-}
-
 export async function getModGroup(group: string) {
   const data = await sdk.getModGroup({ group })
   const schema = z
@@ -623,29 +588,6 @@ export async function getModGroup(group: string) {
           order.findIndex((suffix) => left.rarity === suffix) -
           order.findIndex((suffix) => right.rarity === suffix),
       ),
-  }
-}
-
-export async function getModList(params: GetModListQueryVariables) {
-  const [data, filters] = await Promise.all([
-    sdk.getModList(params),
-    getModFilters(),
-  ])
-  const schema = mod.merge(slots).merge(
-    z.object({
-      equipped: z.number(),
-      group: z.string(),
-      id: z.string(),
-      inventory: z.number(),
-      leagues: z.string().array(),
-      season: z.string(),
-    }),
-  )
-
-  return {
-    filters,
-    mods: schema.array().parse(data.battlefly_mod).map(getTopLoadout),
-    total: z.number().parse(data.battlefly_mod_aggregate.aggregate?.count),
   }
 }
 

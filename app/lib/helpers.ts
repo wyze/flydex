@@ -14,6 +14,28 @@ export function formatPercent(value: number) {
       }).format(value)
 }
 
+export function getTopLoadout<
+  T extends Record<`slot_${number}`, Array<{ wl_ratio: string }>>,
+>(value: T) {
+  const loadout = [
+    ...value.slot_0,
+    ...value.slot_1,
+    ...value.slot_2,
+    ...value.slot_3,
+  ].reduce<(typeof value)['slot_0'][number] | null>((acc, loadout) => {
+    if (!acc) {
+      return loadout
+    }
+
+    return Number(loadout.wl_ratio.slice(0, -1)) >
+      Number(acc.wl_ratio.slice(0, -1))
+      ? loadout
+      : acc
+  }, null)
+
+  return { ...value, loadout }
+}
+
 export function traitDescription<
   T extends { description: string; tags: string[]; value: number },
 >({ description, tags, value, ...item }: T) {
