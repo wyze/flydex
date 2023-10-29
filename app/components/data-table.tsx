@@ -155,8 +155,12 @@ export function DataTable<TData, TValue>({
     const orderBy =
       typeof parsed.order_by === 'string'
         ? (JSON.parse(parsed.order_by) as Record<string, 'asc' | 'desc'>)
-        : {}
+        : null
     const [order] = sorting
+
+    if (!orderBy) {
+      return
+    }
 
     if (
       order?.id === Object.keys(orderBy).at(0) &&
