@@ -13,12 +13,12 @@ import {
   type GetFlydexTokensQueryVariables,
   type GetLeaderboardQueryVariables,
   type GetModListQueryVariables,
-  type GetTraitListQueryVariables,
   type GetTrendingQueryVariables,
   getSdk,
 } from '~/graphql/generated'
 import { INVITATIONAL_FLY_IDS, MOD_RARITY_COLORS } from '~/lib/constants'
 import { HASURA_API_KEY, HASURA_ENDPOINT } from '~/lib/env.server'
+import { traitDescription } from '~/lib/helpers'
 
 const client = new GraphQLClient(HASURA_ENDPOINT, {
   headers: { 'x-hasura-admin-secret': HASURA_API_KEY },
@@ -78,20 +78,6 @@ const trait = z.object({
   tags: z.string().array(),
   value: z.number(),
 })
-
-function traitDescription<
-  T extends { description: string; tags: string[]; value: number },
->({ description, tags, value, ...item }: T) {
-  const prefix = description.indexOf('<value>') > 0 ? '' : value > 0 ? '+' : '-'
-  const suffix = tags.includes('percentage') ? '%' : ''
-
-  return {
-    ...item,
-    description: description.replace('<value>', `${prefix}${value}${suffix}`),
-    tags,
-    value,
-  }
-}
 
 const battlefly = z.object({
   body_color: z.string(),
@@ -660,35 +646,6 @@ export async function getModList(params: GetModListQueryVariables) {
     filters,
     mods: schema.array().parse(data.battlefly_mod).map(getTopLoadout),
     total: z.number().parse(data.battlefly_mod_aggregate.aggregate?.count),
-  }
-}
-
-export async function getTraitList(params: GetTraitListQueryVariables) {
-  const [data, filters] = await Promise.all([
-    sdk.getTraitList(params),
-    sdk.getTraitFilters(),
-  ])
-  const schemas = {
-    data: trait
-      .merge(
-        z.object({
-          equipped: z.number(),
-        }),
-      )
-      .transform(traitDescription),
-    filters: z.object({
-      tags: z
-        .object({
-          tag: z.string(),
-        })
-        .array(),
-    }),
-  }
-
-  return {
-    filters: schemas.filters.parse(filters),
-    total: z.number().parse(data.battlefly_trait_aggregate.aggregate?.count),
-    traits: schemas.data.array().parse(data.battlefly_trait),
   }
 }
 

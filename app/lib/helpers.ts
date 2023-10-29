@@ -13,3 +13,17 @@ export function formatPercent(value: number) {
         style: 'percent',
       }).format(value)
 }
+
+export function traitDescription<
+  T extends { description: string; tags: string[]; value: number },
+>({ description, tags, value, ...item }: T) {
+  const prefix = description.indexOf('<value>') > 0 ? '' : value > 0 ? '+' : '-'
+  const suffix = tags.includes('percentage') ? '%' : ''
+
+  return {
+    ...item,
+    description: description.replace('<value>', `${prefix}${value}${suffix}`),
+    tags,
+    value,
+  }
+}

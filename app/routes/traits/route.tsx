@@ -1,37 +1,13 @@
-import type { DataFunctionArgs, SerializeFrom } from '@remix-run/node'
+import type { SerializeFrom } from '@remix-run/node'
 import { useLoaderData, useLocation } from '@remix-run/react'
 import type { ColumnDef } from '@tanstack/react-table'
-import { z } from 'zod'
-import { zx } from 'zodix'
 
 import { DataTable, DataTableColumnHeader } from '~/components/data-table'
 import { Badge } from '~/components/ui/badge'
-import { json } from '~/lib/responses.server'
-import { getTraitList } from '~/services/hasura.server'
 
-export function loader({ request }: DataFunctionArgs) {
-  const params = zx.parseQuery(request, {
-    limit: z
-      .number()
-      .refine((value) => value <= 30)
-      .default(30),
-    offset: z
-      .string()
-      .default('0')
-      .transform(Number)
-      .refine((value) => value <= 60),
-    order_by: z
-      .string()
-      .default(JSON.stringify({ name: 'asc' }))
-      .transform((value) => JSON.parse(value)),
-    where: z
-      .string()
-      .default('{}')
-      .transform((value) => JSON.parse(value)),
-  })
+import { loader } from './server'
 
-  return json(`traits:${JSON.stringify(params)}`, () => getTraitList(params))
-}
+export { loader }
 
 export default function TraitsPage() {
   const { filters, total, traits } = useLoaderData<typeof loader>()

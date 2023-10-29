@@ -85,3 +85,11 @@ export const battlefly = z.object({
     .nullable(),
   xp: z.number().transform((value) => value % 500),
 })
+
+export const trait = z.object({
+  description: z.string(),
+  id: z.string(),
+  name: z.string(),
+  tags: z.string().array(),
+  value: z.number(),
+})
