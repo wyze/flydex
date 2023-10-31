@@ -468,7 +468,7 @@ export async function getLeaderboardOverview(day: string) {
         .number()
         .parse(data.battlefly_leaderboard_aggregate.aggregate?.count)
 
-      return Math.floor(amount * (percent / 100))
+      return Math.max(1, Math.floor(amount * (percent / 100)))
     }),
   )
 
