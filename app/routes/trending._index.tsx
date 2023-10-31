@@ -19,7 +19,7 @@ import * as normalize from '~/lib/normalize'
 import { json } from '~/lib/responses.server'
 import { getTrending } from '~/services/hasura.server'
 
-const DEFAULT_LEAGUE = 'Apex 2'
+const DEFAULT_LEAGUE = 'Apex 1'
 
 export function loader({ request }: DataFunctionArgs) {
   const params = zx.parseQuery(request, {
