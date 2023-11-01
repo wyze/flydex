@@ -1,6 +1,6 @@
 import { type SVGProps, forwardRef } from 'react'
 
-import { type IconName } from '~/components/icons/name'
+import { type IconName } from '~/components/icons/name.d'
 import { cn } from '~/lib/helpers'
 
 import href from './icons/sprite.svg'

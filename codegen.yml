@@ -25,6 +25,6 @@ generates:
       extension: '.generated.server.ts'
 overwrite: true
 schema:
-  ${HASURA_ENDPOINT}:
+  ${VITE_HASURA_ENDPOINT}:
     headers:
-      x-hasura-admin-secret: ${HASURA_API_KEY}
+      x-hasura-admin-secret: ${VITE_HASURA_API_KEY}

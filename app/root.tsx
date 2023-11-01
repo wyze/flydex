@@ -1,5 +1,4 @@
-import fontStyles from '@fontsource-variable/inter/index.css'
-import type { LinksFunction } from '@remix-run/node'
+import '@fontsource-variable/inter/index.css'
 import * as remix from '@remix-run/node'
 import {
   Links,
@@ -23,26 +22,15 @@ import {
 import { Toaster } from '~/components/ui/toaster'
 import { useFathom } from '~/hooks/use-fathom'
 import { useNProgress } from '~/hooks/use-n-progress'
-import { NODE_ENV } from '~/lib/env.server'
+import { today } from '~/lib/date.server'
 import { getSession } from '~/lib/session.server'
-import nProgressStyles from '~/styles/nprogress.css'
-import styles from '~/styles/tailwind.css'
-
-export const links: LinksFunction = () =>
-  [styles, nProgressStyles, fontStyles]
-    .map((href) => ({ rel: 'stylesheet', href, type: 'text/css' }))
-    .concat([{ rel: 'icon', href: '/images/logo.png', type: 'image/png' }])
-
-export const meta: remix.MetaFunction = () => [
-  { charSet: 'utf-8' },
-  { title: 'FlyDex' },
-  { name: 'viewport', content: 'width=device-width,initial-scale=1' },
-]
+import '~/styles/nprogress.css'
+import '~/styles/tailwind.css'
 
 export async function loader({ request }: remix.DataFunctionArgs) {
   const { theme } = await getSession(request)
 
-  return remix.json({ env: { NODE_ENV }, theme })
+  return remix.json({ theme, today })
 }
 
 function App() {
@@ -55,9 +43,13 @@ function App() {
   return (
     <html className={`min-h-screen scroll-smooth ${theme ?? ''}`} lang="en">
       <head>
+        <meta charSet="utf-8" />
+        <title>FlyDex</title>
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
         <Meta />
         <Links />
         <ThemeHead ssrTheme={data.theme !== 'system'} />
+        <link rel="icon" href="/images/logo.png" type="image/png" />
       </head>
       <body className="flex min-h-screen flex-col bg-white dark:bg-gray-900">
         <ThemeBody ssrTheme={data.theme !== 'system'} />
@@ -65,9 +57,9 @@ function App() {
         <Outlet />
         <Toaster />
         <ScrollRestoration />
-        <Scripts />
         <LiveReload />
-        {data.env.NODE_ENV === 'development' ? <TailwindIndicator /> : null}
+        <Scripts />
+        {import.meta.env.DEV ? <TailwindIndicator /> : null}
         <Footer />
       </body>
     </html>

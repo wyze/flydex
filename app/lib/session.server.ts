@@ -8,7 +8,7 @@ import { z } from 'zod'
 import type { Theme } from '~/components/theme-provider'
 import { COOKIE_SECRET } from '~/lib/env.server'
 
-const isProduction = process.env.NODE_ENV === 'production'
+const isProduction = import.meta.env.PROD
 
 const sessionStorage = createCookieSessionStorage({
   cookie: {
