@@ -1,6 +1,7 @@
 fragment Mod on battlefly_mod {
   category
   class
+  id
   image
   name
   rarity

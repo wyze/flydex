@@ -28,6 +28,7 @@ import * as normalize from '~/lib/normalize'
 import { json } from '~/lib/responses.server'
 import type { ModWithColor } from '~/lib/types'
 import { CombatHistory } from '~/routes/resources.combat-history'
+import { ModPreview } from '~/routes/resources.mod.$id/route'
 import { getBattlefly } from '~/services/hasura.server'
 
 export function loader({ params }: DataFunctionArgs) {
@@ -506,7 +507,9 @@ function Mods({ items }: { items: ModWithColor[] }) {
                   background: `linear-gradient(119.42deg, rgba(37, 33, 55, 0.5) -16.72%, rgb(${color}) 153.84%)`,
                 }}
               />
-              <div className="text-center text-sm">{mod.name}</div>
+              <div className="text-center text-sm">
+                <ModPreview id={mod.id}>{mod.name}</ModPreview>
+              </div>
             </div>
           )
         })}

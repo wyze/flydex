@@ -44,6 +44,7 @@ const mod = z.object({
     z.literal('Shield'),
   ]),
   class: z.union([z.literal('Regular'), z.literal('Swarm')]),
+  id: z.string(),
   image: z.string().url(),
   name: z.string(),
   rarity: z.union([
