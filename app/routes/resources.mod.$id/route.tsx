@@ -35,30 +35,47 @@ export function ModPreview({
   }
 
   return (
-    <HoverCard>
-      <Popover>
+    <>
+      <HoverCard>
         <HoverCardTrigger asChild>
-          <Button
-            className="hidden md:inline-flex"
-            onMouseEnter={load}
-            variant="link"
-          >
-            {children}
-          </Button>
+          {typeof children === 'string' ? (
+            <Button
+              className="hidden md:inline-flex"
+              onMouseEnter={load}
+              variant="link"
+            >
+              {children}
+            </Button>
+          ) : (
+            <div
+              className="hidden cursor-pointer md:inline-flex"
+              onMouseEnter={load}
+            >
+              {children}
+            </div>
+          )}
         </HoverCardTrigger>
-        <PopoverTrigger asChild>
-          <Button className="md:hidden" onTouchStart={load} variant="link">
-            {children}
-          </Button>
-        </PopoverTrigger>
-        <HoverCardContent className="w-80">
+        <HoverCardContent className="w-96">
           {fetcher.data ? <Content {...fetcher.data} /> : <Loader />}
         </HoverCardContent>
-        <PopoverContent className="w-80">
+      </HoverCard>
+      <Popover>
+        <PopoverTrigger asChild>
+          {typeof children === 'string' ? (
+            <Button className="md:hidden" onTouchStart={load} variant="link">
+              {children}
+            </Button>
+          ) : (
+            <div className="cursor-pointer md:hidden" onTouchStart={load}>
+              {children}
+            </div>
+          )}
+        </PopoverTrigger>
+        <PopoverContent className="w-96">
           {fetcher.data ? <Content {...fetcher.data} /> : <Loader />}
         </PopoverContent>
       </Popover>
-    </HoverCard>
+    </>
   )
 }
 
@@ -81,6 +98,7 @@ function Loader() {
 
 function Content({
   description,
+  name,
   season,
   ...mod
 }: SerializeFrom<typeof loader>) {
@@ -90,7 +108,8 @@ function Content({
 
   return (
     <>
-      {description}
+      <h3 className="mb-2 text-center text-2xl font-bold">{name}</h3>
+      <div className="text-center text-sm leading-relaxed">{description}</div>
       <Separator className="mb-2 mt-2" />
       <div className="flex items-center justify-center gap-3">
         <Badge variant="secondary">

@@ -22,6 +22,7 @@ const schema = z.object({
   defense_hp: z.number().nullable(),
   defense_shield: z.number().nullable(),
   defense_taunt: z.number().nullable(),
+  name: z.string(),
   season: z.string(),
   weapon_burst: z.number().nullable(),
   weapon_damage_per_fire: z.number().nullable(),

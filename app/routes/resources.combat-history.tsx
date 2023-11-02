@@ -7,7 +7,6 @@ import { zx } from 'zodix'
 
 import { Icon } from '~/components/icon'
 import { Pagination } from '~/components/pagination'
-import { Popover } from '~/components/popover'
 import { ScrollArea } from '~/components/scroll-area'
 import { Tooltip } from '~/components/tooltip'
 import { Badge } from '~/components/ui/badge'
@@ -17,6 +16,7 @@ import { usePagination } from '~/hooks/use-pagination'
 import { cn } from '~/lib/helpers'
 import * as normalize from '~/lib/normalize'
 import { json } from '~/lib/responses.server'
+import { ModPreview } from '~/routes/resources.mod.$id/route'
 import { getCombatHistory } from '~/services/hasura.server'
 
 const PAGE_SIZE = 10
@@ -261,34 +261,16 @@ function BattleflyCell({
       <ScrollArea className="w-40 pb-0" orientation="horizontal">
         <div className="flex max-w-max gap-2 pt-2">
           {normalize.mods(battlefly).equipped.map(({ color, mod }, index) => (
-            <Fragment key={index}>
-              <Tooltip>
-                <Tooltip.Trigger className="hidden md:block">
-                  <img
-                    alt={mod.name}
-                    className="w-8 rounded"
-                    src={mod.image}
-                    style={{
-                      background: `linear-gradient(119.42deg, rgba(37, 33, 55, 0.5) -16.72%, rgb(${color}) 153.84%)`,
-                    }}
-                  />
-                </Tooltip.Trigger>
-                <Tooltip.Content>{mod.name}</Tooltip.Content>
-              </Tooltip>
-              <Popover>
-                <Popover.Trigger className="md:hidden">
-                  <img
-                    alt={mod.name}
-                    className="w-8 rounded"
-                    src={mod.image}
-                    style={{
-                      background: `linear-gradient(119.42deg, rgba(37, 33, 55, 0.5) -16.72%, rgb(${color}) 153.84%)`,
-                    }}
-                  />
-                </Popover.Trigger>
-                <Popover.Content>{mod.name}</Popover.Content>
-              </Popover>
-            </Fragment>
+            <ModPreview key={index} id={mod.id}>
+              <img
+                alt={mod.name}
+                className="w-8 rounded"
+                src={mod.image}
+                style={{
+                  background: `linear-gradient(119.42deg, rgba(37, 33, 55, 0.5) -16.72%, rgb(${color}) 153.84%)`,
+                }}
+              />
+            </ModPreview>
           ))}
         </div>
       </ScrollArea>

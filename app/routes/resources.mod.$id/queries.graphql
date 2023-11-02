@@ -8,6 +8,7 @@ query GetModDetails($id: String!) {
     defense_hp
     defense_shield
     defense_taunt
+    name
     season
     weapon_burst
     weapon_damage_per_fire

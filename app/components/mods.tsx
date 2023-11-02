@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 
 import type { ModWithColor } from '~/lib/types'
+import { ModPreview } from '~/routes/resources.mod.$id/route'
 
 import { Popover } from './popover'
 import { ScrollArea } from './scroll-area'
@@ -39,7 +40,7 @@ export function Mods({
           </motion.button>
         </Popover.Trigger>
         <Popover.Content>
-          <ScrollArea className="h-36 w-full">
+          <ScrollArea className="h-44 w-full">
             <div className="space-y-1">
               {items.map(({ color, mod, slot }) => (
                 <div
@@ -61,7 +62,7 @@ export function Mods({
                       {mod.rarity} {mod.category} {mod.type} Mod
                     </Tooltip.Content>
                   </Tooltip>
-                  {mod.name}
+                  <ModPreview id={mod.id}>{mod.name}</ModPreview>
                 </div>
               ))}
             </div>

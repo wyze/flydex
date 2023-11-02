@@ -1,14 +1,12 @@
 import type { DataFunctionArgs } from '@remix-run/node'
 import { Link, useLoaderData, useSearchParams } from '@remix-run/react'
 import queryString from 'query-string'
-import { Fragment } from 'react'
 import { z } from 'zod'
 import { zx } from 'zodix'
 
 import { DescriptionListCard } from '~/components/description-list-card'
 import { Owner } from '~/components/owner'
 import { Pagination } from '~/components/pagination'
-import { Popover } from '~/components/popover'
 import { ScrollArea } from '~/components/scroll-area'
 import { Separator } from '~/components/separator'
 import { Tabs } from '~/components/tabs'
@@ -404,38 +402,19 @@ export default function BattleflyDetail() {
                                         <div className="flex max-w-max gap-2 p-2">
                                           {equipped.map(
                                             ({ color, mod }, index) => (
-                                              <Fragment key={index}>
-                                                <Tooltip>
-                                                  <Tooltip.Trigger className="hidden md:block">
-                                                    <img
-                                                      alt={mod.name}
-                                                      className="w-8 rounded"
-                                                      src={mod.image}
-                                                      style={{
-                                                        background: `linear-gradient(119.42deg, rgba(37, 33, 55, 0.5) -16.72%, rgb(${color}) 153.84%)`,
-                                                      }}
-                                                    />
-                                                  </Tooltip.Trigger>
-                                                  <Tooltip.Content>
-                                                    {mod.name}
-                                                  </Tooltip.Content>
-                                                </Tooltip>
-                                                <Popover>
-                                                  <Popover.Trigger className="md:hidden">
-                                                    <img
-                                                      alt={mod.name}
-                                                      className="w-8 rounded"
-                                                      src={mod.image}
-                                                      style={{
-                                                        background: `linear-gradient(119.42deg, rgba(37, 33, 55, 0.5) -16.72%, rgb(${color}) 153.84%)`,
-                                                      }}
-                                                    />
-                                                  </Popover.Trigger>
-                                                  <Popover.Content>
-                                                    {mod.name}
-                                                  </Popover.Content>
-                                                </Popover>
-                                              </Fragment>
+                                              <ModPreview
+                                                key={index}
+                                                id={mod.id}
+                                              >
+                                                <img
+                                                  alt={mod.name}
+                                                  className="w-8 rounded"
+                                                  src={mod.image}
+                                                  style={{
+                                                    background: `linear-gradient(119.42deg, rgba(37, 33, 55, 0.5) -16.72%, rgb(${color}) 153.84%)`,
+                                                  }}
+                                                />
+                                              </ModPreview>
                                             ),
                                           )}
                                         </div>
