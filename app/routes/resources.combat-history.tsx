@@ -111,17 +111,14 @@ export function CombatHistory() {
                 }
 
                 return (
-                  <a
+                  <div
                     key={item.id}
                     className={cn(
-                      'grid grid-cols-1 items-center gap-10 px-6 py-4 transition-opacity duration-300 hover:opacity-70 lg:grid-cols-2',
+                      'grid grid-cols-1 items-center gap-8 px-6 py-4 lg:grid-cols-2',
                       index % 2 ? undefined : 'bg-muted dark:bg-gray-700',
                     )}
-                    href={`https://play.battlefly.game/battleflies/view/${id}/battlelog/${item.id}`}
-                    rel="noreferrer"
-                    target="_blank"
                   >
-                    <div className="flex flex-1 flex-col items-center gap-2 sm:flex-row sm:gap-10">
+                    <div className="flex flex-1 flex-col items-center gap-2 sm:flex-row sm:gap-8">
                       <YouCell loser={loser} winner={winner} />
                       <span className="mt-2 font-bold tracking-widest">VS</span>
                       <ThemCell loser={loser} winner={winner} />
@@ -135,8 +132,17 @@ export function CombatHistory() {
                           .concat(item.location.slice(1))}
                       </span>{' '}
                       {item.created_at}.
+                      <a
+                        className="ml-3 inline-flex items-center gap-1 text-pink-600 underline"
+                        href={`https://play.battlefly.game/battleflies/view/${id}/battlelog/${item.id}`}
+                        rel="noreferrer"
+                        target="_blank"
+                      >
+                        View
+                        <Icon name="external-link" />
+                      </a>
                     </div>
-                  </a>
+                  </div>
                 )
               })}
           <div className="px-2">
