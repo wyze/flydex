@@ -58,7 +58,11 @@ export function ThemeProvider({
     if (theme !== specifiedTheme) {
       persistThemeRef.current.submit(
         { pathname, theme },
-        { action: 'action/set-theme', method: 'post' },
+        {
+          action: 'action/set-theme',
+          method: 'post',
+          preventScrollReset: true,
+        },
       )
     }
   }, [pathname, specifiedTheme, theme])
