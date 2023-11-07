@@ -49,7 +49,7 @@ export function CombatHistory() {
         </div>
         <div className="py-2">
           <Suspense
-            fallback={Array(10)
+            fallback={Array(PAGE_SIZE_10)
               .fill(0)
               .map((_, index) => (
                 <div key={index} className="px-6 py-4">
@@ -58,70 +58,79 @@ export function CombatHistory() {
               ))}
           >
             <Await resolve={combat}>
-              {(combat) =>
-                combat.battlefly_combat.map((item, index) => {
-                  const loser = {
-                    ...item.loser,
-                    mods: [
-                      { mod: item.loser_slot_0_mod, slot: 0 },
-                      { mod: item.loser_slot_1_mod, slot: 1 },
-                      { mod: item.loser_slot_2_mod, slot: 2 },
-                      { mod: item.loser_slot_3_mod, slot: 3 },
-                    ],
-                  }
-                  const winner = {
-                    ...item.winner,
-                    mods: [
-                      { mod: item.winner_slot_0_mod, slot: 0 },
-                      { mod: item.winner_slot_1_mod, slot: 1 },
-                      { mod: item.winner_slot_2_mod, slot: 2 },
-                      { mod: item.winner_slot_3_mod, slot: 3 },
-                    ],
-                  }
-
-                  return (
-                    <div
-                      key={item.id}
-                      className={cn(
-                        'grid grid-cols-1 items-center gap-8 px-6 py-4 lg:grid-cols-2',
-                        index % 2 ? undefined : 'bg-muted dark:bg-gray-700',
-                      )}
-                    >
-                      <div className="flex flex-1 flex-col items-center gap-2 sm:flex-row sm:gap-8">
-                        <YouCell loser={loser} winner={winner} />
-                        <span className="mt-2 font-bold tracking-widest">
-                          VS
-                        </span>
-                        <ThemCell loser={loser} winner={winner} />
-                      </div>
-                      <div className="text-center text-muted-foreground sm:text-left">
-                        The battle occurred in the{' '}
-                        <span className="font-medium text-primary">
-                          {item.location
-                            .at(0)
-                            ?.toUpperCase()
-                            .concat(item.location.slice(1))}
-                        </span>{' '}
-                        {item.created_at}.
-                        <a
-                          className="ml-3 inline-flex items-center gap-1 text-pink-600 underline"
-                          href={`https://play.battlefly.game/battleflies/view/${id}/battlelog/${item.id}`}
-                          rel="noreferrer"
-                          target="_blank"
-                        >
-                          View
-                          <Icon name="external-link" />
-                        </a>
-                      </div>
+              {(combat) => (
+                <>
+                  {combat.battlefly_combat.length === 0 ? (
+                    <div className="py-2 text-center italic text-muted-foreground">
+                      No results found.
                     </div>
-                  )
-                })
-              }
+                  ) : null}
+                  {combat.battlefly_combat.map((item, index) => {
+                    const loser = {
+                      ...item.loser,
+                      mods: [
+                        { mod: item.loser_slot_0_mod, slot: 0 },
+                        { mod: item.loser_slot_1_mod, slot: 1 },
+                        { mod: item.loser_slot_2_mod, slot: 2 },
+                        { mod: item.loser_slot_3_mod, slot: 3 },
+                      ],
+                    }
+                    const winner = {
+                      ...item.winner,
+                      mods: [
+                        { mod: item.winner_slot_0_mod, slot: 0 },
+                        { mod: item.winner_slot_1_mod, slot: 1 },
+                        { mod: item.winner_slot_2_mod, slot: 2 },
+                        { mod: item.winner_slot_3_mod, slot: 3 },
+                      ],
+                    }
+
+                    return (
+                      <div
+                        key={item.id}
+                        className={cn(
+                          'grid grid-cols-1 items-center gap-8 px-6 py-4 lg:grid-cols-2',
+                          index % 2 ? undefined : 'bg-muted dark:bg-gray-700',
+                        )}
+                      >
+                        <div className="flex flex-1 flex-col items-center gap-2 sm:flex-row sm:gap-8">
+                          <YouCell loser={loser} winner={winner} />
+                          <span className="mt-2 font-bold tracking-widest">
+                            VS
+                          </span>
+                          <ThemCell loser={loser} winner={winner} />
+                        </div>
+                        <div className="text-center text-muted-foreground sm:text-left">
+                          The battle occurred in the{' '}
+                          <span className="font-medium text-primary">
+                            {item.location
+                              .at(0)
+                              ?.toUpperCase()
+                              .concat(item.location.slice(1))}
+                          </span>{' '}
+                          {item.created_at}.
+                          <a
+                            className="ml-3 inline-flex items-center gap-1 text-pink-600 underline"
+                            href={`https://play.battlefly.game/battleflies/view/${id}/battlelog/${item.id}`}
+                            rel="noreferrer"
+                            target="_blank"
+                          >
+                            View
+                            <Icon name="external-link" />
+                          </a>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </>
+              )}
             </Await>
           </Suspense>
-          <div className="px-2">
-            <Pagination button={CombatHistoryPagination} {...pagination} />
-          </div>
+          {pagination.count > 1 ? (
+            <div className="px-2">
+              <Pagination button={CombatHistoryPagination} {...pagination} />
+            </div>
+          ) : null}
         </div>
       </div>
     </section>

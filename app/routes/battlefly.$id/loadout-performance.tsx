@@ -82,7 +82,7 @@ export function LoadoutPerformance() {
                   </thead>
                   <tbody className="divide-y divide-gray-200 dark:divide-gray-800 dark:bg-gray-700">
                     <Suspense
-                      fallback={Array(5)
+                      fallback={Array(PAGE_SIZE_5)
                         .fill(0)
                         .map((_, index) => (
                           <div key={index} className="px-6 py-4">
@@ -91,86 +91,101 @@ export function LoadoutPerformance() {
                         ))}
                     >
                       <Await resolve={loadouts}>
-                        {(loadouts) =>
-                          loadouts.battlefly_win_loss_loadout.map(
-                            (
-                              {
-                                battles,
-                                changed_at,
-                                losses,
-                                wins,
-                                wl_ratio,
-                                ...slots
-                              },
-                              index,
-                            ) => {
-                              const { equipped } = normalize.mods({
-                                mods: Object.entries(slots).map(
-                                  ([slot, mod]) => ({
-                                    slot: Number(slot.replace('slot_', '')),
-                                    mod,
-                                  }),
-                                ),
-                              })
+                        {(loadouts) => (
+                          <>
+                            {loadouts.battlefly_win_loss_loadout.length ===
+                            0 ? (
+                              <tr>
+                                <td colSpan={6}>
+                                  <div className="py-2 text-center italic text-muted-foreground">
+                                    No results found.
+                                  </div>
+                                </td>
+                              </tr>
+                            ) : null}
+                            {loadouts.battlefly_win_loss_loadout.map(
+                              (
+                                {
+                                  battles,
+                                  changed_at,
+                                  losses,
+                                  wins,
+                                  wl_ratio,
+                                  ...slots
+                                },
+                                index,
+                              ) => {
+                                const { equipped } = normalize.mods({
+                                  mods: Object.entries(slots).map(
+                                    ([slot, mod]) => ({
+                                      slot: Number(slot.replace('slot_', '')),
+                                      mod,
+                                    }),
+                                  ),
+                                })
 
-                              return (
-                                <tr
-                                  key={index}
-                                  className={
-                                    index % 2
-                                      ? undefined
-                                      : 'bg-gray-50 dark:bg-gray-800'
-                                  }
-                                >
-                                  <td className="pl-2 sm:pl-4">
-                                    <ScrollArea
-                                      className="w-24 pb-1 md:w-40 md:pb-0"
-                                      orientation="horizontal"
-                                    >
-                                      <div className="flex max-w-max gap-2 p-2">
-                                        {equipped.map(
-                                          ({ color, mod }, index) => (
-                                            <ModPreview key={index} id={mod.id}>
-                                              <img
-                                                alt={mod.name}
-                                                className="w-8 rounded"
-                                                src={mod.image}
-                                                style={{
-                                                  background: `linear-gradient(119.42deg, rgba(37, 33, 55, 0.5) -16.72%, rgb(${color}) 153.84%)`,
-                                                }}
-                                              />
-                                            </ModPreview>
-                                          ),
-                                        )}
+                                return (
+                                  <tr
+                                    key={index}
+                                    className={
+                                      index % 2
+                                        ? undefined
+                                        : 'bg-gray-50 dark:bg-gray-800'
+                                    }
+                                  >
+                                    <td className="pl-2 sm:pl-4">
+                                      <ScrollArea
+                                        className="w-24 pb-1 md:w-40 md:pb-0"
+                                        orientation="horizontal"
+                                      >
+                                        <div className="flex max-w-max gap-2 p-2">
+                                          {equipped.map(
+                                            ({ color, mod }, index) => (
+                                              <ModPreview
+                                                key={index}
+                                                id={mod.id}
+                                              >
+                                                <img
+                                                  alt={mod.name}
+                                                  className="w-8 rounded"
+                                                  src={mod.image}
+                                                  style={{
+                                                    background: `linear-gradient(119.42deg, rgba(37, 33, 55, 0.5) -16.72%, rgb(${color}) 153.84%)`,
+                                                  }}
+                                                />
+                                              </ModPreview>
+                                            ),
+                                          )}
+                                        </div>
+                                      </ScrollArea>
+                                    </td>
+                                    <td className="whitespace-nowrap px-3 text-sm dark:text-gray-50">
+                                      {wl_ratio}
+                                    </td>
+                                    <td className="whitespace-nowrap px-3 text-sm">
+                                      <div className="text-gray-900 dark:text-gray-200">
+                                        {wins.toLocaleString()}
                                       </div>
-                                    </ScrollArea>
-                                  </td>
-                                  <td className="whitespace-nowrap px-3 text-sm dark:text-gray-50">
-                                    {wl_ratio}
-                                  </td>
-                                  <td className="whitespace-nowrap px-3 text-sm">
-                                    <div className="text-gray-900 dark:text-gray-200">
-                                      {wins.toLocaleString()}
-                                    </div>
-                                  </td>
-                                  <td className="whitespace-nowrap px-3 text-sm">
-                                    <div className="text-gray-900 dark:text-gray-200">
-                                      {losses.toLocaleString()}
-                                    </div>
-                                  </td>
-                                  <td className="whitespace-nowrap px-3 text-sm">
-                                    <div className="text-gray-900 dark:text-gray-200">
-                                      {battles.toLocaleString()}
-                                    </div>
-                                  </td>
-                                  <td className="whitespace-nowrap px-3 text-sm dark:text-gray-50">
-                                    {changed_at}
-                                  </td>
-                                </tr>
-                              )
-                            },
-                          )
-                        }
+                                    </td>
+                                    <td className="whitespace-nowrap px-3 text-sm">
+                                      <div className="text-gray-900 dark:text-gray-200">
+                                        {losses.toLocaleString()}
+                                      </div>
+                                    </td>
+                                    <td className="whitespace-nowrap px-3 text-sm">
+                                      <div className="text-gray-900 dark:text-gray-200">
+                                        {battles.toLocaleString()}
+                                      </div>
+                                    </td>
+                                    <td className="whitespace-nowrap px-3 text-sm dark:text-gray-50">
+                                      {changed_at}
+                                    </td>
+                                  </tr>
+                                )
+                              },
+                            )}
+                          </>
+                        )}
                       </Await>
                     </Suspense>
                   </tbody>
