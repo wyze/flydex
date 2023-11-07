@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 export function UnderlineLink({
   children,
   href,
-  prefix = '\u2003 ',
+  prefix,
 }: {
   children: React.ReactNode
   href: string
