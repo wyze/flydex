@@ -11,6 +11,7 @@ import { mod, trait } from '~/lib/schemas.server'
 import { PAGE_SIZE_5, PAGE_SIZE_10 } from './constants'
 import {
   type GetBattleflyEarningsQueryVariables,
+  type GetBattleflyEarningsTotalQueryVariables,
   type GetBattleflyQueryVariables,
   type GetCombatHistoryQueryVariables,
   type GetCombatHistoryTotalQueryVariables,
@@ -185,6 +186,18 @@ const schema = {
     })
     .array(),
   detail,
+  earnings: z
+    .object({
+      acquired: z.string().transform((value) => new Date(value).getTime()),
+      owner: z.string(),
+      treasure_tag: z
+        .object({
+          display_name: z.string(),
+        })
+        .nullable(),
+      winnings: z.number(),
+    })
+    .array(),
   loadout: z
     .object({
       battles: z.number(),
@@ -209,6 +222,28 @@ async function getBattlefly(variables: GetBattleflyQueryVariables) {
   ])
 
   return schema.detail.parse(data.battlefly_flydex.at(0))
+}
+
+async function getBattleflyEarnings(
+  variables: GetBattleflyEarningsQueryVariables,
+) {
+  const data = await cacheable(sdk.GetBattleflyEarnings.bind(null, variables), [
+    'earnings',
+    variables,
+  ])
+
+  return schema.earnings.parse(data.battlefly_earnings)
+}
+
+async function getBattleflyEarningsTotal(
+  variables: GetBattleflyEarningsTotalQueryVariables,
+) {
+  const data = await cacheable(
+    sdk.GetBattleflyEarningsTotal.bind(null, variables),
+    ['earnings', 'total', variables],
+  )
+
+  return z.number().parse(data.battlefly_earnings_aggregate.aggregate?.count)
 }
 
 async function getCombatHistory(variables: GetCombatHistoryQueryVariables) {
@@ -268,8 +303,15 @@ export async function loader({ params, request }: DataFunctionArgs) {
   const parsed = zx.parseParams(params, { id: z.string().transform(Number) })
   const query = zx.parseQuery(request, {
     combat_offset: z.string().default('0').transform(Number),
+    earnings_include_zeros: z
+      .string()
+      .default('false')
+      .transform((value) => value === 'true'),
+    earnings_offset: z.string().default('0').transform(Number),
     loadout_offset: z.string().default('0').transform(Number),
   })
+
+  const minimum = query.earnings_include_zeros ? -1 : 0
 
   const combat = getCombatHistory({
     id: parsed.id,
@@ -283,14 +325,20 @@ export async function loader({ params, request }: DataFunctionArgs) {
     offset: query.loadout_offset,
   })
 
-  const [combatTotal, loadoutTotal, fly, maxRank] = await Promise.all(
-    [
+  const [combatTotal, loadoutTotal, earningsTotal, earnings, fly, maxRank] =
+    await Promise.all([
       getLoadoutPerformanceTotal(parsed),
       getCombatHistoryTotal(parsed),
+      getBattleflyEarningsTotal({ ...parsed, minimum }),
+      getBattleflyEarnings({
+        ...parsed,
+        limit: PAGE_SIZE_5,
+        minimum,
+        offset: query.earnings_offset,
+      }),
       getBattlefly(parsed),
       getMaxRank(),
-    ],
-  )
+    ])
 
   return defer({
     combat,
@@ -298,6 +346,10 @@ export async function loader({ params, request }: DataFunctionArgs) {
     fly,
     loadouts,
     maxRank,
-    totals: { combat: combatTotal, loadout: loadoutTotal },
+    totals: {
+      combat: combatTotal,
+      earnings: earningsTotal,
+      loadout: loadoutTotal,
+    },
   })
 }

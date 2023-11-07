@@ -21,6 +21,7 @@ import type { ModWithColor } from '~/lib/types'
 import { CombatHistory } from '~/routes/battlefly.$id/combat-history'
 import { ModPreview } from '~/routes/resources.mod.$id/route'
 
+import { EarningsTable } from './earnings-table'
 import { LoadoutPerformance } from './loadout-performance'
 import { loader } from './server'
 
@@ -282,6 +283,7 @@ export default function BattleflyDetail() {
             </Tabs>
           </div>
         </section>
+        <EarningsTable />
         <LoadoutPerformance />
         <CombatHistory />
       </div>

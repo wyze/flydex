@@ -63,6 +63,37 @@ query GetBattlefly($id: Int!) {
   }
 }
 
+query GetBattleflyEarnings(
+  $id: Int!
+  $limit: Int!
+  $offset: Int!
+  $minimum: numeric!
+) {
+  battlefly_earnings(
+    limit: $limit
+    offset: $offset
+    where: { token_id: { _eq: $id }, winnings: { _gt: $minimum } }
+    order_by: { acquired: desc }
+  ) {
+    acquired
+    owner
+    treasure_tag {
+      display_name
+    }
+    winnings
+  }
+}
+
+query GetBattleflyEarningsTotal($id: Int!, $minimum: numeric!) {
+  battlefly_earnings_aggregate(
+    where: { token_id: { _eq: $id }, winnings: { _gt: $minimum } }
+  ) {
+    aggregate {
+      count
+    }
+  }
+}
+
 query GetCombatHistory($limit: Int!, $offset: Int!, $id: Int!) {
   battlefly_combat(
     limit: $limit

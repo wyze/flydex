@@ -20,6 +20,7 @@ import {
   useTheme,
 } from '~/components/theme-provider'
 import { Toaster } from '~/components/ui/toaster'
+import { TooltipProvider } from '~/components/ui/tooltip'
 import { useFathom } from '~/hooks/use-fathom'
 import { useNProgress } from '~/hooks/use-n-progress'
 import { today } from '~/lib/date.server'
@@ -71,7 +72,9 @@ export default function AppWithProviders() {
 
   return (
     <ThemeProvider specifiedTheme={data.theme}>
-      <App />
+      <TooltipProvider>
+        <App />
+      </TooltipProvider>
     </ThemeProvider>
   )
 }

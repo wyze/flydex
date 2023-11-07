@@ -39,7 +39,10 @@ const Icon = forwardRef<
     name: IconName
     size?: Size
   }
->(function IconInner({ name, size = 'font', className, children, ...props }, ref) {
+>(function IconInner(
+  { name, size = 'font', className, children, ...props },
+  ref,
+) {
   if (children) {
     return (
       <span
