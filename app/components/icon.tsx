@@ -39,13 +39,13 @@ const Icon = forwardRef<
     name: IconName
     size?: Size
   }
->(function Icon({ name, size = 'font', className, children, ...props }, ref) {
+>(function IconInner({ name, size = 'font', className, children, ...props }, ref) {
   if (children) {
     return (
       <span
         className={`inline-flex items-center ${childrenSizeClassName[size]}`}
       >
-        <Icon name={name} size={size} className={className} {...props} />
+        <IconInner name={name} size={size} className={className} {...props} />
         {children}
       </span>
     )

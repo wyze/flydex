@@ -1,12 +1,7 @@
-import type { DataFunctionArgs } from '@remix-run/node'
-import { Link, useLoaderData, useSearchParams } from '@remix-run/react'
-import queryString from 'query-string'
-import { z } from 'zod'
-import { zx } from 'zodix'
+import { useLoaderData, useSearchParams } from '@remix-run/react'
 
 import { DescriptionListCard } from '~/components/description-list-card'
 import { Owner } from '~/components/owner'
-import { Pagination } from '~/components/pagination'
 import { ScrollArea } from '~/components/scroll-area'
 import { Separator } from '~/components/separator'
 import { Tabs } from '~/components/tabs'
@@ -21,21 +16,15 @@ import {
   DropdownMenuTrigger,
 } from '~/components/ui/dropdown-menu'
 import { UnderlineLink } from '~/components/underline-link'
-import { usePagination } from '~/hooks/use-pagination'
 import * as normalize from '~/lib/normalize'
-import { json } from '~/lib/responses.server'
 import type { ModWithColor } from '~/lib/types'
-import { CombatHistory } from '~/routes/resources.combat-history'
+import { CombatHistory } from '~/routes/battlefly.$id/combat-history'
 import { ModPreview } from '~/routes/resources.mod.$id/route'
-import { getBattlefly } from '~/services/hasura.server'
 
-export function loader({ params }: DataFunctionArgs) {
-  const parsed = zx.parseParams(params, { id: z.string().transform(Number) })
+import { LoadoutPerformance } from './loadout-performance'
+import { loader } from './server'
 
-  return json(`fly:${parsed.id}`, () => getBattlefly(parsed.id))
-}
-
-const PAGE_SIZE = 5
+export { loader }
 
 export default function BattleflyDetail() {
   const { fly, maxRank } = useLoaderData<typeof loader>()
@@ -48,7 +37,6 @@ export default function BattleflyDetail() {
     | '3d'
     | '7d'
     | 'today'
-  const page = Number(params.get('loadout_page') ?? '1')
 
   const stats = Object.entries(fly)
     .filter((item): item is [string, number | null] =>
@@ -69,11 +57,6 @@ export default function BattleflyDetail() {
       },
       {} as Record<string, Record<string, number | null>>,
     )
-
-  const pagination = usePagination(fly.win_loss.loadouts.length, {
-    page,
-    size: PAGE_SIZE,
-  })
 
   const performanceOptions = [
     { label: 'Today', value: 'today' },
@@ -299,166 +282,7 @@ export default function BattleflyDetail() {
             </Tabs>
           </div>
         </section>
-        {fly.win_loss.loadouts.length > 0 ? (
-          <section
-            className="md:col-span-2"
-            aria-labelledby="loadout-performance"
-          >
-            <div className="overflow-hidden bg-white shadow dark:bg-gray-800 sm:rounded-lg">
-              <div className="px-4 py-5 sm:px-6">
-                <h2
-                  id="loadout-performance"
-                  className="text-lg font-medium leading-6 text-gray-900 dark:text-gray-200"
-                >
-                  Loadout Performance
-                </h2>
-                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                  Performance data broken down by each loadout.
-                </p>
-              </div>
-              <div className="flex flex-col">
-                <div className="overflow-x-auto">
-                  <div className="inline-block min-w-full align-middle">
-                    <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5">
-                      <table className="min-w-full divide-y divide-gray-300 dark:divide-gray-700">
-                        <thead className="bg-gray-50 dark:bg-gray-800">
-                          <tr>
-                            <th
-                              scope="col"
-                              className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 dark:text-gray-50 sm:pl-6"
-                            >
-                              Loadout
-                            </th>
-                            <th
-                              scope="col"
-                              className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-50"
-                            >
-                              W/L Ratio
-                            </th>
-                            <th
-                              scope="col"
-                              className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-50"
-                            >
-                              Wins
-                            </th>
-                            <th
-                              scope="col"
-                              className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-50"
-                            >
-                              Losses
-                            </th>
-                            <th
-                              scope="col"
-                              className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-50"
-                            >
-                              Battles
-                            </th>
-                            <th
-                              scope="col"
-                              className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-50"
-                            >
-                              Created
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-200 dark:divide-gray-800 dark:bg-gray-700">
-                          {fly.win_loss.loadouts
-                            .slice(...pagination.range)
-                            .map(
-                              (
-                                {
-                                  battles,
-                                  changed_at,
-                                  losses,
-                                  wins,
-                                  wl_ratio,
-                                  ...slots
-                                },
-                                index,
-                              ) => {
-                                const { equipped } = normalize.mods({
-                                  mods: Object.entries(slots).map(
-                                    ([slot, mod]) => ({
-                                      slot: Number(slot.replace('slot_', '')),
-                                      mod,
-                                    }),
-                                  ),
-                                })
-
-                                return (
-                                  <tr
-                                    key={index}
-                                    className={
-                                      index % 2
-                                        ? undefined
-                                        : 'bg-gray-50 dark:bg-gray-800'
-                                    }
-                                  >
-                                    <td className="pl-2 sm:pl-4">
-                                      <ScrollArea
-                                        className="w-24 pb-1 md:w-40 md:pb-0"
-                                        orientation="horizontal"
-                                      >
-                                        <div className="flex max-w-max gap-2 p-2">
-                                          {equipped.map(
-                                            ({ color, mod }, index) => (
-                                              <ModPreview
-                                                key={index}
-                                                id={mod.id}
-                                              >
-                                                <img
-                                                  alt={mod.name}
-                                                  className="w-8 rounded"
-                                                  src={mod.image}
-                                                  style={{
-                                                    background: `linear-gradient(119.42deg, rgba(37, 33, 55, 0.5) -16.72%, rgb(${color}) 153.84%)`,
-                                                  }}
-                                                />
-                                              </ModPreview>
-                                            ),
-                                          )}
-                                        </div>
-                                      </ScrollArea>
-                                    </td>
-                                    <td className="whitespace-nowrap px-3 text-sm dark:text-gray-50">
-                                      {wl_ratio}
-                                    </td>
-                                    <td className="whitespace-nowrap px-3 text-sm">
-                                      <div className="text-gray-900 dark:text-gray-200">
-                                        {wins.toLocaleString()}
-                                      </div>
-                                    </td>
-                                    <td className="whitespace-nowrap px-3 text-sm">
-                                      <div className="text-gray-900 dark:text-gray-200">
-                                        {losses.toLocaleString()}
-                                      </div>
-                                    </td>
-                                    <td className="whitespace-nowrap px-3 text-sm">
-                                      <div className="text-gray-900 dark:text-gray-200">
-                                        {battles.toLocaleString()}
-                                      </div>
-                                    </td>
-                                    <td className="whitespace-nowrap px-3 text-sm dark:text-gray-50">
-                                      {changed_at}
-                                    </td>
-                                  </tr>
-                                )
-                              },
-                            )}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-                {pagination.count > 1 ? (
-                  <div className="p-2">
-                    <Pagination button={ParamsLink} {...pagination} />
-                  </div>
-                ) : null}
-              </div>
-            </div>
-          </section>
-        ) : null}
+        <LoadoutPerformance />
         <CombatHistory />
       </div>
     </>
@@ -494,27 +318,5 @@ function Mods({ items }: { items: ModWithColor[] }) {
         })}
       </div>
     </ScrollArea>
-  )
-}
-
-function ParamsLink({
-  children,
-  offset = 0,
-  ...props
-}: React.AnchorHTMLAttributes<HTMLAnchorElement> & {
-  children: React.ReactNode
-  offset?: number
-}) {
-  const [params] = useSearchParams()
-  const performance = params.get('performance') ?? ''
-  const search = queryString.stringify(
-    { loadout_page: `${offset / PAGE_SIZE + 1}`, performance },
-    { skipEmptyString: true },
-  )
-
-  return (
-    <Link preventScrollReset to={{ search }} {...props}>
-      {children}
-    </Link>
   )
 }

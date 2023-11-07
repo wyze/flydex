@@ -8,7 +8,6 @@ import { GraphQLClient } from 'graphql-request'
 import { z } from 'zod'
 
 import {
-  type GetCombatHistoryQueryVariables,
   type GetFlydexOwnersQueryVariables,
   type GetFlydexTokensQueryVariables,
   type GetLeaderboardQueryVariables,
@@ -17,7 +16,7 @@ import {
 } from '~/graphql/generated'
 import { INVITATIONAL_FLY_IDS } from '~/lib/constants'
 import { HASURA_API_KEY, HASURA_ENDPOINT } from '~/lib/env.server'
-import { formatPercent, traitDescription } from '~/lib/helpers'
+import { formatPercent } from '~/lib/helpers'
 
 const client = new GraphQLClient(HASURA_ENDPOINT, {
   headers: { 'x-hasura-admin-secret': HASURA_API_KEY },
@@ -60,14 +59,6 @@ const mod = z.object({
     z.literal('Utility'),
     z.literal('Weapon'),
   ]),
-})
-
-const trait = z.object({
-  description: z.string(),
-  id: z.string(),
-  name: z.string(),
-  tags: z.string().array(),
-  value: z.number(),
 })
 
 const battlefly = z.object({
@@ -123,105 +114,6 @@ const battlefly = z.object({
   xp: z.number().transform((value) => value % 500),
 })
 
-const detail = battlefly.merge(
-  z.object({
-    stat_armor_base: z.number(),
-    stat_armor_current: z.number(),
-    stat_battery_base: z.number(),
-    stat_battery_current: z.number(),
-    stat_critical_base: z.number(),
-    stat_critical_current: z.number(),
-    stat_critical_damage_base: z.number(),
-    stat_critical_damage_current: z.number(),
-    stat_critical_resists_base: z.number(),
-    stat_critical_resists_current: z.number(),
-    stat_evasion_base: z.number(),
-    stat_evasion_current: z.number(),
-    stat_hit_points_base: z.number(),
-    stat_hit_points_current: z.number(),
-    stat_hit_points_regen_base: z.number(),
-    stat_hit_points_regen_current: z.number(),
-    stat_loot_base: z.number(),
-    stat_loot_current: z.number(),
-    stat_scavenge_base: z.number().nullable(),
-    stat_scavenge_current: z.number().nullable(),
-    stat_shield_base: z.number(),
-    stat_shield_current: z.number(),
-    stat_shield_regen_base: z.number(),
-    stat_shield_regen_current: z.number(),
-    token: z.object({
-      owner: z.string(),
-      price: z.number().nullable(),
-      treasure_tag: z
-        .object({
-          display_name: z.string(),
-        })
-        .nullable(),
-    }),
-    traits: z
-      .object({
-        trait: trait
-          .pick({
-            description: true,
-            tags: true,
-            value: true,
-          })
-          .transform(traitDescription),
-      })
-      .array(),
-    updated_at: date,
-    win_loss: z
-      .object({
-        battles_24h: z.number(),
-        battles_3d: z.number(),
-        battles_7d: z.number(),
-        battles_today: z.number(),
-        loadouts: z
-          .object({
-            battles: z.number(),
-            changed_at: date,
-            losses: z.number(),
-            slot_0: mod,
-            slot_1: mod,
-            slot_2: mod,
-            slot_3: mod,
-            wins: z.number(),
-            wl_ratio: z.number().transform(formatPercent),
-          })
-          .array()
-          .default([]),
-        losses_24h: z.number(),
-        losses_3d: z.number(),
-        losses_7d: z.number(),
-        losses_today: z.number(),
-        wins_24h: z.number(),
-        wins_3d: z.number(),
-        wins_7d: z.number(),
-        wins_today: z.number(),
-        wl_ratio_24h: z.number().transform(formatPercent),
-        wl_ratio_3d: z.number().transform(formatPercent),
-        wl_ratio_7d: z.number().transform(formatPercent),
-        wl_ratio_today: z.number().transform(formatPercent),
-      })
-      .nullable()
-      .transform(
-        (value) =>
-          value ??
-          ({
-            ...Object.fromEntries(
-              ['battles', 'losses', 'wins', 'wl_ratio'].flatMap((stat) =>
-                ['24h', '3d', '7d', 'today'].map((time) => [
-                  `${stat}_${time}`,
-                  stat === 'wl_ratio' ? '0%' : 0,
-                ]),
-              ),
-            ),
-            loadouts: [],
-          } as NonNullable<typeof value>),
-      ),
-  }),
-)
-
 const leaderboard = z
   .object({
     day: z.string(),
@@ -272,19 +164,6 @@ const leaderboard = z
   })
   .array()
 
-export async function getBattlefly(id: number) {
-  const data = await sdk.getBattlefly({ id })
-  const fly = detail.parse(data.battlefly_flydex.at(0))
-
-  return {
-    fly,
-    maxRank: z
-      .number()
-      .parse(data.battlefly_flydex_aggregate.aggregate?.max?.rank),
-    updatedAt: fly.updated_at,
-  }
-}
-
 export async function getInvitationalBattles({
   limit = 40,
 }: {
@@ -317,38 +196,6 @@ export async function getInvitationalBattles({
     .array()
 
   return schema.parse(data.battlefly_combat)
-}
-
-export async function getCombatHistory(
-  variables: GetCombatHistoryQueryVariables,
-) {
-  const data = await sdk.getCombatHistory(variables)
-  const schema = z
-    .object({
-      created_at: date,
-      id: z.string(),
-      location: z.string(),
-      loser: battlefly.omit({
-        win_loss: true,
-      }),
-      loser_slot_0_mod: mod,
-      loser_slot_1_mod: mod,
-      loser_slot_2_mod: mod,
-      loser_slot_3_mod: mod,
-      winner: battlefly.omit({
-        win_loss: true,
-      }),
-      winner_slot_0_mod: mod,
-      winner_slot_1_mod: mod,
-      winner_slot_2_mod: mod,
-      winner_slot_3_mod: mod,
-    })
-    .array()
-
-  return {
-    combat: schema.parse(data.battlefly_combat),
-    total: z.number().parse(data.battlefly_combat_aggregate.aggregate?.count),
-  }
 }
 
 export async function getFlydexOwners(
