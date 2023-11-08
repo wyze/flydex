@@ -104,9 +104,11 @@ export function CombatHistory() {
                           The battle occurred in the{' '}
                           <span className="font-medium text-primary">
                             {item.location
-                              .at(0)
-                              ?.toUpperCase()
-                              .concat(item.location.slice(1))}
+                              .split('_')
+                              .map(([first, ...rest]) =>
+                                first.toUpperCase().concat(...rest),
+                              )
+                              .join(' ')}
                           </span>{' '}
                           {item.created_at}.
                           <a
