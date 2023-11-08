@@ -1,11 +1,20 @@
 import { type DataFunctionArgs } from '@remix-run/node'
 import { Link, useLoaderData, useNavigate, useParams } from '@remix-run/react'
+import { format } from 'date-fns'
+import { useState } from 'react'
 import { z } from 'zod'
 
+import { Icon } from '~/components/icon'
 import { LeaderboardRow } from '~/components/leaderboard'
 import { Pagination } from '~/components/pagination'
 import { Select } from '~/components/select'
-import { ToggleGroup } from '~/components/toggle-group'
+import { Button } from '~/components/ui/button'
+import { Calendar } from '~/components/ui/calendar'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '~/components/ui/popover'
 import { usePagination } from '~/hooks/use-pagination'
 import { json } from '~/lib/responses.server'
 import { getLeaderboard } from '~/services/hasura.server'
@@ -39,6 +48,10 @@ export async function loader({ params }: DataFunctionArgs) {
   return json(`leaderboard:${params['*']}`, () => getLeaderboard(parsed))
 }
 
+function date(value: string) {
+  return new Date(`${value} 00:00:00`)
+}
+
 export default function Leaderboard() {
   const { leaderboard, showRewards, today, total, yesterday } =
     useLoaderData<typeof loader>()
@@ -48,6 +61,7 @@ export default function Leaderboard() {
     page: page ? Number(page) : 1,
     size: PAGE_SIZE,
   })
+  const [open, setOpen] = useState(false)
 
   return (
     <div className="px-4 pb-16 pt-8 sm:px-6 lg:px-8">
@@ -61,29 +75,42 @@ export default function Leaderboard() {
           </p>
         </div>
         <div className="mt-4 flex items-center gap-3 sm:ml-16 sm:mt-0 sm:flex-none">
-          <ToggleGroup
-            label="Change day"
-            onValueChange={(value) => {
-              navigate(`${value}/${league}`)
-            }}
-            type="single"
-            value={day}
-          >
-            <ToggleGroup.Item
-              className="mt-px h-auto w-auto px-2 py-2"
-              label="View yesterday"
-              value={yesterday}
-            >
-              Yesterday
-            </ToggleGroup.Item>
-            <ToggleGroup.Item
-              className="mt-px h-auto w-auto px-2 py-2"
-              label="View today"
-              value={today}
-            >
-              Today
-            </ToggleGroup.Item>
-          </ToggleGroup>
+          <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                className="w-max justify-start text-left font-normal"
+              >
+                <Icon name="calendar" className="mr-2 h-4 w-4" />
+                {format(date(day), 'PPP')}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0">
+              <Calendar
+                mode="single"
+                disabled={{ after: date(today) }}
+                selected={date(day)}
+                onSelect={(value) => {
+                  if (value) {
+                    navigate(`${format(value, 'yyyy-MM-dd')}/${league}`)
+                  }
+
+                  setOpen(false)
+                }}
+                footer={
+                  <div className="flex w-full items-center justify-center gap-2">
+                    <Button asChild size="xs" variant="outline">
+                      <Link to={`${yesterday}/${league}`}>Yesterday</Link>
+                    </Button>
+                    <Button asChild size="xs" variant="outline">
+                      <Link to={`${today}/${league}`}>Today</Link>
+                    </Button>
+                  </div>
+                }
+                initialFocus
+              />
+            </PopoverContent>
+          </Popover>
           <Select
             onValueChange={(value) => {
               navigate(`${day}/${value}`)
