@@ -189,6 +189,8 @@ const schema = {
   earnings: z
     .object({
       acquired: z.string().transform((value) => new Date(value).getTime()),
+      credits: z.number().nullable(),
+      nectar: z.number(),
       owner: z.string(),
       treasure_tag: z
         .object({

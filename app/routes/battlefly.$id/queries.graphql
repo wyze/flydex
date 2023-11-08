@@ -76,6 +76,8 @@ query GetBattleflyEarnings(
     order_by: { acquired: desc }
   ) {
     acquired
+    credits
+    nectar
     owner
     treasure_tag {
       display_name

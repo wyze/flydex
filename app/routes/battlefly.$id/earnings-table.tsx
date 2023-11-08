@@ -39,8 +39,8 @@ export function EarningsTable() {
               Earnings
             </h2>
             <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              Breakdown of earnings by owner. Currently only includes battles
-              and not leaderboard earnings.
+              Breakdown of earnings by owner. Nectar and credits are rewards
+              from leaderboards.
             </p>
           </div>
           <Toggle
@@ -85,6 +85,18 @@ export function EarningsTable() {
                         scope="col"
                         className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-50"
                       >
+                        Credits
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-50"
+                      >
+                        Nectar
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-50"
+                      >
                         Earnings
                       </th>
                       <th
@@ -105,49 +117,72 @@ export function EarningsTable() {
                         </td>
                       </tr>
                     ) : null}
-                    {earnings.map(({ acquired, winnings, ...props }, index) => {
-                      return (
-                        <tr
-                          key={index}
-                          className={
-                            index % 2
-                              ? undefined
-                              : 'bg-gray-50 dark:bg-gray-800'
-                          }
-                        >
-                          <td className="py-2 pl-4 sm:pl-6">
-                            <Owner {...props} />
-                          </td>
-                          <td className="whitespace-nowrap px-3 py-2 text-sm dark:text-gray-50">
-                            <div className="inline-flex items-center gap-2">
-                              {winnings.toLocaleString()}
-                              <Icon
-                                className="dark:hidden"
-                                name="magic-light"
-                              />
-                              <Icon
-                                className="hidden dark:inline"
-                                name="magic-dark"
-                              />
-                            </div>
-                          </td>
-                          <td className="px-3 py-2 text-sm dark:text-gray-50">
-                            <Tooltip>
-                              <TooltipTrigger className="rounded-sm bg-input px-1 py-0.5">
-                                <time dateTime={new Date(acquired).toJSON()}>
-                                  {format(acquired, 'PPpp')}
-                                </time>
-                              </TooltipTrigger>
-                              <TooltipContent>
-                                {formatDistanceToNow(acquired, {
-                                  addSuffix: true,
-                                })}
-                              </TooltipContent>
-                            </Tooltip>
-                          </td>
-                        </tr>
-                      )
-                    })}
+                    {earnings.map(
+                      (
+                        { acquired, credits, nectar, winnings, ...props },
+                        index,
+                      ) => {
+                        return (
+                          <tr
+                            key={index}
+                            className={
+                              index % 2
+                                ? undefined
+                                : 'bg-gray-50 dark:bg-gray-600'
+                            }
+                          >
+                            <td className="py-2 pl-4 sm:pl-6">
+                              <Owner {...props} />
+                            </td>
+                            <td className="whitespace-nowrap px-3 py-2 text-sm dark:text-gray-50">
+                              <Tooltip>
+                                <TooltipTrigger className="inline-flex items-center gap-2">
+                                  {credits?.toLocaleString() ?? 0}
+                                  <Icon name="mod-pack" />
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  {credits?.toLocaleString() ?? 0} Mod Pack
+                                  {credits === 1 ? '' : 's'}
+                                </TooltipContent>
+                              </Tooltip>
+                            </td>
+                            <td className="whitespace-nowrap px-3 py-2 text-sm dark:text-gray-50">
+                              <div className="inline-flex items-center gap-2">
+                                {nectar.toLocaleString()}
+                                <Icon name="nectar" />
+                              </div>
+                            </td>
+                            <td className="whitespace-nowrap px-3 py-2 text-sm dark:text-gray-50">
+                              <div className="inline-flex items-center gap-2">
+                                {winnings.toLocaleString()}
+                                <Icon
+                                  className="dark:hidden"
+                                  name="magic-light"
+                                />
+                                <Icon
+                                  className="hidden dark:inline"
+                                  name="magic-dark"
+                                />
+                              </div>
+                            </td>
+                            <td className="px-3 py-2 text-sm dark:text-gray-50">
+                              <Tooltip>
+                                <TooltipTrigger className="rounded-sm bg-input px-1 py-0.5">
+                                  <time dateTime={new Date(acquired).toJSON()}>
+                                    {format(acquired, 'PPpp')}
+                                  </time>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  {formatDistanceToNow(acquired, {
+                                    addSuffix: true,
+                                  })}
+                                </TooltipContent>
+                              </Tooltip>
+                            </td>
+                          </tr>
+                        )
+                      },
+                    )}
                   </tbody>
                 </table>
               </div>

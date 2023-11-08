@@ -23,7 +23,7 @@ export function LoadoutPerformance() {
 
   return (
     <section className="md:col-span-2" aria-labelledby="loadout-performance">
-      <div className="overflow-hidden bg-white shadow dark:bg-gray-800 sm:rounded-lg">
+      <div className="overflow-hidden bg-white shadow dark:bg-gray-700 sm:rounded-lg">
         <div className="px-4 py-5 sm:px-6">
           <h2
             id="loadout-performance"
@@ -130,7 +130,7 @@ export function LoadoutPerformance() {
                                     className={
                                       index % 2
                                         ? undefined
-                                        : 'bg-gray-50 dark:bg-gray-800'
+                                        : 'bg-gray-50 dark:bg-gray-600'
                                     }
                                   >
                                     <td className="pl-2 sm:pl-4">
