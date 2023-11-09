@@ -134,10 +134,7 @@ const columns: Array<ColumnDef<Data>> = [
 
       return (
         <div className="flex items-center">
-          {/* <div className="w-3 flex-shrink-0 text-xs text-gray-500 dark:text-gray-400">
-            {rank}.
-          </div> */}
-          <div className="mx-4 h-10 w-10 flex-shrink-0 select-none">
+          <div className="mr-4 hidden h-10 w-10 flex-shrink-0 select-none md:block">
             <img
               alt=""
               className="h-10 w-10 rounded-full p-1"
@@ -180,7 +177,20 @@ const columns: Array<ColumnDef<Data>> = [
   {
     accessorKey: 'wl_ratio',
     header({ column }) {
-      return <DataTableColumnHeader column={column} title="Win/Loss Ratio" />
+      return (
+        <>
+          <DataTableColumnHeader
+            className="hidden md:flex"
+            column={column}
+            title="Win/Loss Ratio"
+          />
+          <DataTableColumnHeader
+            className="md:hidden"
+            column={column}
+            title="W/L"
+          />
+        </>
+      )
     },
     sortingFn: 'basic',
   },
@@ -188,10 +198,18 @@ const columns: Array<ColumnDef<Data>> = [
     accessorKey: 'wl_ratio_previous',
     header({ column }) {
       return (
-        <DataTableColumnHeader
-          column={column}
-          title="Previous Win/Loss Ratio"
-        />
+        <>
+          <DataTableColumnHeader
+            className="hidden md:flex"
+            column={column}
+            title="Previous Win/Loss Ratio"
+          />
+          <DataTableColumnHeader
+            className="whitespace-nowrap md:hidden"
+            column={column}
+            title="Prev W/L"
+          />
+        </>
       )
     },
     sortingFn: 'basic',
