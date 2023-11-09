@@ -110,7 +110,7 @@ export function EarningsTable() {
                   <tbody className="divide-y divide-gray-200 dark:divide-gray-800 dark:bg-gray-700">
                     {earnings.length === 0 ? (
                       <tr>
-                        <td colSpan={3}>
+                        <td colSpan={5}>
                           <div className="py-2 text-center italic text-muted-foreground">
                             No results found.
                           </div>
