@@ -4,7 +4,7 @@ import type { ColumnDef } from '@tanstack/react-table'
 import { z } from 'zod'
 import { zx } from 'zodix'
 
-import { DataTable } from '~/components/data-table'
+import { DataTable, DataTableColumnHeader } from '~/components/data-table'
 import { Mods } from '~/components/mods'
 import { Owner } from '~/components/owner'
 import {
@@ -15,6 +15,7 @@ import {
   SelectValue,
 } from '~/components/ui/select'
 import { UnderlineLink } from '~/components/underline-link'
+import { parse } from '~/lib/helpers'
 import * as normalize from '~/lib/normalize'
 import { json } from '~/lib/responses.server'
 import { getTrending } from '~/services/hasura.server'
@@ -32,10 +33,11 @@ export function loader({ request }: DataFunctionArgs) {
       .default('0')
       .transform(Number)
       .refine((value) => value <= 400),
+    order_by: z.string().default(`{"rank":"asc"}`).transform(parse),
     where: z
       .string()
       .default(`{"league_full":{"_eq":"${DEFAULT_LEAGUE}"}}`)
-      .transform((value) => JSON.parse(value)),
+      .transform(parse),
   })
 
   return json(`trending:${JSON.stringify(params)}`, () => getTrending(params))
@@ -168,7 +170,30 @@ const columns: Array<ColumnDef<Data>> = [
       return <Owner {...flydex.token} />
     },
   },
-  { accessorKey: 'change', header: 'Change' },
-  { accessorKey: 'wl_ratio', header: 'Win/Loss Ratio' },
-  { accessorKey: 'wl_ratio_previous', header: 'Previous Win/Loss Ratio' },
+  {
+    accessorKey: 'change',
+    header({ column }) {
+      return <DataTableColumnHeader column={column} title="Change" />
+    },
+    sortingFn: 'basic',
+  },
+  {
+    accessorKey: 'wl_ratio',
+    header({ column }) {
+      return <DataTableColumnHeader column={column} title="Win/Loss Ratio" />
+    },
+    sortingFn: 'basic',
+  },
+  {
+    accessorKey: 'wl_ratio_previous',
+    header({ column }) {
+      return (
+        <DataTableColumnHeader
+          column={column}
+          title="Previous Win/Loss Ratio"
+        />
+      )
+    },
+    sortingFn: 'basic',
+  },
 ]

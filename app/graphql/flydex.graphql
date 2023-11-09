@@ -34,12 +34,13 @@ fragment Battlefly on battlefly_flydex {
 query getTrending(
   $limit: Int!
   $offset: Int!
+  $order_by: [battlefly_win_loss_trending_order_by!]
   $where: battlefly_win_loss_trending_bool_exp
 ) {
   battlefly_win_loss_trending(
     limit: $limit
     offset: $offset
-    order_by: { rank: asc }
+    order_by: $order_by
     where: $where
   ) {
     change

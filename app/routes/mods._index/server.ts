@@ -6,7 +6,7 @@ import { zx } from 'zodix'
 import { cacheable } from '~/lib/cache.server'
 import { client } from '~/lib/client.server'
 import { PAGE_SIZE } from '~/lib/constants'
-import { formatPercent } from '~/lib/helpers'
+import { formatPercent, parse } from '~/lib/helpers'
 import { mod } from '~/lib/schemas.server'
 
 import {
@@ -113,10 +113,6 @@ export async function getModsLoadout<T extends { id: string }>(ids: T[]) {
   )
 
   return slots.array().promise().parse(loadouts)
-}
-
-function parse(value: string) {
-  return JSON.parse(value)
 }
 
 export async function loader({ request }: DataFunctionArgs) {

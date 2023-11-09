@@ -14,6 +14,10 @@ export function formatPercent(value: number) {
       }).format(value)
 }
 
+export function parse(value: string) {
+  return JSON.parse(value)
+}
+
 export function traitDescription<
   T extends { description: string; tags: string[]; value: number },
 >({ description, tags, value, ...item }: T) {
