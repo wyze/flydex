@@ -158,14 +158,13 @@ export function DataTable<TData, TValue>({
         : null
     const [order] = sorting
 
-    if (!orderBy) {
+    if (!order && !orderBy) {
       return
     }
 
-    if (
-      order?.id === Object.keys(orderBy).at(0) &&
-      order?.desc === (Object.values(orderBy).at(0) === 'desc')
-    ) {
+    const [[key, value] = []] = Object.entries(orderBy ?? {})
+
+    if (order?.id === key && order?.desc === (value === 'desc')) {
       // State is current, no need to navigate
       return
     }
