@@ -37,7 +37,7 @@ export const columns: Array<ColumnDef<Data>> = [
                 src={row.original.image}
               />
             </div>
-            <div className="font-medium">
+            <div className="font-medium whitespace-nowrap">
               <UnderlineLink
                 href={`/mods/group/${row.original.group
                   .toLowerCase()
