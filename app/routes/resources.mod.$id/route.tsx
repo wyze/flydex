@@ -97,6 +97,7 @@ function Loader() {
 }
 
 function Content({
+  category,
   description,
   name,
   season,
@@ -116,6 +117,7 @@ function Content({
           {season[0].toUpperCase().concat(season.slice(1).replace('-', ' '))}
         </Badge>
         <Badge variant="highlight">{mod.class}</Badge>
+        <Badge>{category}</Badge>
       </div>
       {stats.length > 0 ? (
         <>
