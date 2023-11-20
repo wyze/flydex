@@ -1,6 +1,8 @@
 import { useLoaderData } from '@remix-run/react'
 
 import { DescriptionListCard } from '~/components/description-list-card'
+import { Icon } from '~/components/icon'
+import { MobileTooltip } from '~/components/mobile-tooltip'
 import { Badge } from '~/components/ui/badge'
 import { Skeleton } from '~/components/ui/skeleton'
 
@@ -50,6 +52,8 @@ export default function ModGroup() {
       </div>
       <div className="mx-12 mt-8 grid gap-12 p-12 md:grid-cols-2">
         {mods.map((mod) => {
+          const deploy = mod.defense_deploy ?? mod.weapon_deploy
+
           return (
             <DescriptionListCard
               key={mod.name}
@@ -69,7 +73,15 @@ export default function ModGroup() {
                   </div>
                 ),
                 Armor: mod.defense_armor,
-                Deploy: mod.defense_deploy ?? mod.weapon_deploy,
+                Deploy: deploy ? (
+                  <div className="flex gap-1">
+                    <span>{deploy}s</span>
+                    <MobileTooltip
+                      content="Time in battle before deploy."
+                      trigger={<Icon className="-mt-0.5" name="info" />}
+                    />
+                  </div>
+                ) : null,
                 Evasion: mod.defense_evasion,
                 HP: mod.defense_hp ?? mod.weapon_hp,
                 Sheild: mod.defense_shield,
