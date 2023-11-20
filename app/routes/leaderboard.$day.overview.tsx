@@ -89,9 +89,9 @@ export default function Leaderboard() {
                         <Fragment key={league}>
                           <tr className="border-t border-gray-200 dark:border-gray-700">
                             <th
-                              colSpan={4}
+                              colSpan={showRewards ? 6 : 5}
                               scope="colgroup"
-                              className="bg-gray-50 py-2 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 dark:bg-gray-900 sm:pl-6"
+                              className="py-2 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
                             >
                               <Link
                                 className="text-pink-500 underline"
