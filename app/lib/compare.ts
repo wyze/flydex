@@ -11,8 +11,8 @@ export function league<
     return typeof item === 'string'
       ? item
       : hasLeagueProp(item)
-      ? item.league
-      : item.league_full
+        ? item.league
+        : item.league_full
   }
   function format(item: string) {
     return item.split(' ').at(0) ?? ''

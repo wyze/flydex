@@ -21,10 +21,10 @@ export function usePagination(
       page === 1
         ? between.slice(0, 3)
         : page > count - 3
-        ? between.slice(-3, count)
-        : page === 2
-        ? between.slice(index, index + 3)
-        : [page - 1, page, page + 1]
+          ? between.slice(-3, count)
+          : page === 2
+            ? between.slice(index, index + 3)
+            : [page - 1, page, page + 1]
 
     const before = pages[0] > 2
     const after = pages[2] < count - 1

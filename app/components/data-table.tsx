@@ -133,8 +133,8 @@ export function DataTable<TData, TValue>({
           '_in' in value
             ? value._in
             : '_iregex' in value
-            ? value._iregex
-            : value._contains,
+              ? value._iregex
+              : value._contains,
       }))
     },
   )
@@ -658,8 +658,8 @@ export function DataTableColumnHeader<TData, TValue>({
         ? 'arrow-up-0-1'
         : 'arrow-up-a-z'
       : type === 'number'
-      ? 'arrow-down-1-0'
-      : 'arrow-down-z-a'
+        ? 'arrow-down-1-0'
+        : 'arrow-down-z-a'
     : 'arrow-down-up'
 
   return (
@@ -671,8 +671,8 @@ export function DataTableColumnHeader<TData, TValue>({
               sorted === 'desc'
                 ? 'Sorted descending.'
                 : sorted === 'asc'
-                ? 'Sorted ascending.'
-                : 'Not sorted.'
+                  ? 'Sorted ascending.'
+                  : 'Not sorted.'
             }
             variant="ghost"
             size="sm"

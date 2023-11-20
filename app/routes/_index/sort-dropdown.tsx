@@ -49,8 +49,8 @@ export function SortDropdown() {
               sorted === 'desc_nulls_last'
                 ? `Sorted by ${label} descending.`
                 : sorted === 'asc_nulls_last'
-                ? `Sorted by ${label} ascending.`
-                : 'Not sorted.'
+                  ? `Sorted by ${label} ascending.`
+                  : 'Not sorted.'
             }
             variant="ghost"
             size="sm"

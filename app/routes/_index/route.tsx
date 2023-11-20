@@ -229,8 +229,8 @@ export function ErrorBoundary() {
   const message = isRouteErrorResponse(error)
     ? error.data
     : error instanceof Error
-    ? error.message
-    : 'Unknown Error'
+      ? error.message
+      : 'Unknown Error'
 
   return (
     <div className="mx-auto w-1/3 flex-1 pt-24">
