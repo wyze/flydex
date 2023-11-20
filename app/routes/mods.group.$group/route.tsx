@@ -50,7 +50,7 @@ export default function ModGroup() {
           <Badge key={value}>{value}</Badge>
         ))}
       </div>
-      <div className="mx-12 mt-8 grid gap-12 p-12 md:grid-cols-2">
+      <div className="mx-2 mt-8 grid gap-12 p-2 pb-4 md:grid-cols-2 md:p-12 lg:mx-12">
         {mods.map((mod) => {
           const deploy = mod.defense_deploy ?? mod.weapon_deploy
 
