@@ -39,12 +39,6 @@ interface CommandLoadingProps extends React.HTMLAttributes<HTMLDivElement> {
   progress?: number
 }
 
-const THEME_TO_GOAL: Record<string, string> = {
-  dark: '5AMGCSRO',
-  light: 'P1FUJ0KX',
-  system: '1KGL5KHI',
-}
-
 export function SiteHeader() {
   return (
     <header className="supports-backdrop-blur:bg-background/60 sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur">
