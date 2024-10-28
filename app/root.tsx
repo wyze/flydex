@@ -21,7 +21,6 @@ import {
 } from '~/components/theme-provider'
 import { Toaster } from '~/components/ui/toaster'
 import { TooltipProvider } from '~/components/ui/tooltip'
-import { useFathom } from '~/hooks/use-fathom'
 import { useNProgress } from '~/hooks/use-n-progress'
 import { today } from '~/lib/date.server'
 import { getSession } from '~/lib/session.server'
@@ -38,7 +37,6 @@ function App() {
   const data = useLoaderData<typeof loader>()
   const [theme] = useTheme()
 
-  useFathom()
   useNProgress()
 
   return (
@@ -51,6 +49,11 @@ function App() {
         <Links />
         <ThemeHead ssrTheme={data.theme !== 'system'} />
         <link rel="icon" href="/images/logo.png" type="image/png" />
+        <link
+          rel="preload"
+          href="https://umami.wyze.dev/script.js"
+          as="script"
+        />
       </head>
       <body className="flex min-h-screen flex-col bg-white dark:bg-gray-900">
         <ThemeBody ssrTheme={data.theme !== 'system'} />
@@ -61,6 +64,12 @@ function App() {
         <LiveReload />
         <Scripts />
         {import.meta.env.DEV ? <TailwindIndicator /> : null}
+        <script
+          defer
+          src="https://umami.wyze.dev/script.js"
+          data-domains="flydex.honeycomb.fyi"
+          data-website-id="a39c176e-6eab-4bba-bdeb-120a9df733ef"
+        />
         <Footer />
       </body>
     </html>

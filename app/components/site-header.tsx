@@ -1,6 +1,5 @@
 import { Link, NavLink, useFetcher, useNavigate } from '@remix-run/react'
 import { useCommandState } from 'cmdk'
-import { trackGoal } from 'fathom-client'
 import { motion } from 'framer-motion'
 import { forwardRef, useCallback, useEffect, useState } from 'react'
 import { useSpinDelay } from 'spin-delay'
@@ -287,7 +286,6 @@ function ThemeToggle() {
       <DropdownMenu.Content className="min-w-max" sideOffset={3}>
         <DropdownMenu.RadioGroup
           onValueChange={(value) => {
-            trackGoal(THEME_TO_GOAL[value], 0)
             setTheme(value as typeof theme)
           }}
           value={theme}
