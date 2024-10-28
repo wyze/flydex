@@ -2,7 +2,7 @@ FROM node:18-alpine as base
 
 WORKDIR /app
 
-RUN npm install -g pnpm@8.4.0
+RUN npm install -g pnpm@9
 
 COPY package.json pnpm-lock.yaml ./
 
